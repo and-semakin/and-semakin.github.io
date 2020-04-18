@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Hello World blog</title><link href="https://and-semakin.github.io/" rel="alternate"></link><link href="https://and-semakin.github.io/feeds/all.atom.xml" rel="self"></link><id>https://and-semakin.github.io/</id><updated>2020-04-18T00:00:00+05:00</updated><entry><title>Hello world!</title><link href="https://and-semakin.github.io/hello_world.html" rel="alternate"></link><published>2020-04-18T00:00:00+05:00</published><updated>2020-04-18T00:00:00+05:00</updated><author><name>and-semakin</name></author><id>tag:and-semakin.github.io,2020-04-18:/hello_world.html</id><content type="html">&lt;h1&gt;Hello world!&lt;/h1&gt;
+&lt;p&gt;I'm currently trying to generate static blog with Pelican.
+Checking how it goes!&lt;/p&gt;</content><category term="misc"></category></entry></feed>
