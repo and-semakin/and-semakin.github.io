@@ -5,6 +5,7 @@
             <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/png" href="/favicon_32.png" />
 
 
         <title>Виртуальные окружения в Python</title>
@@ -28,29 +29,26 @@
 
 
 
-        <meta name="description" content="Python знаменит своей обширной стандартной библиотекой и девизом "батарейки в комплекте" (batteries included). Даже из коробки Python...">
+        <meta name="description" content="Почему всегда нужно использовать виртуальные окружения и как правильно их готовить.">
 
         <meta name="author" content="and-semakin">
 
+        <meta name="tags" content="python">
+        <meta name="tags" content="pip">
+        <meta name="tags" content="venv">
+        <meta name="tags" content="virtualenv">
 
 	                <meta property="og:locale" content="">
 		<meta property="og:site_name" content="Питонические атаки">
 
 	<meta property="og:type" content="article">
             <meta property="article:author" content="https://and-semakin.github.io/author/and-semakin.html">
-	<meta property="og:url" content="https://and-semakin.github.io/python_virtualenv.html">
+	<meta property="og:url" content="https://and-semakin.github.io/2020/python_virtualenv/">
 	<meta property="og:title" content="Виртуальные окружения в Python">
-	<meta property="article:published_time" content="2020-04-18 00:00:00+05:00">
-            <meta property="og:description" content="Python знаменит своей обширной стандартной библиотекой и девизом "батарейки в комплекте" (batteries included). Даже из коробки Python...">
+	<meta property="article:published_time" content="2020-04-18 12:00:00+05:00">
+            <meta property="og:description" content="Почему всегда нужно использовать виртуальные окружения и как правильно их готовить.">
 
             <meta property="og:image" content="https://and-semakin.github.io/theme/images/post-bg.jpg">
-        <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:site" content="@and_semakin">
-        <meta name="twitter:title" content="Виртуальные окружения в Python">
-
-            <meta name="twitter:image" content="https://and-semakin.github.io/theme/images/post-bg.jpg">
-
-            <meta name="twitter:description" content="Python знаменит своей обширной стандартной библиотекой и девизом "батарейки в комплекте" (batteries included). Даже из коробки Python...">
 </head>
 
 <body class="article-python_virtualenv">
@@ -73,6 +71,7 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
 
+                            <li><a href="https://and-semakin.github.io/pages/about/">Об авторе</a></li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -87,10 +86,11 @@
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="post-heading">
                         <h1>Виртуальные окружения в Python</h1>
-                        <span class="meta">Posted by
+                        <span class="meta">Опубликовано: Sat 18 April 2020,
+                            автор:
                                 <a href="https://and-semakin.github.io/author/and-semakin.html">and-semakin</a>
-                             on Sat 18 April 2020
                         </span>
+                            <span class="meta">Обновлено: Sun 19 April 2020</span>
                         
                     </div>
                 </div>
@@ -118,8 +118,8 @@
 почти наверняка кто-то уже написал для этого библиотеку, и нужно просто погуглить.</p>
 <h2>Установка сторонней библиотеки</h2>
 <p>Каждый начинающий программист знает, как установить библиотеку. Набираем</p>
-<div class="highlight"><pre><span></span><code>$ pip install requests
-</code></pre></div>
+<div class="highlight"><pre><span></span>$ pip install requests
+</pre></div>
 
 
 <p>и понеслась! Множество библиотек в своих инструкциях по установке именно так
@@ -145,7 +145,7 @@
 для установки пакетов в других форматах могут потребоваться дополнительные
 действия, но давайте разберем самый распространённый и простой случай). Куда
 именно происходит установка? Это можно узнать, выполнив следующую команду:</p>
-<div class="highlight"><pre><span></span><code>$ python -m site
+<div class="highlight"><pre><span></span>$ python -m site
 sys.path <span class="o">=</span> <span class="o">[</span>
     <span class="s1">&#39;/Users/and-semakin&#39;</span>,
     <span class="s1">&#39;/Users/and-semakin/.asdf/installs/python/3.8.2/lib/python38.zip&#39;</span>,
@@ -156,13 +156,13 @@ sys.path <span class="o">=</span> <span class="o">[</span>
 USER_BASE: <span class="s1">&#39;/Users/and-semakin/.local&#39;</span> <span class="o">(</span>exists<span class="o">)</span>
 USER_SITE: <span class="s1">&#39;/Users/and-semakin/.local/lib/python3.8/site-packages&#39;</span> <span class="o">(</span>doesn<span class="err">&#39;</span>t exist<span class="o">)</span>
 ENABLE_USER_SITE: False
-</code></pre></div>
+</pre></div>
 
 
 <p>В списке <code>sys.path</code> можно увидеть директорию <code>site-packages</code> — именно туда
 и будет установлена библиотека. Давайте в этом убедимся.</p>
 <p>До установки пакета:</p>
-<div class="highlight"><pre><span></span><code>$ ls -l /Users/and-semakin/env/lib/python3.8/site-packages
+<div class="highlight"><pre><span></span>$ ls -l /Users/and-semakin/env/lib/python3.8/site-packages
 total <span class="m">8</span>
 drwxr-xr-x   <span class="m">3</span> and-semakin  awesome    <span class="m">96</span> Apr <span class="m">18</span> <span class="m">17</span>:39 __pycache__
 -rw-r--r--   <span class="m">1</span> and-semakin  awesome   <span class="m">126</span> Apr <span class="m">18</span> <span class="m">17</span>:39 easy_install.py
@@ -171,16 +171,16 @@ drwxr-xr-x   <span class="m">9</span> and-semakin  awesome   <span class="m">288
 drwxr-xr-x   <span class="m">7</span> and-semakin  awesome   <span class="m">224</span> Apr <span class="m">18</span> <span class="m">17</span>:39 pkg_resources
 drwxr-xr-x  <span class="m">42</span> and-semakin  awesome  <span class="m">1344</span> Apr <span class="m">18</span> <span class="m">17</span>:39 setuptools
 drwxr-xr-x  <span class="m">11</span> and-semakin  awesome   <span class="m">352</span> Apr <span class="m">18</span> <span class="m">17</span>:39 setuptools-41.2.0.dist-info
-</code></pre></div>
+</pre></div>
 
 
 <p>Установим пакет:</p>
-<div class="highlight"><pre><span></span><code>$ pip install requests
-</code></pre></div>
+<div class="highlight"><pre><span></span>$ pip install requests
+</pre></div>
 
 
 <p>После установки пакета:</p>
-<div class="highlight"><pre><span></span><code>$ ls -l /Users/and-semakin/env/lib/python3.8/site-packages
+<div class="highlight"><pre><span></span>$ ls -l /Users/and-semakin/env/lib/python3.8/site-packages
 total <span class="m">8</span>
 drwxr-xr-x   <span class="m">3</span> and-semakin  awesome    <span class="m">96</span> Apr <span class="m">18</span> <span class="m">17</span>:39 __pycache__
 drwxr-xr-x   <span class="m">7</span> and-semakin  awesome   <span class="m">224</span> Apr <span class="m">18</span> <span class="m">17</span>:41 certifi
@@ -199,7 +199,7 @@ drwxr-xr-x  <span class="m">42</span> and-semakin  awesome  <span class="m">1344
 drwxr-xr-x  <span class="m">11</span> and-semakin  awesome   <span class="m">352</span> Apr <span class="m">18</span> <span class="m">17</span>:39 setuptools-41.2.0.dist-info
 drwxr-xr-x  <span class="m">16</span> and-semakin  awesome   <span class="m">512</span> Apr <span class="m">18</span> <span class="m">17</span>:41 urllib3
 drwxr-xr-x   <span class="m">8</span> and-semakin  awesome   <span class="m">256</span> Apr <span class="m">18</span> <span class="m">17</span>:41 urllib3-1.25.9.dist-info
-</code></pre></div>
+</pre></div>
 
 
 <p>Как видим, в директорию <code>site-packages</code> добавилась библиотека <code>requests</code> вместе
@@ -211,7 +211,9 @@ drwxr-xr-x   <span class="m">8</span> and-semakin  awesome   <span class="m">256
 <code>pip</code> и устанавливает пакеты.</li>
 </ol>
 <p>А это значит, что в один интерпретатор Python нельзя установить две версии
-одной библиотеки одновременно. При установке новой версии предыдущая "перезатирается".</p>
+одной библиотеки одновременно. При установке новой версии предыдущая "перезатирается".
+Просто как если бы вы распаковали другой архив с совпадающими именами файлов
+в то же самое место.</p>
 <h3>Боль — это жизненный опыт</h3>
 <p>Что же будет, если вам понадобится работать над двумя проектами, которые
 будут требовать разных, не совместимых между собой версий одной и той же
@@ -219,15 +221,15 @@ drwxr-xr-x   <span class="m">8</span> and-semakin  awesome   <span class="m">256
 какие-то крупные ломающие изменения, например, переименовались методы/функции
 или изменился набор аргументов.</p>
 <p>Например, проект А:</p>
-<div class="highlight"><pre><span></span><code># requirements.txt
+<div class="highlight"><pre><span></span># requirements.txt
 requests==2.23.0
-</code></pre></div>
+</pre></div>
 
 
 <p>Проект Б:</p>
-<div class="highlight"><pre><span></span><code># requirements.txt
+<div class="highlight"><pre><span></span># requirements.txt
 requests==1.2.3
-</code></pre></div>
+</pre></div>
 
 
 <p>Вы просто не сможете работать над такими проектами одновременно. Установка
@@ -259,17 +261,17 @@ requests==1.2.3
 поддерживаемых версий языка, так что справедливо ожидать, что как минимум
 везде установлен Python 3.5 или новее), создать виртуальное окружение стало
 очень просто:</p>
-<div class="highlight"><pre><span></span><code>$ python -m venv &lt;путь к виртуальному окружению&gt;
-</code></pre></div>
+<div class="highlight"><pre><span></span>$ python -m venv &lt;путь к виртуальному окружению&gt;
+</pre></div>
 
 
 <p>Например, допустим, что мы работаем над проектом <code>blog_source</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># заходим в директорию с проектом</span>
+<div class="highlight"><pre><span></span><span class="c1"># заходим в директорию с проектом</span>
 $ <span class="nb">cd</span> src/blog_source
 
 <span class="c1"># создаем виртуальное окружение прямо рядом с кодом в директории env</span>
 $ python -m venv env
-</code></pre></div>
+</pre></div>
 
 
 <p>Создавать виртуальное окружения рядом с кодом — это распространённая практика,
@@ -280,20 +282,20 @@ $ python -m venv env
 Лучше вообще добавьте его (<code>env/</code>) в <code>.gitignore</code>.</p>
 <p>В директорию <code>env</code> будет скопирован тот самый интерпретатор, при помощи
 которого виртуальное окружение и создавалось. Т.е. если</p>
-<div class="highlight"><pre><span></span><code>$ python -V
+<div class="highlight"><pre><span></span>$ python -V
 Python <span class="m">3</span>.8.2
-</code></pre></div>
+</pre></div>
 
 
 <p>то в виртуальном окружении будет та же самая версия:</p>
-<div class="highlight"><pre><span></span><code>$ env/bin/python -V
+<div class="highlight"><pre><span></span>$ env/bin/python -V
 Python <span class="m">3</span>.8.2
-</code></pre></div>
+</pre></div>
 
 
 <h3>Активируем окружение</h3>
 <p>Посмотрим, что внутри директории <code>env</code>:</p>
-<div class="highlight"><pre><span></span><code>$ ls -l env/
+<div class="highlight"><pre><span></span>$ ls -l env/
 total <span class="m">8</span>
 drwxr-xr-x  <span class="m">13</span> and-semakin  awesome  <span class="m">416</span> Apr <span class="m">18</span> <span class="m">18</span>:55 bin
 drwxr-xr-x   <span class="m">2</span> and-semakin  awesome   <span class="m">64</span> Apr <span class="m">18</span> <span class="m">18</span>:55 include
@@ -313,7 +315,7 @@ total <span class="m">88</span>
 -rwxr-xr-x  <span class="m">1</span> and-semakin  awesome   <span class="m">250</span> Apr <span class="m">18</span> <span class="m">18</span>:55 pip3.8
 lrwxr-xr-x  <span class="m">1</span> and-semakin  awesome    <span class="m">59</span> Apr <span class="m">18</span> <span class="m">18</span>:55 python -&gt; /Users/and-semakin/.asdf/installs/python/3.8.2/bin/python
 lrwxr-xr-x  <span class="m">1</span> and-semakin  awesome     <span class="m">6</span> Apr <span class="m">18</span> <span class="m">18</span>:55 python3 -&gt; python
-</code></pre></div>
+</pre></div>
 
 
 <p>Обратите внимание, что в директории <code>bin</code> есть некий файл <code>activate</code> в
@@ -321,61 +323,61 @@ lrwxr-xr-x  <span class="m">1</span> and-semakin  awesome     <span class="m">6<
 окружение. Просто создать виртуальное окружение мало, нужно его активировать.
 Но сначала проверим, какие <code>python</code> и <code>pip</code> (исполняемые файлы) используются
 в обычном режиме работы:</p>
-<div class="highlight"><pre><span></span><code>$ which python
+<div class="highlight"><pre><span></span>$ which python
 /Users/and-semakin/.asdf/shims/python
 $ which pip
 /Users/and-semakin/.asdf/shims/pip
-</code></pre></div>
+</pre></div>
 
 
 <p>Это мой обычный Python, вне виртуального окружения, назовём его глобальным.
 Теперь активируем виртуальное окружение:</p>
-<div class="highlight"><pre><span></span><code>$ <span class="nb">source</span> env/bin/activate
+<div class="highlight"><pre><span></span>$ <span class="nb">source</span> env/bin/activate
 <span class="o">(</span>env<span class="o">)</span> $
-</code></pre></div>
+</pre></div>
 
 
 <p>Для Windows процесс активации будет отличаться (допустим, что виртуальное окружение
 создано в <code>C:\src\blog_source</code>):</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># cmd</span>
+<div class="highlight"><pre><span></span><span class="c1"># cmd</span>
 C:<span class="se">\s</span>rc<span class="se">\b</span>log_source<span class="se">\&gt;</span> env<span class="se">\S</span>cripts<span class="se">\a</span>ctivate.bat
 
 <span class="c1"># либо в PowerShell</span>
 PS C:<span class="se">\s</span>rc<span class="se">\b</span>log_source<span class="se">\&gt;</span> env<span class="se">\S</span>cripts<span class="se">\A</span>ctivate.ps1
-</code></pre></div>
+</pre></div>
 
 
 <p>Обратите внимание, что приветствие шелла изменилось (добавилось <code>(env)</code>), чтобы
 показать, что мы "внутри" виртуального окружения под названием <code>env</code>.</p>
 <p>Теперь проверим еще раз, какие <code>python</code> и <code>pip</code> используются:</p>
-<div class="highlight"><pre><span></span><code><span class="o">(</span>env<span class="o">)</span> $ which python
+<div class="highlight"><pre><span></span><span class="o">(</span>env<span class="o">)</span> $ which python
 /Users/and-semakin/src/blog_source/env/bin/python
 <span class="o">(</span>env<span class="o">)</span> $ which pip
 /Users/and-semakin/src/blog_source/env/bin/pip
-</code></pre></div>
+</pre></div>
 
 
 <p>Посмотрите на пути — мы внутри виртуального окружения! Теперь можно смело
 устанавливать любые пакеты, и это никак не повлияет на глобальный Python или
 на другие виртуальные окружения:</p>
-<div class="highlight"><pre><span></span><code><span class="o">(</span>env<span class="o">)</span> $ pip install requests flask whatever-you-need
-</code></pre></div>
+<div class="highlight"><pre><span></span><span class="o">(</span>env<span class="o">)</span> $ pip install requests flask whatever-you-need
+</pre></div>
 
 
 <p>Можно запускать любые файлы, и они будут иметь доступ к установленным пакетам:</p>
-<div class="highlight"><pre><span></span><code><span class="o">(</span>env<span class="o">)</span> $ python make_money.py
+<div class="highlight"><pre><span></span><span class="o">(</span>env<span class="o">)</span> $ python make_money.py
 Done! You are rich!
-</code></pre></div>
+</pre></div>
 
 
 <p>IDE тоже нужно настроить, указав путь к <code>bin/python</code> внутри виртуального
 окружения, тогда редактор сможет лучше вам помогать.</p>
 <p>По завершению работы с виртуальным окружением можно просто набрать <code>deactivate</code>,
 либо закрыть окно терминала:</p>
-<div class="highlight"><pre><span></span><code><span class="o">(</span>env<span class="o">)</span> $ deactivate
+<div class="highlight"><pre><span></span><span class="o">(</span>env<span class="o">)</span> $ deactivate
 $ which python
 /Users/and-semakin/.asdf/shims/python
-</code></pre></div>
+</pre></div>
 
 
 <p>И мы видим, что команда <code>python</code> снова вызывает глобальный интерпретатор.
@@ -384,8 +386,8 @@ $ which python
 окружением, не забудьте снова его активировать.</p>
 <p>Виртуальное окружение можно полностью удалить, когда оно перестанет быть
 нужным:</p>
-<div class="highlight"><pre><span></span><code>$ rm -r env/
-</code></pre></div>
+<div class="highlight"><pre><span></span>$ rm -r env/
+</pre></div>
 
 
 <p>В идеале, у вас должна быть возможность в любой момент удалить и пересоздать
@@ -409,14 +411,14 @@ $ which python
 <a href="https://docs.docker.com/compose/"><code>docker-compose</code></a>,
 <a href="https://github.com/ytdl-org/youtube-dl"><code>youtube-dl</code></a> или
 <a href="https://pypi.org/project/howdoi/"><code>howdoi</code></a>. Руки набирают в терминал:</p>
-<div class="highlight"><pre><span></span><code>$ pip install poetry
-</code></pre></div>
+<div class="highlight"><pre><span></span>$ pip install poetry
+</pre></div>
 
 
 <p>Установка начинается, прогресс-бары заполняются, но в итоге всё завершается
 чем-то типа такого:</p>
-<div class="highlight"><pre><span></span><code><span class="n">error</span><span class="o">:</span> <span class="n">could</span> <span class="n">not</span> <span class="n">create</span> <span class="s1">&#39;/lib/python2.7/site-packages/poetry&#39;</span><span class="o">:</span> <span class="n">Permission</span> <span class="n">denied</span>
-</code></pre></div>
+<div class="highlight"><pre><span></span><span class="n">error</span><span class="o">:</span> <span class="n">could</span> <span class="n">not</span> <span class="n">create</span> <span class="s1">&#39;/lib/python2.7/site-packages/poetry&#39;</span><span class="o">:</span> <span class="n">Permission</span> <span class="n">denied</span>
+</pre></div>
 
 
 <p>Можно попробовать установить, используя <code>sudo</code>, и это сработает, но это
@@ -450,20 +452,13 @@ $ which python
 <li>
 <p>сказать <code>pip</code>, чтобы он установил пакет не в директорию <code>site-packages</code>, а в
 домашнюю директорию пользователя при помощи флага <code>--user</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="err"># без sudo!</span>
-<span class="err">$ pip install --user poetry</span>
-</code></pre></div>
-
-
+<p><code>$ pip install --user poetry  # без sudo!</code></p>
 <p>Нужно только убедиться, что нужная директория перечислена в переменной <code>$PATH</code>
 — в моём случае это <code>~/.local/bin</code>.</p>
 </li>
 <li>
 <p>установить программу через пакетный менеджер ОС, например:</p>
-<div class="highlight"><pre><span></span><code><span class="err">sudo dnf install python-poetry</span>
-</code></pre></div>
-
-
+<p><code>$ sudo dnf install python-poetry</code></p>
 <p>Часто мейнтейнеры ОС создают обёртки для пакетов из PyPI, которые можно
 установить при помощи системного пакетного менеджера. Как правило, такие
 обёртки называются <code>python-&lt;имя пакета&gt;</code> или <code>python3-&lt;имя пакета&gt;</code>.
@@ -499,9 +494,22 @@ Python, и уж точно не самая простая тема, к этом�
 </ul>
     </article>
 
+        <div class="tags">
+            <p>тэги: <a href="https://and-semakin.github.io/tag/python.html">python</a>, <a href="https://and-semakin.github.io/tag/pip.html">pip</a>, <a href="https://and-semakin.github.io/tag/venv.html">venv</a>, <a href="https://and-semakin.github.io/tag/virtualenv.html">virtualenv</a></p>
+        </div>
 
     <hr>
 
+
+        <script
+            src="https://utteranc.es/client.js"
+            repo="and-semakin/and-semakin.github.io"
+            issue-term="pathname"
+            label="comments"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+        </script>
             </div>
         </div>
     </div>
@@ -531,10 +539,10 @@ Python, и уж точно не самая простая тема, к этом�
                                 </a>
                             </li>
                             <li>
-                                <a href="https://twitter.com/and_semakin">
+                                <a href="https://www.linkedin.com/in/%D0%B0%D0%BD%D0%B4%D1%80%D0%B5%D0%B9-%D1%81%D0%B5%D0%BC%D0%B0%D0%BA%D0%B8%D0%BD-501619108/">
                                     <span class="fa-stack fa-lg">
                                         <i class="fa fa-circle fa-stack-2x"></i>
-                                        <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                                        <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
                                     </span>
                                 </a>
                             </li>
