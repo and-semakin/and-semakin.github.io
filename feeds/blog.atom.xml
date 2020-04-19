@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Питонические атаки - blog</title><link href="https://semakin.dev/" rel="alternate"></link><link href="https://semakin.dev/feeds/blog.atom.xml" rel="self"></link><id>https://semakin.dev/</id><updated>2020-04-19T12:30:00+05:00</updated><subtitle>Про разработку в целом и в частности про Python</subtitle><entry><title>Виртуальные окружения в Python</title><link href="https://semakin.dev/2020/04/python_virtualenv/" rel="alternate"></link><published>2020-04-18T12:00:00+05:00</published><updated>2020-04-19T12:30:00+05:00</updated><author><name>and-semakin</name></author><id>tag:semakin.dev,2020-04-18:/2020/04/python_virtualenv/</id><summary type="html">&lt;p&gt;Почему всегда нужно использовать виртуальные окружения и как правильно их готовить.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Python знаменит своей обширной стандартной библиотекой и девизом
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Питонические атаки - blog</title><link href="https://semakin.dev/" rel="alternate"></link><link href="https://semakin.dev/feeds/blog.atom.xml" rel="self"></link><id>https://semakin.dev/</id><updated>2020-04-19T20:08:10+05:00</updated><subtitle>Про разработку в целом и в частности про Python</subtitle><entry><title>Виртуальные окружения в Python</title><link href="https://semakin.dev/2020/04/python_virtualenv/" rel="alternate"></link><published>2020-04-18T20:42:16+05:00</published><updated>2020-04-19T20:08:10+05:00</updated><author><name>and-semakin</name></author><id>tag:semakin.dev,2020-04-18:/2020/04/python_virtualenv/</id><summary type="html">&lt;p&gt;Почему всегда нужно использовать виртуальные окружения и как правильно их готовить.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Python знаменит своей обширной стандартной библиотекой и девизом
 "батарейки в комплекте"
 (&lt;a href="https://docs.python.org/3/tutorial/stdlib.html#batteries-included"&gt;batteries included&lt;/a&gt;).
 Даже из коробки Python позволяет удобно и быстро решить огромный пласт задач,
@@ -13,10 +13,8 @@
 почти наверняка кто-то уже написал для этого библиотеку, и нужно просто погуглить.&lt;/p&gt;
 &lt;h2&gt;Установка сторонней библиотеки&lt;/h2&gt;
 &lt;p&gt;Каждый начинающий программист знает, как установить библиотеку. Набираем&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ pip install requests
-&lt;/pre&gt;&lt;/div&gt;
-
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install requests
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;и понеслась! Множество библиотек в своих инструкциях по установке именно так
 и предлагают их устанавливать. Это и правда работает, это и правда так просто,
 &lt;em&gt;но есть нюансы&lt;/em&gt;. В этом месте закопаны очень популярные грабли, по которым
@@ -40,24 +38,22 @@
 для установки пакетов в других форматах могут потребоваться дополнительные
 действия, но давайте разберем самый распространённый и простой случай). Куда
 именно происходит установка? Это можно узнать, выполнив следующую команду:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python -m site
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ python -m site
 sys.path &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;
-    &lt;span class="s1"&gt;&amp;#39;/Users/and-semakin&amp;#39;&lt;/span&gt;,
-    &lt;span class="s1"&gt;&amp;#39;/Users/and-semakin/.asdf/installs/python/3.8.2/lib/python38.zip&amp;#39;&lt;/span&gt;,
-    &lt;span class="s1"&gt;&amp;#39;/Users/and-semakin/.asdf/installs/python/3.8.2/lib/python3.8&amp;#39;&lt;/span&gt;,
-    &lt;span class="s1"&gt;&amp;#39;/Users/and-semakin/.asdf/installs/python/3.8.2/lib/python3.8/lib-dynload&amp;#39;&lt;/span&gt;,
-    &lt;span class="s1"&gt;&amp;#39;/Users/and-semakin/env/lib/python3.8/site-packages&amp;#39;&lt;/span&gt;,
+    &lt;span class="s1"&gt;'/Users/and-semakin'&lt;/span&gt;,
+    &lt;span class="s1"&gt;'/Users/and-semakin/.asdf/installs/python/3.8.2/lib/python38.zip'&lt;/span&gt;,
+    &lt;span class="s1"&gt;'/Users/and-semakin/.asdf/installs/python/3.8.2/lib/python3.8'&lt;/span&gt;,
+    &lt;span class="s1"&gt;'/Users/and-semakin/.asdf/installs/python/3.8.2/lib/python3.8/lib-dynload'&lt;/span&gt;,
+    &lt;span class="s1"&gt;'/Users/and-semakin/env/lib/python3.8/site-packages'&lt;/span&gt;,
 &lt;span class="o"&gt;]&lt;/span&gt;
-USER_BASE: &lt;span class="s1"&gt;&amp;#39;/Users/and-semakin/.local&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;exists&lt;span class="o"&gt;)&lt;/span&gt;
-USER_SITE: &lt;span class="s1"&gt;&amp;#39;/Users/and-semakin/.local/lib/python3.8/site-packages&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;doesn&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;t exist&lt;span class="o"&gt;)&lt;/span&gt;
+USER_BASE: &lt;span class="s1"&gt;'/Users/and-semakin/.local'&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;exists&lt;span class="o"&gt;)&lt;/span&gt;
+USER_SITE: &lt;span class="s1"&gt;'/Users/and-semakin/.local/lib/python3.8/site-packages'&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;doesn&lt;span class="err"&gt;'&lt;/span&gt;t exist&lt;span class="o"&gt;)&lt;/span&gt;
 ENABLE_USER_SITE: False
-&lt;/pre&gt;&lt;/div&gt;
-
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;В списке &lt;code&gt;sys.path&lt;/code&gt; можно увидеть директорию &lt;code&gt;site-packages&lt;/code&gt; — именно туда
 и будет установлена библиотека. Давайте в этом убедимся.&lt;/p&gt;
 &lt;p&gt;До установки пакета:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ls -l /Users/and-semakin/env/lib/python3.8/site-packages
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ ls -l /Users/and-semakin/env/lib/python3.8/site-packages
 total &lt;span class="m"&gt;8&lt;/span&gt;
 drwxr-xr-x   &lt;span class="m"&gt;3&lt;/span&gt; and-semakin  awesome    &lt;span class="m"&gt;96&lt;/span&gt; Apr &lt;span class="m"&gt;18&lt;/span&gt; &lt;span class="m"&gt;17&lt;/span&gt;:39 __pycache__
 -rw-r--r--   &lt;span class="m"&gt;1&lt;/span&gt; and-semakin  awesome   &lt;span class="m"&gt;126&lt;/span&gt; Apr &lt;span class="m"&gt;18&lt;/span&gt; &lt;span class="m"&gt;17&lt;/span&gt;:39 easy_install.py
@@ -66,16 +62,12 @@ drwxr-xr-x   &lt;span class="m"&gt;9&lt;/span&gt; and-semakin  awesome   &lt;spa
 drwxr-xr-x   &lt;span class="m"&gt;7&lt;/span&gt; and-semakin  awesome   &lt;span class="m"&gt;224&lt;/span&gt; Apr &lt;span class="m"&gt;18&lt;/span&gt; &lt;span class="m"&gt;17&lt;/span&gt;:39 pkg_resources
 drwxr-xr-x  &lt;span class="m"&gt;42&lt;/span&gt; and-semakin  awesome  &lt;span class="m"&gt;1344&lt;/span&gt; Apr &lt;span class="m"&gt;18&lt;/span&gt; &lt;span class="m"&gt;17&lt;/span&gt;:39 setuptools
 drwxr-xr-x  &lt;span class="m"&gt;11&lt;/span&gt; and-semakin  awesome   &lt;span class="m"&gt;352&lt;/span&gt; Apr &lt;span class="m"&gt;18&lt;/span&gt; &lt;span class="m"&gt;17&lt;/span&gt;:39 setuptools-41.2.0.dist-info
-&lt;/pre&gt;&lt;/div&gt;
-
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Установим пакет:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ pip install requests
-&lt;/pre&gt;&lt;/div&gt;
-
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install requests
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;После установки пакета:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ls -l /Users/and-semakin/env/lib/python3.8/site-packages
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ ls -l /Users/and-semakin/env/lib/python3.8/site-packages
 total &lt;span class="m"&gt;8&lt;/span&gt;
 drwxr-xr-x   &lt;span class="m"&gt;3&lt;/span&gt; and-semakin  awesome    &lt;span class="m"&gt;96&lt;/span&gt; Apr &lt;span class="m"&gt;18&lt;/span&gt; &lt;span class="m"&gt;17&lt;/span&gt;:39 __pycache__
 drwxr-xr-x   &lt;span class="m"&gt;7&lt;/span&gt; and-semakin  awesome   &lt;span class="m"&gt;224&lt;/span&gt; Apr &lt;span class="m"&gt;18&lt;/span&gt; &lt;span class="m"&gt;17&lt;/span&gt;:41 certifi
@@ -94,9 +86,7 @@ drwxr-xr-x  &lt;span class="m"&gt;42&lt;/span&gt; and-semakin  awesome  &lt;span
 drwxr-xr-x  &lt;span class="m"&gt;11&lt;/span&gt; and-semakin  awesome   &lt;span class="m"&gt;352&lt;/span&gt; Apr &lt;span class="m"&gt;18&lt;/span&gt; &lt;span class="m"&gt;17&lt;/span&gt;:39 setuptools-41.2.0.dist-info
 drwxr-xr-x  &lt;span class="m"&gt;16&lt;/span&gt; and-semakin  awesome   &lt;span class="m"&gt;512&lt;/span&gt; Apr &lt;span class="m"&gt;18&lt;/span&gt; &lt;span class="m"&gt;17&lt;/span&gt;:41 urllib3
 drwxr-xr-x   &lt;span class="m"&gt;8&lt;/span&gt; and-semakin  awesome   &lt;span class="m"&gt;256&lt;/span&gt; Apr &lt;span class="m"&gt;18&lt;/span&gt; &lt;span class="m"&gt;17&lt;/span&gt;:41 urllib3-1.25.9.dist-info
-&lt;/pre&gt;&lt;/div&gt;
-
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Как видим, в директорию &lt;code&gt;site-packages&lt;/code&gt; добавилась библиотека &lt;code&gt;requests&lt;/code&gt; вместе
 со всеми своими зависимостями.&lt;/p&gt;
 &lt;p&gt;Важные мысли, которые я пытаюсь донести:&lt;/p&gt;
@@ -116,17 +106,13 @@ drwxr-xr-x   &lt;span class="m"&gt;8&lt;/span&gt; and-semakin  awesome   &lt;spa
 какие-то крупные ломающие изменения, например, переименовались методы/функции
 или изменился набор аргументов.&lt;/p&gt;
 &lt;p&gt;Например, проект А:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# requirements.txt
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# requirements.txt
 requests==2.23.0
-&lt;/pre&gt;&lt;/div&gt;
-
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Проект Б:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# requirements.txt
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# requirements.txt
 requests==1.2.3
-&lt;/pre&gt;&lt;/div&gt;
-
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Вы просто не сможете работать над такими проектами одновременно. Установка
 зависимостей одного проекта сломает другой, и наоборот. При переключении между
 проектами придётся каждый раз устанавливать зависимости нужного проекта, что
@@ -156,19 +142,15 @@ requests==1.2.3
 поддерживаемых версий языка, так что справедливо ожидать, что как минимум
 везде установлен Python 3.5 или новее), создать виртуальное окружение стало
 очень просто:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python -m venv &amp;lt;путь к виртуальному окружению&amp;gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ python -m venv &amp;lt;путь к виртуальному окружению&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Например, допустим, что мы работаем над проектом &lt;code&gt;blog_source&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# заходим в директорию с проектом&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# заходим в директорию с проектом&lt;/span&gt;
 $ &lt;span class="nb"&gt;cd&lt;/span&gt; src/blog_source
 
 &lt;span class="c1"&gt;# создаем виртуальное окружение прямо рядом с кодом в директории env&lt;/span&gt;
 $ python -m venv env
-&lt;/pre&gt;&lt;/div&gt;
-
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Создавать виртуальное окружения рядом с кодом — это распространённая практика,
 так проще ничего не перепутать, но вообще виртуальное окружение может быть
 где угодно, и директория тоже может называться как угодно. Обратите внимание,
@@ -177,20 +159,16 @@ $ python -m venv env
 Лучше вообще добавьте его (&lt;code&gt;env/&lt;/code&gt;) в &lt;code&gt;.gitignore&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;В директорию &lt;code&gt;env&lt;/code&gt; будет скопирован тот самый интерпретатор, при помощи
 которого виртуальное окружение и создавалось. Т.е. если&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python -V
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ python -V
 Python &lt;span class="m"&gt;3&lt;/span&gt;.8.2
-&lt;/pre&gt;&lt;/div&gt;
-
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;то в виртуальном окружении будет та же самая версия:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ env/bin/python -V
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ env/bin/python -V
 Python &lt;span class="m"&gt;3&lt;/span&gt;.8.2
-&lt;/pre&gt;&lt;/div&gt;
-
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h3&gt;Активируем окружение&lt;/h3&gt;
 &lt;p&gt;Посмотрим, что внутри директории &lt;code&gt;env&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ls -l env/
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ ls -l env/
 total &lt;span class="m"&gt;8&lt;/span&gt;
 drwxr-xr-x  &lt;span class="m"&gt;13&lt;/span&gt; and-semakin  awesome  &lt;span class="m"&gt;416&lt;/span&gt; Apr &lt;span class="m"&gt;18&lt;/span&gt; &lt;span class="m"&gt;18&lt;/span&gt;:55 bin
 drwxr-xr-x   &lt;span class="m"&gt;2&lt;/span&gt; and-semakin  awesome   &lt;span class="m"&gt;64&lt;/span&gt; Apr &lt;span class="m"&gt;18&lt;/span&gt; &lt;span class="m"&gt;18&lt;/span&gt;:55 include
@@ -210,81 +188,63 @@ total &lt;span class="m"&gt;88&lt;/span&gt;
 -rwxr-xr-x  &lt;span class="m"&gt;1&lt;/span&gt; and-semakin  awesome   &lt;span class="m"&gt;250&lt;/span&gt; Apr &lt;span class="m"&gt;18&lt;/span&gt; &lt;span class="m"&gt;18&lt;/span&gt;:55 pip3.8
 lrwxr-xr-x  &lt;span class="m"&gt;1&lt;/span&gt; and-semakin  awesome    &lt;span class="m"&gt;59&lt;/span&gt; Apr &lt;span class="m"&gt;18&lt;/span&gt; &lt;span class="m"&gt;18&lt;/span&gt;:55 python -&amp;gt; /Users/and-semakin/.asdf/installs/python/3.8.2/bin/python
 lrwxr-xr-x  &lt;span class="m"&gt;1&lt;/span&gt; and-semakin  awesome     &lt;span class="m"&gt;6&lt;/span&gt; Apr &lt;span class="m"&gt;18&lt;/span&gt; &lt;span class="m"&gt;18&lt;/span&gt;:55 python3 -&amp;gt; python
-&lt;/pre&gt;&lt;/div&gt;
-
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Обратите внимание, что в директории &lt;code&gt;bin&lt;/code&gt; есть некий файл &lt;code&gt;activate&lt;/code&gt; в
 нескольких вариантах для разных шеллов. Это и есть "точка входа" в виртуальное
 окружение. Просто создать виртуальное окружение мало, нужно его активировать.
 Но сначала проверим, какие &lt;code&gt;python&lt;/code&gt; и &lt;code&gt;pip&lt;/code&gt; (исполняемые файлы) используются
 в обычном режиме работы:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ which python
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ which python
 /Users/and-semakin/.asdf/shims/python
 $ which pip
 /Users/and-semakin/.asdf/shims/pip
-&lt;/pre&gt;&lt;/div&gt;
-
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Это мой обычный Python, вне виртуального окружения, назовём его глобальным.
 Теперь активируем виртуальное окружение:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ &lt;span class="nb"&gt;source&lt;/span&gt; env/bin/activate
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ &lt;span class="nb"&gt;source&lt;/span&gt; env/bin/activate
 &lt;span class="o"&gt;(&lt;/span&gt;env&lt;span class="o"&gt;)&lt;/span&gt; $
-&lt;/pre&gt;&lt;/div&gt;
-
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Для Windows процесс активации будет отличаться (допустим, что виртуальное окружение
 создано в &lt;code&gt;C:\src\blog_source&lt;/code&gt;):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# cmd&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# cmd&lt;/span&gt;
 C:&lt;span class="se"&gt;\s&lt;/span&gt;rc&lt;span class="se"&gt;\b&lt;/span&gt;log_source&lt;span class="se"&gt;\&amp;gt;&lt;/span&gt; env&lt;span class="se"&gt;\S&lt;/span&gt;cripts&lt;span class="se"&gt;\a&lt;/span&gt;ctivate.bat
 
 &lt;span class="c1"&gt;# либо в PowerShell&lt;/span&gt;
 PS C:&lt;span class="se"&gt;\s&lt;/span&gt;rc&lt;span class="se"&gt;\b&lt;/span&gt;log_source&lt;span class="se"&gt;\&amp;gt;&lt;/span&gt; env&lt;span class="se"&gt;\S&lt;/span&gt;cripts&lt;span class="se"&gt;\A&lt;/span&gt;ctivate.ps1
-&lt;/pre&gt;&lt;/div&gt;
-
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Обратите внимание, что приветствие шелла изменилось (добавилось &lt;code&gt;(env)&lt;/code&gt;), чтобы
 показать, что мы "внутри" виртуального окружения под названием &lt;code&gt;env&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;Теперь проверим еще раз, какие &lt;code&gt;python&lt;/code&gt; и &lt;code&gt;pip&lt;/code&gt; используются:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;env&lt;span class="o"&gt;)&lt;/span&gt; $ which python
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;(&lt;/span&gt;env&lt;span class="o"&gt;)&lt;/span&gt; $ which python
 /Users/and-semakin/src/blog_source/env/bin/python
 &lt;span class="o"&gt;(&lt;/span&gt;env&lt;span class="o"&gt;)&lt;/span&gt; $ which pip
 /Users/and-semakin/src/blog_source/env/bin/pip
-&lt;/pre&gt;&lt;/div&gt;
-
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Посмотрите на пути — мы внутри виртуального окружения! Теперь можно смело
 устанавливать любые пакеты, и это никак не повлияет на глобальный Python или
 на другие виртуальные окружения:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;env&lt;span class="o"&gt;)&lt;/span&gt; $ pip install requests flask whatever-you-need
-&lt;/pre&gt;&lt;/div&gt;
-
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;(&lt;/span&gt;env&lt;span class="o"&gt;)&lt;/span&gt; $ pip install requests flask whatever-you-need
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Можно запускать любые файлы, и они будут иметь доступ к установленным пакетам:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;env&lt;span class="o"&gt;)&lt;/span&gt; $ python make_money.py
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;(&lt;/span&gt;env&lt;span class="o"&gt;)&lt;/span&gt; $ python make_money.py
 Done! You are rich!
-&lt;/pre&gt;&lt;/div&gt;
-
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;IDE тоже нужно настроить, указав путь к &lt;code&gt;bin/python&lt;/code&gt; внутри виртуального
 окружения, тогда редактор сможет лучше вам помогать.&lt;/p&gt;
 &lt;p&gt;По завершению работы с виртуальным окружением можно просто набрать &lt;code&gt;deactivate&lt;/code&gt;,
 либо закрыть окно терминала:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;env&lt;span class="o"&gt;)&lt;/span&gt; $ deactivate
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;(&lt;/span&gt;env&lt;span class="o"&gt;)&lt;/span&gt; $ deactivate
 $ which python
 /Users/and-semakin/.asdf/shims/python
-&lt;/pre&gt;&lt;/div&gt;
-
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;И мы видим, что команда &lt;code&gt;python&lt;/code&gt; снова вызывает глобальный интерпретатор.
 При этом виртуальное окружение осталось в своей директории, оно просто не
 активно. В следующий раз, когда будет нужно поработать с виртуальным
 окружением, не забудьте снова его активировать.&lt;/p&gt;
 &lt;p&gt;Виртуальное окружение можно полностью удалить, когда оно перестанет быть
 нужным:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ rm -r env/
-&lt;/pre&gt;&lt;/div&gt;
-
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ rm -r env/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;В идеале, у вас должна быть возможность в любой момент удалить и пересоздать
 виртуальное окружение заново, для этого храните список зависимостей проекта и
 содержите его в актуальном состоянии (например, в &lt;code&gt;requirements.txt&lt;/code&gt;).
@@ -306,16 +266,12 @@ $ which python
 &lt;a href="https://docs.docker.com/compose/"&gt;&lt;code&gt;docker-compose&lt;/code&gt;&lt;/a&gt;,
 &lt;a href="https://github.com/ytdl-org/youtube-dl"&gt;&lt;code&gt;youtube-dl&lt;/code&gt;&lt;/a&gt; или
 &lt;a href="https://pypi.org/project/howdoi/"&gt;&lt;code&gt;howdoi&lt;/code&gt;&lt;/a&gt;. Руки набирают в терминал:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ pip install poetry
-&lt;/pre&gt;&lt;/div&gt;
-
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install poetry
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Установка начинается, прогресс-бары заполняются, но в итоге всё завершается
 чем-то типа такого:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;error&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;could&lt;/span&gt; &lt;span class="n"&gt;not&lt;/span&gt; &lt;span class="n"&gt;create&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;/lib/python2.7/site-packages/poetry&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Permission&lt;/span&gt; &lt;span class="n"&gt;denied&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;error&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;could&lt;/span&gt; &lt;span class="n"&gt;not&lt;/span&gt; &lt;span class="n"&gt;create&lt;/span&gt; &lt;span class="s1"&gt;'/lib/python2.7/site-packages/poetry'&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Permission&lt;/span&gt; &lt;span class="n"&gt;denied&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Можно попробовать установить, используя &lt;code&gt;sudo&lt;/code&gt;, и это сработает, но это
 считается &lt;a href="https://ru.stackoverflow.com/q/651860/340643"&gt;очень плохой практикой&lt;/a&gt;,
 и я настоятельно рекомендую так не делать по нескольким причинам:&lt;/p&gt;
