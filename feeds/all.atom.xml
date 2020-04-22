@@ -1,5 +1,236 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Питонические атаки</title><link href="https://semakin.dev/" rel="alternate"></link><link href="https://semakin.dev/feeds/all.atom.xml" rel="self"></link><id>https://semakin.dev/</id><updated>2020-04-19T20:08:10+05:00</updated><subtitle>Про разработку в целом и в частности про Python</subtitle><entry><title>Виртуальные окружения в Python</title><link href="https://semakin.dev/2020/04/python_virtualenv/" rel="alternate"></link><published>2020-04-18T20:42:16+05:00</published><updated>2020-04-19T20:08:10+05:00</updated><author><name>and-semakin</name></author><id>tag:semakin.dev,2020-04-18:/2020/04/python_virtualenv/</id><summary type="html">&lt;p&gt;Почему всегда нужно использовать виртуальные окружения и как правильно их готовить.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Python знаменит своей обширной стандартной библиотекой и девизом
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Питонические атаки</title><link href="https://semakin.dev/" rel="alternate"></link><link href="https://semakin.dev/feeds/all.atom.xml" rel="self"></link><id>https://semakin.dev/</id><updated>2020-04-22T22:35:44+05:00</updated><subtitle>Про разработку в целом и в частности про Python</subtitle><entry><title>requirements.txt — что это и зачем?</title><link href="https://semakin.dev/2020/04/requirements_txt/" rel="alternate"></link><published>2020-04-22T22:00:00+05:00</published><updated>2020-04-22T22:35:44+05:00</updated><author><name>and-semakin</name></author><id>tag:semakin.dev,2020-04-22:/2020/04/requirements_txt/</id><summary type="html">&lt;p&gt;Расскажу, как создавать и как пользоваться этим файлом для хранения дерева зависимостей проекта.&lt;/p&gt;</summary><content type="html">&lt;h1&gt;requirements.txt&lt;/h1&gt;
+&lt;p&gt;В исходниках множества Python-проектов можно встретить этот
+странный текстовый файл. Например, им пользуются
+&lt;a href="https://github.com/urllib3/urllib3/blob/master/dev-requirements.txt"&gt;urllib3&lt;/a&gt;,
+&lt;a href="https://github.com/numpy/numpy/blob/master/test_requirements.txt"&gt;numpy&lt;/a&gt;,
+&lt;a href="https://github.com/pandas-dev/pandas/blob/master/requirements-dev.txt"&gt;pandas&lt;/a&gt;,
+&lt;a href="https://gitlab.com/pycqa/flake8/-/blob/master/dev-requirements.txt"&gt;flake8&lt;/a&gt;
+и куча других проектов.
+Давайте разберемся, что это такое, как этим пользоваться и зачем нам это нужно.&lt;/p&gt;
+&lt;h2&gt;Гипотетическая предыстория&lt;/h2&gt;
+&lt;p&gt;Давайте представим, что вы написали &lt;em&gt;замечательный&lt;/em&gt; скрипт,
+который спрашивает у пользователя название города и
+выводит текущую температуру и общее состояние погоды:&lt;/p&gt;
+&lt;script src="https://gist.github.com/and-semakin/1e999af221df36afbeec5909a413081a.js?file=weather.py"&gt;&lt;/script&gt;
+&lt;p&gt;Скрипт получился настолько хорош, что вы хотите поделиться
+им со всеми своими друзьями. К сожалению, друзья при попытке
+запустить вашу программу получают следующую ошибку:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;Traceback&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;most&lt;/span&gt; &lt;span class="n"&gt;recent&lt;/span&gt; &lt;span class="n"&gt;call&lt;/span&gt; &lt;span class="n"&gt;last&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;"weather.py"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;module&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pyowm&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;OWM&lt;/span&gt;
+&lt;span class="n"&gt;ModuleNotFoundError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;No&lt;/span&gt; &lt;span class="n"&gt;module&lt;/span&gt; &lt;span class="n"&gt;named&lt;/span&gt; &lt;span class="s1"&gt;'pyowm'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Кажется, что скинуть только код недостаточно.&lt;/p&gt;
+&lt;p&gt;Или, допустим, что вы сами через полгода-год попытаетесь
+запустить эту же программу. За это время вы успели пару
+раз переустановить Python, переустановить ОС, отформатировать свой
+магнитный накопитель (используйте SSD — нет, я серьёзно!)
+или может быть вообще сменили компьютер.
+Почти уверен, что при запуске скрипта вы получите ровно ту же самую ошибку.&lt;/p&gt;
+&lt;p&gt;Зачастую, когда мы пишем код, мы полагаемся на какие-либо
+библиотеки или фреймворки. Это со всех сторон хорошо — это удобно,
+уменьшает размер программы во много раз, позволяет не думать о мелких деталях,
+а решать свою конкретную задачу, опираясь на высокоуровневые абстракции.
+Но, к сожалению, есть "но" — такие библиотеки становятся
+частью вашей программы, ваш код становится &lt;em&gt;зависим&lt;/em&gt;.
+Это значит, что ваш код больше не сможет
+работать сам по себе, для его работы должны быть установлены &lt;em&gt;все зависимости&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;Если ваша программа небольшая (состоит из пары файлов), то можно
+довольно легко просмотреть её глазами, найти там все инструкции &lt;code&gt;import&lt;/code&gt;,
+отсеять из них импорты из стандартной библиотеки
+(вы ведь знаете модули стандартной библиотеки наизусть, да?), и таким образом
+восстановить список внешних зависимостей программы, которые устанавливаются
+через &lt;code&gt;pip&lt;/code&gt;. Чем крупнее проект, тем сложнее это сделать. Бывают ситуации,
+когда по коду вообще нельзя понять, что ему нужна определенная зависимость.&lt;/p&gt;
+&lt;p&gt;Я хочу сказать, что намного мудрее составлять этот список зависимостей
+сразу же и просто поддерживать его в актуальном состоянии по мере развития проекта.&lt;/p&gt;
+&lt;h2&gt;requirements.txt — это список внешних зависимостей&lt;/h2&gt;
+&lt;p&gt;Сообщество Python &lt;a href="https://www.python.org/dev/peps/pep-0020/"&gt;исповедует идеологию&lt;/a&gt;
+"простое лучше, чем сложное".
+Наверное, поэтому для хранения списка зависимостей сообщество выбрало
+самый простой из возможных форматов — текстовый файл, где на каждой
+строке перечислено ровно по одной зависимости.&lt;/p&gt;
+&lt;p&gt;Стоит отметить, что &lt;code&gt;requirements.txt&lt;/code&gt; не является стандартом, т.е. нет
+документа, который описывал бы требования к этому файлу.
+Скорее, это просто распространённая практика в сообществе, которая,
+наверное, возникла спонтанно и хорошо прижилась.&lt;/p&gt;
+&lt;p&gt;Не обязательно называть файл именно &lt;code&gt;requirements.txt&lt;/code&gt;, можно назвать
+его как угодно, лишь бы его назначение оставалось понятно.
+Я встречал такие вариации, как
+&lt;code&gt;requirements-dev.txt&lt;/code&gt;, &lt;code&gt;test-requirements.txt&lt;/code&gt;, &lt;code&gt;requirements/docs.txt&lt;/code&gt;
+и другие.&lt;/p&gt;
+&lt;p&gt;Вот пример самого простого такого файла (кстати, именно этим файлом
+можно описать зависимости, которые нужны для запуска нашего скрипта
+с погодой):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;pyowm
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Если бы было несколько зависимостей, то файл выглядел бы так:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;numpy
+requests
+pytest
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Можно указать конкретную версию зависимости. Если версия не указана, то
+считается, что нужна последняя доступная:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;numpy  # нужна последняя версия
+requests==2.23.0  # нужна конкретная версия
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Можно указывать диапазоны и другие более сложные &lt;a href="https://www.python.org/dev/peps/pep-0440/#version-specifiers"&gt;"спецификаторы версий"&lt;/a&gt;.
+В целом, в &lt;code&gt;requirements.txt&lt;/code&gt; можно писать любые "запросы", которые понимает команда
+&lt;code&gt;pip install&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;requests&amp;gt;=2.20.0,&amp;lt;2.23.0  # подойдет любая версия между 2.20.0 и 2.23.0
+numpy!=1.0  # подойдет любая версия, кроме 1.0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;Как пользоваться&lt;/h2&gt;
+&lt;p&gt;Команда &lt;code&gt;pip install&lt;/code&gt; умеет читать такие файлы, если передать специальный флаг:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install --help
+...
+Install Options:
+  -r, --requirement &amp;lt;file&amp;gt;    Install from the given requirements file. This option can be used multiple times.
+...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Таким образом, если &lt;code&gt;requirements.txt&lt;/code&gt; будет иметь вот такое содержимое:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;pytest
+flake8
+black
+isort
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;То следующие две команды будут иметь одинаковое действие:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install -r requirements.txt
+
+$ pip install pytest flake8 black isort
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Преимущества использования &lt;code&gt;requirements.txt&lt;/code&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Краткость.&lt;/p&gt;
+&lt;p&gt;На таком маленьком примере разница может быть не очевидна, но
+когда список зависимостей разрастётся до определенного размера,
+то вам не захочется больше перечислять его в &lt;code&gt;pip install&lt;/code&gt; напрямую.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Стабильность.&lt;/p&gt;
+&lt;p&gt;Как бы ни поменялся файл &lt;code&gt;requirements.txt&lt;/code&gt;, команда &lt;code&gt;pip install -r requirements.txt&lt;/code&gt;
+не поменяется.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Универсальность.&lt;/p&gt;
+&lt;p&gt;Так как это распространённое соглашение, то другим разработчикам
+будет достаточно увидеть этот файл, чтобы понять, что нужно сделать. Это
+здорово экономит время на чтении инструкций.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Как создать&lt;/h2&gt;
+&lt;p&gt;Есть два подхода:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;создавать этот файл вручную;&lt;/li&gt;
+&lt;li&gt;генерировать автоматически.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Главный принцип ручного подхода — если что-то поменялось в списке зависимостей
+(добавилась или удалилась зависимость, обновилась версия и т.д.), это изменение
+нужно отразить в &lt;code&gt;requirements.txt&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Но можно использовать и встроенную в &lt;code&gt;pip&lt;/code&gt; функциональность:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;(&lt;/span&gt;env&lt;span class="o"&gt;)&lt;/span&gt; $ pip freeze
+&lt;span class="nv"&gt;certifi&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="m"&gt;2020&lt;/span&gt;.4.5.1
+&lt;span class="nv"&gt;chardet&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;.0.4
+&lt;span class="nv"&gt;geojson&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;.5.0
+&lt;span class="nv"&gt;idna&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;.9
+&lt;span class="nv"&gt;pyowm&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;.10.0
+&lt;span class="nv"&gt;requests&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;.23.0
+&lt;span class="nv"&gt;urllib3&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;.25.9
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Команда &lt;code&gt;pip freeze&lt;/code&gt; выводит все установленные в интерпретатор сторонние пакеты.
+Заметьте, что в список попали не только прямые зависимости (&lt;code&gt;pyowm&lt;/code&gt;), но
+и подзависимости — это даже лучше, потому что вы сможете более
+точно воссоздать окружение по этому файлу.&lt;/p&gt;
+&lt;p&gt;Можно перенаправить вывод этой команды в файл при помощи стандартного &lt;a href="https://losst.ru/vyvod-v-fajl-bash-v-linux#1_%D0%9F%D0%B5%D1%80%D0%B5%D0%BD%D0%B0%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5_%D1%81%D1%82%D0%B0%D0%BD%D0%B4%D0%B0%D1%80%D1%82%D0%BD%D0%BE%D0%B3%D0%BE_%D0%BF%D0%BE%D1%82%D0%BE%D0%BA%D0%B0_%D0%B2%D1%8B%D0%B2%D0%BE%D0%B4%D0%B0"&gt;консольного
+приема&lt;/a&gt;
+(работает и на Windows), и получить валидный файл &lt;code&gt;requirements.txt&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;(&lt;/span&gt;env&lt;span class="o"&gt;)&lt;/span&gt; $ pip freeze &amp;gt; requirements.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Обратите внимание, что &lt;code&gt;pip freeze&lt;/code&gt; выведет список пакетов в том окружении,
+в котором он запущен. Не забудьте активировать виртуальное окружение перед
+запуском этой команды, иначе получите список пакетов, установленных в глобальный
+интерпретатор. Кстати, у меня есть
+&lt;a href="https://semakin.dev/2020/04/python_virtualenv/"&gt;пост про виртуальные окружения&lt;/a&gt;, где объясняется
+как ими пользоваться.&lt;/p&gt;
+&lt;p&gt;Подытожим плюсы и минусы ручного и автоматического подходов:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Вручную:&lt;ul&gt;
+&lt;li&gt;минимальный файл, содержащий только прямые зависимости;&lt;/li&gt;
+&lt;li&gt;можно указывать сложные спецификаторы версий;&lt;/li&gt;
+&lt;li&gt;человеческий фактор — легко ошибиться или забыть что-нибудь;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;pip freeze&lt;/code&gt;:&lt;ul&gt;
+&lt;li&gt;автоматически, быстро;&lt;/li&gt;
+&lt;li&gt;автоматически добавляет версии установленных пакетов;&lt;/li&gt;
+&lt;li&gt;в файл попадет всё дерево зависимостей, а не только прямые зависимости.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Можно использовать и смешанный подход: сгенерировать начальную версию файла
+при помощи &lt;code&gt;pip freeze&lt;/code&gt; и допилить её затем руками, если у вас какая-то
+сложная нестандартная ситуация.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;⚠️ Файл &lt;code&gt;requirements.txt&lt;/code&gt;, конечно же, должен быть добавлен в систему
+контроля версий (git). Это такая же важная часть проекта, как и код.
+При этом виртуальное окружение не должно попадать в систему контроля
+версий. Оно должно воссоздаваться из &lt;code&gt;requirements.txt&lt;/code&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;Проблемы &lt;code&gt;requirements.txt&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;Некоторые пакеты часто меняются, поэтому если вы не указываете конкретные
+версии, то в следующий раз при установке вы можете получить совсем другую
+среду. Это бывает особенно обидно, когда локально на машине разработчика
+всё работает правильно, но при деплое на боевой сервер программа либо работает
+иначе, либо вообще отказывается запускаться. Поэтому обязательно фиксируйте
+версии пакетов в &lt;code&gt;requirements.txt&lt;/code&gt; — это сделает разные окружения хотя бы
+примерно похожими.&lt;/p&gt;
+&lt;p&gt;Почему "хотя бы примерно"? Практика показывает, что зафиксировать версию
+пакета недостаточно. Иногда случается, что под одной версией пакета в разное
+время может находиться совершенно разный код. PyPI, конечно, не позволит
+перезаписать уже опубликованную версию, но, например, ваш приватный
+корпоративный индекс пакетов может быть не таким строгим.&lt;/p&gt;
+&lt;p&gt;Чтобы действительно гарантировать, что вы устанавливаете те пакеты, что и
+ожидали, нужно рассчитывать и сверять их контрольные суммы. &lt;code&gt;requirements.txt&lt;/code&gt;
+может содержать хэши пакетов, но, к сожалению, на данный момент нет
+простого стандартного способа как их туда положить. В качестве альтернативы
+опять предлагаю присмотреться к таким проектам, как
+&lt;a href="https://python-poetry.org/"&gt;&lt;code&gt;poetry&lt;/code&gt;&lt;/a&gt; (хранит хэши в &lt;code&gt;poetry.lock&lt;/code&gt;)
+и &lt;a href="https://github.com/pypa/pipenv"&gt;&lt;code&gt;pipenv&lt;/code&gt;&lt;/a&gt; (хранит хэши в &lt;code&gt;Pipfile.lock&lt;/code&gt;), где эта
+проблема решена хорошо,
+и вам не придётся переживать о воспроизводимости ваших сборок.
+Если всё-таки хочется добиться такого же эффекта при помощи
+&lt;code&gt;requirements.txt&lt;/code&gt;, то можно посмотреть на такие проекты как
+&lt;a href="https://github.com/jazzband/pip-tools"&gt;&lt;code&gt;pip-tools&lt;/code&gt;&lt;/a&gt;
+(&lt;a href="https://github.com/pypa/pip/issues/4732#issuecomment-500289841"&gt;пример использования&lt;/a&gt;)
+и &lt;a href="https://github.com/peterbe/hashin"&gt;&lt;code&gt;hashin&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;h2&gt;Заключение&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;requirements.txt&lt;/code&gt; — это очень популярный способ хранения списка внешних
+зависимостей проекта, поэтому вам определенно нужно уметь работать с
+такими файлами. Однако этот способ хранения списка зависимостей не лишён
+недостатков, поэтому если вы начинаете новый проект, то я предлагаю вам
+лучше использовать для этого &lt;a href="https://python-poetry.org/"&gt;&lt;code&gt;poetry&lt;/code&gt;&lt;/a&gt;
+или &lt;a href="https://github.com/pypa/pipenv"&gt;&lt;code&gt;pipenv&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Для тренировки можно попытаться запустить скрипт с погодой.
+Все исходники лежат &lt;a href="https://gist.github.com/and-semakin/1e999af221df36afbeec5909a413081a"&gt;здесь&lt;/a&gt;.&lt;/p&gt;
+&lt;h2&gt;Дополнительное чтение&lt;/h2&gt;
+&lt;p&gt;Конечно, я затронул лишь верхушку айсберга. На самом деле,
+&lt;code&gt;requirements&lt;/code&gt;-файлы немножко сложнее.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://pip.pypa.io/en/stable/user_guide/#requirements-files"&gt;Секция PIP User Guide про requirements.txt&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;А вот тут &lt;a href="https://pip.pypa.io/en/stable/reference/pip_install/#requirements-file-format"&gt;подробное описание формата &lt;code&gt;requirements&lt;/code&gt;-файлов&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;А ещё &lt;a href="https://pip.pypa.io/en/stable/user_guide/#constraints-files"&gt;бывают &lt;code&gt;constraints.txt&lt;/code&gt;&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;Бонус: PyCharm &lt;a href="https://www.jetbrains.com/help/pycharm/managing-dependencies.html"&gt;умеет умно обновлять &lt;code&gt;requirements.txt&lt;/code&gt;&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Подпишитесь!&lt;/h2&gt;
+&lt;p&gt;Чтобы получить уведомление о новом посте можно:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://t.me/pythonic_attacks"&gt;подписаться на канал в Telegram&lt;/a&gt;
+(&lt;a href="https://tele.click/pythonic_attacks"&gt;альтернативная&lt;/a&gt; &lt;a href="https://tele.gg/pythonic_attacks"&gt;ссылка&lt;/a&gt;);&lt;/li&gt;
+&lt;li&gt;&lt;a href="/feeds/all.atom.xml"&gt;подписаться на Atom-фид&lt;/a&gt;, если &lt;s&gt;вы олдфаг-старовер&lt;/s&gt; вам так удобно.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;em&gt;Обложка: &lt;a href="https://www.flickr.com/photos/mustangjoe/14675770684"&gt;Joe deSousa, Gnarled Tree&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;</content><category term="blog"></category><category term="python"></category><category term="pip"></category><category term="requirements.txt"></category></entry><entry><title>Виртуальные окружения в Python</title><link href="https://semakin.dev/2020/04/python_virtualenv/" rel="alternate"></link><published>2020-04-18T20:42:16+05:00</published><updated>2020-04-19T20:08:10+05:00</updated><author><name>and-semakin</name></author><id>tag:semakin.dev,2020-04-18:/2020/04/python_virtualenv/</id><summary type="html">&lt;p&gt;Почему всегда нужно использовать виртуальные окружения и как правильно их готовить.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Python знаменит своей обширной стандартной библиотекой и девизом
 "батарейки в комплекте"
 (&lt;a href="https://docs.python.org/3/tutorial/stdlib.html#batteries-included"&gt;batteries included&lt;/a&gt;).
 Даже из коробки Python позволяет удобно и быстро решить огромный пласт задач,

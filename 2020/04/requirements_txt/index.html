@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/png" href="/favicon_32.png" />
+
+
+        <title>requirements.txt — что это и зачем?</title>
+
+            <link href="https://semakin.dev/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Питонические атаки Full Atom Feed" />
+            <link href="https://semakin.dev/feeds/{slug}.atom.xml" type="application/atom+xml" rel="alternate" title="Питонические атаки Categories Atom Feed" />
+        <!-- Bootstrap Core CSS -->
+        <link href="https://semakin.dev/theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="https://semakin.dev/theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="https://semakin.dev/theme/css/code_blocks/monokai.css" rel="stylesheet">
+
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+
+
+        <meta name="description" content="Расскажу, как создавать и как пользоваться этим файлом для хранения дерева зависимостей проекта.">
+
+        <meta name="author" content="and-semakin">
+
+        <meta name="tags" content="python">
+        <meta name="tags" content="pip">
+        <meta name="tags" content="requirements.txt">
+
+	                <meta property="og:locale" content="">
+		<meta property="og:site_name" content="Питонические атаки">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="https://semakin.dev/author/and-semakin.html">
+	<meta property="og:url" content="https://semakin.dev/2020/04/requirements_txt/">
+	<meta property="og:title" content="requirements.txt — что это и зачем?">
+	<meta property="article:published_time" content="2020-04-22 22:00:00+05:00">
+            <meta property="og:description" content="Расскажу, как создавать и как пользоваться этим файлом для хранения дерева зависимостей проекта.">
+
+            <meta property="og:image" content="https://semakin.dev/static/tree_darkified.jpg">
+</head>
+
+<body class="article-requirements_txt">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="https://semakin.dev/">Питонические атаки</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+
+                            <li><a href="https://semakin.dev/pages/about/">Об авторе</a></li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('https://semakin.dev//static/tree_darkified.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>requirements.txt — что это и зачем?</h1>
+                        <span class="meta">Опубликовано: Wed 22 April 2020,
+                            автор:
+                                <a href="https://semakin.dev/author/and-semakin.html">and-semakin</a>
+                        </span>
+                            <span class="meta">Обновлено: Wed 22 April 2020</span>
+                        
+                            <span class="meta">
+                                <i class="fa fa-clock-o" aria-hidden="true"></i>
+                                6 минут
+                            </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <h1>requirements.txt</h1>
+<p>В исходниках множества Python-проектов можно встретить этот
+странный текстовый файл. Например, им пользуются
+<a href="https://github.com/urllib3/urllib3/blob/master/dev-requirements.txt">urllib3</a>,
+<a href="https://github.com/numpy/numpy/blob/master/test_requirements.txt">numpy</a>,
+<a href="https://github.com/pandas-dev/pandas/blob/master/requirements-dev.txt">pandas</a>,
+<a href="https://gitlab.com/pycqa/flake8/-/blob/master/dev-requirements.txt">flake8</a>
+и куча других проектов.
+Давайте разберемся, что это такое, как этим пользоваться и зачем нам это нужно.</p>
+<h2>Гипотетическая предыстория</h2>
+<p>Давайте представим, что вы написали <em>замечательный</em> скрипт,
+который спрашивает у пользователя название города и
+выводит текущую температуру и общее состояние погоды:</p>
+<script src="https://gist.github.com/and-semakin/1e999af221df36afbeec5909a413081a.js?file=weather.py"></script>
+<p>Скрипт получился настолько хорош, что вы хотите поделиться
+им со всеми своими друзьями. К сожалению, друзья при попытке
+запустить вашу программу получают следующую ошибку:</p>
+<div class="highlight"><pre><span></span><code><span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s2">"weather.py"</span><span class="p">,</span> <span class="n">line</span> <span class="mi">3</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+    <span class="kn">from</span> <span class="nn">pyowm</span> <span class="kn">import</span> <span class="n">OWM</span>
+<span class="n">ModuleNotFoundError</span><span class="p">:</span> <span class="n">No</span> <span class="n">module</span> <span class="n">named</span> <span class="s1">'pyowm'</span>
+</code></pre></div>
+<p>Кажется, что скинуть только код недостаточно.</p>
+<p>Или, допустим, что вы сами через полгода-год попытаетесь
+запустить эту же программу. За это время вы успели пару
+раз переустановить Python, переустановить ОС, отформатировать свой
+магнитный накопитель (используйте SSD — нет, я серьёзно!)
+или может быть вообще сменили компьютер.
+Почти уверен, что при запуске скрипта вы получите ровно ту же самую ошибку.</p>
+<p>Зачастую, когда мы пишем код, мы полагаемся на какие-либо
+библиотеки или фреймворки. Это со всех сторон хорошо — это удобно,
+уменьшает размер программы во много раз, позволяет не думать о мелких деталях,
+а решать свою конкретную задачу, опираясь на высокоуровневые абстракции.
+Но, к сожалению, есть "но" — такие библиотеки становятся
+частью вашей программы, ваш код становится <em>зависим</em>.
+Это значит, что ваш код больше не сможет
+работать сам по себе, для его работы должны быть установлены <em>все зависимости</em>.</p>
+<p>Если ваша программа небольшая (состоит из пары файлов), то можно
+довольно легко просмотреть её глазами, найти там все инструкции <code>import</code>,
+отсеять из них импорты из стандартной библиотеки
+(вы ведь знаете модули стандартной библиотеки наизусть, да?), и таким образом
+восстановить список внешних зависимостей программы, которые устанавливаются
+через <code>pip</code>. Чем крупнее проект, тем сложнее это сделать. Бывают ситуации,
+когда по коду вообще нельзя понять, что ему нужна определенная зависимость.</p>
+<p>Я хочу сказать, что намного мудрее составлять этот список зависимостей
+сразу же и просто поддерживать его в актуальном состоянии по мере развития проекта.</p>
+<h2>requirements.txt — это список внешних зависимостей</h2>
+<p>Сообщество Python <a href="https://www.python.org/dev/peps/pep-0020/">исповедует идеологию</a>
+"простое лучше, чем сложное".
+Наверное, поэтому для хранения списка зависимостей сообщество выбрало
+самый простой из возможных форматов — текстовый файл, где на каждой
+строке перечислено ровно по одной зависимости.</p>
+<p>Стоит отметить, что <code>requirements.txt</code> не является стандартом, т.е. нет
+документа, который описывал бы требования к этому файлу.
+Скорее, это просто распространённая практика в сообществе, которая,
+наверное, возникла спонтанно и хорошо прижилась.</p>
+<p>Не обязательно называть файл именно <code>requirements.txt</code>, можно назвать
+его как угодно, лишь бы его назначение оставалось понятно.
+Я встречал такие вариации, как
+<code>requirements-dev.txt</code>, <code>test-requirements.txt</code>, <code>requirements/docs.txt</code>
+и другие.</p>
+<p>Вот пример самого простого такого файла (кстати, именно этим файлом
+можно описать зависимости, которые нужны для запуска нашего скрипта
+с погодой):</p>
+<div class="highlight"><pre><span></span><code>pyowm
+</code></pre></div>
+<p>Если бы было несколько зависимостей, то файл выглядел бы так:</p>
+<div class="highlight"><pre><span></span><code>numpy
+requests
+pytest
+</code></pre></div>
+<p>Можно указать конкретную версию зависимости. Если версия не указана, то
+считается, что нужна последняя доступная:</p>
+<div class="highlight"><pre><span></span><code>numpy  # нужна последняя версия
+requests==2.23.0  # нужна конкретная версия
+</code></pre></div>
+<p>Можно указывать диапазоны и другие более сложные <a href="https://www.python.org/dev/peps/pep-0440/#version-specifiers">"спецификаторы версий"</a>.
+В целом, в <code>requirements.txt</code> можно писать любые "запросы", которые понимает команда
+<code>pip install</code>:</p>
+<div class="highlight"><pre><span></span><code>requests&gt;=2.20.0,&lt;2.23.0  # подойдет любая версия между 2.20.0 и 2.23.0
+numpy!=1.0  # подойдет любая версия, кроме 1.0
+</code></pre></div>
+<h2>Как пользоваться</h2>
+<p>Команда <code>pip install</code> умеет читать такие файлы, если передать специальный флаг:</p>
+<div class="highlight"><pre><span></span><code>$ pip install --help
+...
+Install Options:
+  -r, --requirement &lt;file&gt;    Install from the given requirements file. This option can be used multiple times.
+...
+</code></pre></div>
+<p>Таким образом, если <code>requirements.txt</code> будет иметь вот такое содержимое:</p>
+<div class="highlight"><pre><span></span><code>pytest
+flake8
+black
+isort
+</code></pre></div>
+<p>То следующие две команды будут иметь одинаковое действие:</p>
+<div class="highlight"><pre><span></span><code>$ pip install -r requirements.txt
+
+$ pip install pytest flake8 black isort
+</code></pre></div>
+<p>Преимущества использования <code>requirements.txt</code>:</p>
+<ul>
+<li>
+<p>Краткость.</p>
+<p>На таком маленьком примере разница может быть не очевидна, но
+когда список зависимостей разрастётся до определенного размера,
+то вам не захочется больше перечислять его в <code>pip install</code> напрямую.</p>
+</li>
+<li>
+<p>Стабильность.</p>
+<p>Как бы ни поменялся файл <code>requirements.txt</code>, команда <code>pip install -r requirements.txt</code>
+не поменяется.</p>
+</li>
+<li>
+<p>Универсальность.</p>
+<p>Так как это распространённое соглашение, то другим разработчикам
+будет достаточно увидеть этот файл, чтобы понять, что нужно сделать. Это
+здорово экономит время на чтении инструкций.</p>
+</li>
+</ul>
+<h2>Как создать</h2>
+<p>Есть два подхода:</p>
+<ul>
+<li>создавать этот файл вручную;</li>
+<li>генерировать автоматически.</li>
+</ul>
+<p>Главный принцип ручного подхода — если что-то поменялось в списке зависимостей
+(добавилась или удалилась зависимость, обновилась версия и т.д.), это изменение
+нужно отразить в <code>requirements.txt</code>.</p>
+<p>Но можно использовать и встроенную в <code>pip</code> функциональность:</p>
+<div class="highlight"><pre><span></span><code><span class="o">(</span>env<span class="o">)</span> $ pip freeze
+<span class="nv">certifi</span><span class="o">==</span><span class="m">2020</span>.4.5.1
+<span class="nv">chardet</span><span class="o">==</span><span class="m">3</span>.0.4
+<span class="nv">geojson</span><span class="o">==</span><span class="m">2</span>.5.0
+<span class="nv">idna</span><span class="o">==</span><span class="m">2</span>.9
+<span class="nv">pyowm</span><span class="o">==</span><span class="m">2</span>.10.0
+<span class="nv">requests</span><span class="o">==</span><span class="m">2</span>.23.0
+<span class="nv">urllib3</span><span class="o">==</span><span class="m">1</span>.25.9
+</code></pre></div>
+<p>Команда <code>pip freeze</code> выводит все установленные в интерпретатор сторонние пакеты.
+Заметьте, что в список попали не только прямые зависимости (<code>pyowm</code>), но
+и подзависимости — это даже лучше, потому что вы сможете более
+точно воссоздать окружение по этому файлу.</p>
+<p>Можно перенаправить вывод этой команды в файл при помощи стандартного <a href="https://losst.ru/vyvod-v-fajl-bash-v-linux#1_%D0%9F%D0%B5%D1%80%D0%B5%D0%BD%D0%B0%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5_%D1%81%D1%82%D0%B0%D0%BD%D0%B4%D0%B0%D1%80%D1%82%D0%BD%D0%BE%D0%B3%D0%BE_%D0%BF%D0%BE%D1%82%D0%BE%D0%BA%D0%B0_%D0%B2%D1%8B%D0%B2%D0%BE%D0%B4%D0%B0">консольного
+приема</a>
+(работает и на Windows), и получить валидный файл <code>requirements.txt</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="o">(</span>env<span class="o">)</span> $ pip freeze &gt; requirements.txt
+</code></pre></div>
+<p>Обратите внимание, что <code>pip freeze</code> выведет список пакетов в том окружении,
+в котором он запущен. Не забудьте активировать виртуальное окружение перед
+запуском этой команды, иначе получите список пакетов, установленных в глобальный
+интерпретатор. Кстати, у меня есть
+<a href="https://semakin.dev/2020/04/python_virtualenv/">пост про виртуальные окружения</a>, где объясняется
+как ими пользоваться.</p>
+<p>Подытожим плюсы и минусы ручного и автоматического подходов:</p>
+<ul>
+<li>Вручную:<ul>
+<li>минимальный файл, содержащий только прямые зависимости;</li>
+<li>можно указывать сложные спецификаторы версий;</li>
+<li>человеческий фактор — легко ошибиться или забыть что-нибудь;</li>
+</ul>
+</li>
+<li><code>pip freeze</code>:<ul>
+<li>автоматически, быстро;</li>
+<li>автоматически добавляет версии установленных пакетов;</li>
+<li>в файл попадет всё дерево зависимостей, а не только прямые зависимости.</li>
+</ul>
+</li>
+</ul>
+<p>Можно использовать и смешанный подход: сгенерировать начальную версию файла
+при помощи <code>pip freeze</code> и допилить её затем руками, если у вас какая-то
+сложная нестандартная ситуация.</p>
+<blockquote>
+<p>⚠️ Файл <code>requirements.txt</code>, конечно же, должен быть добавлен в систему
+контроля версий (git). Это такая же важная часть проекта, как и код.
+При этом виртуальное окружение не должно попадать в систему контроля
+версий. Оно должно воссоздаваться из <code>requirements.txt</code>.</p>
+</blockquote>
+<h2>Проблемы <code>requirements.txt</code></h2>
+<p>Некоторые пакеты часто меняются, поэтому если вы не указываете конкретные
+версии, то в следующий раз при установке вы можете получить совсем другую
+среду. Это бывает особенно обидно, когда локально на машине разработчика
+всё работает правильно, но при деплое на боевой сервер программа либо работает
+иначе, либо вообще отказывается запускаться. Поэтому обязательно фиксируйте
+версии пакетов в <code>requirements.txt</code> — это сделает разные окружения хотя бы
+примерно похожими.</p>
+<p>Почему "хотя бы примерно"? Практика показывает, что зафиксировать версию
+пакета недостаточно. Иногда случается, что под одной версией пакета в разное
+время может находиться совершенно разный код. PyPI, конечно, не позволит
+перезаписать уже опубликованную версию, но, например, ваш приватный
+корпоративный индекс пакетов может быть не таким строгим.</p>
+<p>Чтобы действительно гарантировать, что вы устанавливаете те пакеты, что и
+ожидали, нужно рассчитывать и сверять их контрольные суммы. <code>requirements.txt</code>
+может содержать хэши пакетов, но, к сожалению, на данный момент нет
+простого стандартного способа как их туда положить. В качестве альтернативы
+опять предлагаю присмотреться к таким проектам, как
+<a href="https://python-poetry.org/"><code>poetry</code></a> (хранит хэши в <code>poetry.lock</code>)
+и <a href="https://github.com/pypa/pipenv"><code>pipenv</code></a> (хранит хэши в <code>Pipfile.lock</code>), где эта
+проблема решена хорошо,
+и вам не придётся переживать о воспроизводимости ваших сборок.
+Если всё-таки хочется добиться такого же эффекта при помощи
+<code>requirements.txt</code>, то можно посмотреть на такие проекты как
+<a href="https://github.com/jazzband/pip-tools"><code>pip-tools</code></a>
+(<a href="https://github.com/pypa/pip/issues/4732#issuecomment-500289841">пример использования</a>)
+и <a href="https://github.com/peterbe/hashin"><code>hashin</code></a>.</p>
+<h2>Заключение</h2>
+<p><code>requirements.txt</code> — это очень популярный способ хранения списка внешних
+зависимостей проекта, поэтому вам определенно нужно уметь работать с
+такими файлами. Однако этот способ хранения списка зависимостей не лишён
+недостатков, поэтому если вы начинаете новый проект, то я предлагаю вам
+лучше использовать для этого <a href="https://python-poetry.org/"><code>poetry</code></a>
+или <a href="https://github.com/pypa/pipenv"><code>pipenv</code></a>.</p>
+<p>Для тренировки можно попытаться запустить скрипт с погодой.
+Все исходники лежат <a href="https://gist.github.com/and-semakin/1e999af221df36afbeec5909a413081a">здесь</a>.</p>
+<h2>Дополнительное чтение</h2>
+<p>Конечно, я затронул лишь верхушку айсберга. На самом деле,
+<code>requirements</code>-файлы немножко сложнее.</p>
+<ul>
+<li><a href="https://pip.pypa.io/en/stable/user_guide/#requirements-files">Секция PIP User Guide про requirements.txt</a>;</li>
+<li>А вот тут <a href="https://pip.pypa.io/en/stable/reference/pip_install/#requirements-file-format">подробное описание формата <code>requirements</code>-файлов</a>;</li>
+<li>А ещё <a href="https://pip.pypa.io/en/stable/user_guide/#constraints-files">бывают <code>constraints.txt</code></a>;</li>
+<li>Бонус: PyCharm <a href="https://www.jetbrains.com/help/pycharm/managing-dependencies.html">умеет умно обновлять <code>requirements.txt</code></a>.</li>
+</ul>
+<h2>Подпишитесь!</h2>
+<p>Чтобы получить уведомление о новом посте можно:</p>
+<ul>
+<li><a href="https://t.me/pythonic_attacks">подписаться на канал в Telegram</a>
+(<a href="https://tele.click/pythonic_attacks">альтернативная</a> <a href="https://tele.gg/pythonic_attacks">ссылка</a>);</li>
+<li><a href="/feeds/all.atom.xml">подписаться на Atom-фид</a>, если <s>вы олдфаг-старовер</s> вам так удобно.</li>
+</ul>
+<p><em>Обложка: <a href="https://www.flickr.com/photos/mustangjoe/14675770684">Joe deSousa, Gnarled Tree</a></em></p>
+    </article>
+
+        <div class="tags">
+            <p>тэги: <a href="https://semakin.dev/tag/python.html">python</a>, <a href="https://semakin.dev/tag/pip.html">pip</a>, <a href="https://semakin.dev/tag/requirementstxt.html">requirements.txt</a></p>
+        </div>
+
+    <hr>
+
+
+        <script
+            src="https://utteranc.es/client.js"
+            repo="and-semakin/and-semakin.github.io"
+            issue-term="pathname"
+            label="comments"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+        </script>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="https://github.com/and-semakin">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://t.me/bro0ke">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-telegram fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.linkedin.com/in/%D0%B0%D0%BD%D0%B4%D1%80%D0%B5%D0%B9-%D1%81%D0%B5%D0%BC%D0%B0%D0%BA%D0%B8%D0%BD-501619108/">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">        &copy;  and-semakin
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="https://semakin.dev/theme/js/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="https://semakin.dev/theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="https://semakin.dev/theme/js/clean-blog.min.js"></script>
+
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript" >
+   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+   m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+   ym(62079343, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true
+   });
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/62079343" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+</body>
+
+</html>
