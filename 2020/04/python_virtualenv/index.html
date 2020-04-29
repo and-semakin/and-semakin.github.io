@@ -90,7 +90,7 @@
                             автор:
                                 <a href="https://semakin.dev/author/and-semakin.html">and-semakin</a>
                         </span>
-                            <span class="meta">Обновлено: Sun 19 April 2020</span>
+                            <span class="meta">Обновлено: Wed 29 April 2020</span>
                         
                             <span class="meta">
                                 <i class="fa fa-clock-o" aria-hidden="true"></i>
@@ -413,8 +413,17 @@ $ which python
 <p>сказать <code>pip</code>, чтобы он установил пакет не в директорию <code>site-packages</code>, а в
 домашнюю директорию пользователя при помощи флага <code>--user</code>:</p>
 <p><code>$ pip install --user poetry  # без sudo!</code></p>
-<p>Нужно только убедиться, что нужная директория перечислена в переменной <code>$PATH</code>
-— в моём случае это <code>~/.local/bin</code>.</p>
+<p>Обязательно нужно убедиться, что директория, куда установится пакет,
+перечислена в переменной <code>$PATH</code>. Путь к директории можно получить при помощи
+следующей команды:</p>
+<div class="highlight"><pre><span></span><code>$ python -m site --user-base
+/Users/and-semakin/.local
+</code></pre></div>
+<p>К получившемуся пути нужно в конце добавить <code>/bin</code> для Linux и MacOS,
+либо <code>\Scripts</code> для Windows, так что
+в моём случае (MacOS) в <code>$PATH</code> нужно добавить вот такой путь:
+<code>/Users/and-semakin/.local/bin</code>.</p>
+<p>Подробнее про этот метод установки читайте <a href="https://pip.pypa.io/en/stable/user_guide/#user-installs">здесь</a>.</p>
 </li>
 <li>
 <p>установить программу через пакетный менеджер ОС, например:</p>

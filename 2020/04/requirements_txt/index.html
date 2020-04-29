@@ -89,7 +89,7 @@
                             автор:
                                 <a href="https://semakin.dev/author/and-semakin.html">and-semakin</a>
                         </span>
-                            <span class="meta">Обновлено: Wed 22 April 2020</span>
+                            <span class="meta">Обновлено: Mon 27 April 2020</span>
                         
                             <span class="meta">
                                 <i class="fa fa-clock-o" aria-hidden="true"></i>
@@ -301,9 +301,10 @@ $ pip install pytest flake8 black isort
 корпоративный индекс пакетов может быть не таким строгим.</p>
 <p>Чтобы действительно гарантировать, что вы устанавливаете те пакеты, что и
 ожидали, нужно рассчитывать и сверять их контрольные суммы. <code>requirements.txt</code>
-может содержать хэши пакетов, но, к сожалению, на данный момент нет
-простого стандартного способа как их туда положить. В качестве альтернативы
-опять предлагаю присмотреться к таким проектам, как
+может <a href="https://pip.pypa.io/en/stable/user_guide/#hash-checking-mode">содержать хэши пакетов</a>,
+но, к сожалению, на данный момент нет
+простого стандартного способа как их туда положить, кроме как вручную (сложно).
+В качестве альтернативы опять предлагаю присмотреться к таким проектам, как
 <a href="https://python-poetry.org/"><code>poetry</code></a> (хранит хэши в <code>poetry.lock</code>)
 и <a href="https://github.com/pypa/pipenv"><code>pipenv</code></a> (хранит хэши в <code>Pipfile.lock</code>), где эта
 проблема решена хорошо,
