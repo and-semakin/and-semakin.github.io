@@ -1029,4 +1029,23 @@ jQuery(document).ready(function($) {
                 this.previousTop = currentTop;
             });
     }
+
+    const article = document.querySelector("article");
+    if (article != null) {
+        document.addEventListener(
+            "scroll",
+            () => {
+                const scrollTop =
+                    document.documentElement["scrollTop"] || document.body["scrollTop"];
+                const scrollBottom =
+                    (document.documentElement["scrollHeight"] ||
+                        document.body["scrollHeight"]) - document.documentElement.clientHeight;
+                const scrollPercent = scrollTop / scrollBottom * 100 + "%";
+                document
+                    .getElementById("_progress")
+                    .style.setProperty("--scroll", scrollPercent);
+            },
+            {passive: true}
+        )
+    }
 });
