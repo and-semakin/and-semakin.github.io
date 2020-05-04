@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/png" href="/favicon_32.png" />
+
+
+        <title>Установка нескольких версий Python параллельно при помощи pyenv</title>
+
+        <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Питонические атаки Full Atom Feed" />
+        <!-- Bootstrap Core CSS -->
+        <link href="https://semakin.dev/theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="https://semakin.dev/theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="https://semakin.dev/theme/css/code_blocks/monokai.css" rel="stylesheet">
+
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+
+
+        <meta name="description" content="Простое управление версиями интерпретатора.">
+
+        <meta name="author" content="Андрей Семакин">
+
+        <meta name="tags" content="python">
+        <meta name="tags" content="pyenv">
+
+	                <meta property="og:locale" content="">
+		<meta property="og:site_name" content="Питонические атаки">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="https://semakin.dev/author/andrei-semakin.html">
+	<meta property="og:url" content="https://semakin.dev/2020/05/pyenv/">
+	<meta property="og:title" content="Установка нескольких версий Python параллельно при помощи pyenv">
+	<meta property="article:published_time" content="2020-05-04 11:17:51+05:00">
+            <meta property="og:description" content="Простое управление версиями интерпретатора.">
+
+            <meta property="og:image" content="https://semakin.dev/static/snakes.jpg">
+</head>
+
+<body class="article-pyenv">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="https://semakin.dev/">Питонические атаки</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+
+                            <li><a href="https://semakin.dev/pages/about/">Об авторе</a></li>
+                            <li><a href="https://semakin.dev/pages/subscribe/">Подписаться</a></li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('https://semakin.dev//static/snakes.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Установка нескольких версий Python параллельно при помощи pyenv</h1>
+                        <span class="meta">Опубликовано: Mon 04 May 2020,
+                            автор:
+                                <a href="https://semakin.dev/author/andrei-semakin.html">Андрей Семакин</a>
+                        </span>
+                            <span class="meta">Обновлено: Mon 04 May 2020</span>
+                        
+                            <span class="meta">
+                                <i class="fa fa-clock-o" aria-hidden="true"></i>
+                                7 минут
+                            </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Scroll progress bar -->
+    <div id="_progress"></div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <p>В большинстве операционных систем Python предустановлен
+(ну, кроме Windows, но даже там теперь есть
+<a href="https://devblogs.microsoft.com/python/python-in-the-windows-10-may-2019-update/">команда <code>python</code>, которая предложит установить интерпретатор из магазина приложений</a>).
+В Unix-подобных операционных системах, таких как Linux и MacOS, Python
+пустил корни очень глубоко. Множество компонентов ОС рассчитывают, что Python
+установлен и работает стабильно. Это и хорошо, и плохо.</p>
+<p>Это хорошо, потому что хотя бы какой-то Python в большинстве систем доступен из
+коробки — бери и пользуйся. Иногда доступно сразу несколько версий
+интерпретатора, например, <code>python2</code> указывает на устаревшую версию 2.7,
+<code>python3</code> — на какую-нибудь стабильную версию Python 3, типа 3.6 или 3.7, а
+просто <code>python</code> указывает либо на одно, либо на другое (в последнее время
+предпочтение чаще отдаётся третьей версии). Для обучения или для
+тестирования этого может быть вполне достаточно.</p>
+<p>С другой стороны, это плохо, потому что, как правило, предустановленный Python
+настолько стабилен, что уже успел зарасти мхом.
+В некоторых системах до сих пор предустановлен только Python 2,
+но даже если вам повезёт получить Python третьей версии,
+то наверняка он будет отставать от последней версии на пару минорных релизов.
+Не факт, что вам это подойдёт.</p>
+<p>Иногда нужно иметь сразу несколько версий Python для работы над
+разными проектами, например, 3.7 и 3.8. В некоторых ОС нужные версии можно
+установить через пакетный менеджер (например, в <a href="https://developer.fedoraproject.org/tech/languages/python/multiple-pythons.html">Fedora через dnf</a>)
+— из основных репозиториев или из сторонних.
+Но зачастую такие репозитории содержат не все релизы
+интерпретаторов, а лишь выбранное мейнтейнерами репозиториев подмножество.</p>
+<p>Решение у всех этих проблем одно — нужно установить недостающие версии
+интерпретатора, какими бы они ни были. Этому и посвящён пост.</p>
+<h1>pyenv</h1>
+<p><a href="https://github.com/pyenv/pyenv"><code>pyenv</code></a> — утилита, которая позволяет
+легко переключаться между несколькими версиями интерпретатора Python, а
+также устанавливать новые. Позволяет устанавливать, наверное, вообще
+все известные науке версии интерпретаторов Python. Работает просто и незаметно. </p>
+<p><code>pyenv</code> — это всего лишь один из последователей аналогичного инструмента
+из мира Ruby — <a href="https://github.com/rbenv/rbenv"><code>rbenv</code></a>.
+Есть ещё и <a href="https://github.com/nodenv/nodenv"><code>nodenv</code></a> для Node.js,
+который тоже вдохновился <code>rbenv</code>.</p>
+<p>Проект написан целиком на <code>bash</code>. Это значит, что он никак не зависит
+от Python — было бы забавно, если бы для установки Python нужен был бы Python.
+Также это означает, что на Windows <code>pyenv</code> работать не будет
+(<a href="https://github.com/pyenv/pyenv/issues/62">тред с обсуждением</a>),
+но есть форк — <a href="https://github.com/pyenv-win/pyenv-win"><code>pyenv-win</code></a>,
+который пытается заимплементить ту же функциональность на <code>.bat</code>-скриптах 
+(пока что работает только часть команд). Пользователи современных версий
+Windows могут использовать <code>pyenv</code> внутри WSL (Windows Subsystem for Linux).
+Ещё это означает, что у авторов много отваги — я бы не решился писать
+на <code>bash</code> что-то настолько сложное. Как же хорошо, что всё уже написано.</p>
+<h2>Установка</h2>
+<ol>
+<li>
+<p>Скачаем <code>pyenv</code>.</p>
+<p>Установка <code>pyenv</code> производится простым клонированием git-репозитория.</p>
+<p>У проекта есть <a href="https://github.com/pyenv/pyenv-installer">умный скрипт</a>,
+который скачает <code>pyenv</code> и его сотоварищей:</p>
+<div class="highlight"><pre><span></span><code>$ curl https://pyenv.run <span class="p">|</span> bash
+</code></pre></div>
+<p>Скрипт не требует прав суперпользователя (без <code>sudo</code>), потому что
+всё устанавливается в домашнюю директорию пользователя. Туда же
+будут устанавливаться и интерпретаторы. Если страшно запускать
+какие-то скрипты из интернета (так и должно быть), то прочитать код скрипта можно
+<a href="https://github.com/pyenv/pyenv-installer/blob/master/bin/pyenv-installer">здесь</a>.</p>
+</li>
+<li>
+<p>Настроим шелл.</p>
+<p>Предыдущая команда перед завершением должна была напечатать инструкции
+по настройке шелла. Допустим, в случае с <code>bash</code> она выводит
+следующее:</p>
+<div class="highlight"><pre><span></span><code><span class="n">WARNING</span><span class="o">:</span> <span class="n">seems</span> <span class="n">you</span> <span class="n">still</span> <span class="n">have</span> <span class="n">not</span> <span class="n">added</span> <span class="s1">'pyenv'</span> <span class="n">to</span> <span class="n">the</span> <span class="n">load</span> <span class="n">path</span><span class="o">.</span>
+
+<span class="err">#</span> <span class="n">Load</span> <span class="n">pyenv</span> <span class="n">automatically</span> <span class="n">by</span> <span class="n">adding</span>
+<span class="err">#</span> <span class="n">the</span> <span class="n">following</span> <span class="n">to</span> <span class="o">~/.</span><span class="n">bashrc</span><span class="o">:</span>
+
+<span class="n">export</span> <span class="n">PATH</span><span class="o">=</span><span class="s2">"~/.pyenv/bin:$PATH"</span>
+<span class="nf">eval</span> <span class="s2">"$(pyenv init -)"</span>
+<span class="nf">eval</span> <span class="s2">"$(pyenv virtualenv-init -)"</span>
+</code></pre></div>
+<p>В случае с <code>zsh</code> нужно будет добавить те же самые строки в <code>~/.zshrc</code>.</p>
+<p>В случае с <code>fish</code> в связи с особенностями самого шелла инструкции отличаются:</p>
+<div class="highlight"><pre><span></span><code><span class="o">#</span> <span class="k">Load</span> <span class="n">pyenv</span> <span class="n">automatically</span> <span class="k">by</span> <span class="n">adding</span>
+<span class="o">#</span> <span class="n">the</span> <span class="n">following</span> <span class="k">to</span> <span class="o">~/</span><span class="p">.</span><span class="n">config</span><span class="o">/</span><span class="n">fish</span><span class="o">/</span><span class="n">config</span><span class="p">.</span><span class="n">fish</span><span class="p">:</span>
+
+<span class="k">set</span> <span class="o">-</span><span class="n">x</span> <span class="n">PATH</span> <span class="ss">"~/.pyenv/bin"</span> <span class="err">$</span><span class="n">PATH</span>
+<span class="n">status</span> <span class="c1">--is-interactive; and . (pyenv init -|psub)</span>
+<span class="n">status</span> <span class="c1">--is-interactive; and . (pyenv virtualenv-init -|psub)</span>
+</code></pre></div>
+<p>Кстати, горячо рекомендую попробовать <a href="https://fishshell.com/"><code>fish</code></a>, очень удобный шелл.</p>
+</li>
+<li>
+<p>Установим зависимости для сборки.</p>
+<p>При установке новой версии интерпретатора через <code>pyenv</code> под капотом
+происходит сборка из исходников, поэтому для успешной установки
+необходимы некоторые зависимости. Полный и актуальный список
+для своей ОС смотрите <a href="https://github.com/pyenv/pyenv/wiki#suggested-build-environment">здесь</a>
+или <a href="https://github.com/pyenv/pyenv/wiki/common-build-problems#prerequisites">здесь</a>.
+Лучше установить всё заранее.</p>
+</li>
+<li>
+<p>Перезапустим шелл и проверим установку.</p>
+<div class="highlight"><pre><span></span><code>$ pyenv --version
+pyenv <span class="m">1</span>.2.18
+</code></pre></div>
+</li>
+</ol>
+<h2>Как это работает</h2>
+<p><code>pyenv</code> работает благодаря манипуляциям над переменной окружения <code>$PATH</code>.
+Эта переменная содержит в себе список директорий, в которых ОС будет искать
+исполняемые файлы, вызванные без указания полного пути. Именно
+благодаря этой переменной мы можем в терминале вместо <code>/bin/cat</code> вызывать
+просто <code>cat</code>. Когда мы набираем в терминале имя программы (<code>cat</code>),
+ОС перебирает директории из <code>$PATH</code> слева направо, пока в одной
+из них (в данном примере <code>/bin</code>) не найдёт программу с именем <code>cat</code>,
+которую и запустит. Поиск прекращается после первого совпадения.</p>
+<p>Команда <code>pyenv init -</code>, которую мы добавили в конфиг шелла (<code>.bashrc</code> или аналог)
+добавляет директории <code>pyenv</code> в самое начало переменной <code>$PATH</code>.
+Зачем это нужно? <code>pyenv</code> создаёт небольшие исполняемые файлы,
+так называемые файлы-прослойки (shims), для всех команд,
+которыми он собирается управлять, например, <code>python</code>, <code>pip</code>, <code>ipython</code> и так далее.
+Эти файлы-прослойки должны попасть в <code>$PATH</code> прежде самих управляемых программ
+и "затенить" системные <code>python</code>, <code>pip</code> и так далее.
+Эти файлы-прослойки в конечном счёте просто вызывают сам <code>pyenv</code>
+с нужными аргументами.
+Таким образом <code>pyenv</code> перехватывает обращения к некоторым именам,
+и анализируя поступившую к нему информацию,
+принимает решение о том, какую именно версию Python нужно запустить.
+При выборе версии <code>pyenv</code> принимает во внимание следующие факторы в
+указанном порядке:</p>
+<ol>
+<li>
+<p>Переменная окружения <code>PYENV_VERSION</code>, если указана.</p>
+<p>В неё можно указать какую конкретно версию Python нужно использовать
+в рамках текущего сеанса. Удобно, если вам по какой-то причине понадобится
+сменить выбранную версию интерпретатора, например, в одном
+из окон терминала.</p>
+</li>
+<li>
+<p>Локальная версия Python.</p>
+<p>При помощи специального файла <code>.python-version</code> можно настроить
+версию интерпретатора для определенного проекта. Захо́дите внутрь
+директории (<code>cd project/</code>), и <code>pyenv</code> внезапно понимает, что нужно
+сменить Python. Выхо́дите обратно — версия Python меняется на глобальную.
+Это распространяется и на все поддиректории проекта —
+<code>pyenv</code> рекурсивно ищет файл <code>.python-version</code> вверх по файловой системе,
+пока не дойдёт до корня.</p>
+</li>
+<li>
+<p>Глобальная версия Python.</p>
+<p>В файле <code>~/.pyenv/version</code> записана глобальная версия Python, которая
+будет использоваться по умолчанию, если не сконфигурирована локальная
+версия.</p>
+</li>
+</ol>
+<p>Вам вряд ли придётся вручную трогать эти файлы, потому что у <code>pyenv</code> есть
+удобные команды (<code>pyenv local</code> и <code>pyenv global</code>),
+чтобы ими управлять, но знать о файлах всё равно полезно.</p>
+<h2>Использование</h2>
+<h3>Установка новой версии Python</h3>
+<p>Сначала посмотрим, какие версии Python <code>pyenv</code> может установить:</p>
+<div class="highlight"><pre><span></span><code>$ pyenv install --list
+...
+<span class="m">3</span>.6.0
+<span class="m">3</span>.6-dev
+<span class="m">3</span>.6.1
+<span class="m">3</span>.6.2
+<span class="m">3</span>.6.3
+<span class="m">3</span>.6.4
+<span class="m">3</span>.6.5
+<span class="m">3</span>.6.6
+<span class="m">3</span>.6.7
+<span class="m">3</span>.6.8
+<span class="m">3</span>.6.9
+<span class="m">3</span>.6.10
+<span class="m">3</span>.7.0
+<span class="m">3</span>.7-dev
+<span class="m">3</span>.7.1
+<span class="m">3</span>.7.2
+<span class="m">3</span>.7.3
+<span class="m">3</span>.7.4
+<span class="m">3</span>.7.5
+<span class="m">3</span>.7.6
+<span class="m">3</span>.7.7
+<span class="m">3</span>.8.0
+<span class="m">3</span>.8-dev
+<span class="m">3</span>.8.1
+<span class="m">3</span>.8.2
+<span class="m">3</span>.9.0a6
+<span class="m">3</span>.9-dev
+...
+</code></pre></div>
+<p>Список довольно длинный, поэтому я его подсократил. Обычно вас будут
+интересовать такие версии, как <code>3.8.2</code> или <code>3.7.7</code> — это версии самой
+распространённой реализации интерпретатора CPython. Но если
+вам нужна экзотика, то <code>pyenv</code> умеет устанавливать любые сорта интерпретаторов
+Python (<code>pypy3.6-7.3.0</code>, <code>stackless-3.7.5</code>, <code>jython-2.7.1</code>,
+<code>ironpython-2.7.7</code>, <code>micropython-1.12</code> и т.д.). Для вас ведь не стало
+новостью, что существует много разных реализаций интерпретатора Python?</p>
+<p>Установим CPython 3.8.2:</p>
+<div class="highlight"><pre><span></span><code>$ pyenv install <span class="m">3</span>.8.2
+Downloading Python-3.8.2.tar.xz...
+Installing Python-3.8.2...
+</code></pre></div>
+<p>Через пару минут ожидания ваш новоиспечённый Python будет готов.</p>
+<p>Можно сразу же назначить эту версию глобальной:</p>
+<div class="highlight"><pre><span></span><code>$ pyenv global <span class="m">3</span>.8.2
+$ python -V
+Python <span class="m">3</span>.8.2
+</code></pre></div>
+<p>Давайте в целях демонстрации установим ещё парочку интерпретаторов:</p>
+<div class="highlight"><pre><span></span><code>$ pyenv install <span class="m">2</span>.7.18
+$ pyenv install <span class="m">3</span>.9.0a6
+</code></pre></div>
+<p>Получим список установленных версий интерпретатора:</p>
+<div class="highlight"><pre><span></span><code>$ pyenv versions
+  <span class="m">2</span>.7.18
+* <span class="m">3</span>.8.2 <span class="o">(</span><span class="nb">set</span> by /home/br0ke/.pyenv/version<span class="o">)</span>
+  <span class="m">3</span>.9.0a6
+</code></pre></div>
+<p>Кстати, если нужно, то можно делать активными сразу несколько
+версий одновременно:</p>
+<div class="highlight"><pre><span></span><code>$ pyenv global <span class="m">3</span>.8.2 <span class="m">2</span>.7.18
+</code></pre></div>
+<p>Теперь вывод версий покажет следующее:</p>
+<div class="highlight"><pre><span></span><code>$ pyenv versions
+* <span class="m">2</span>.7.18 <span class="o">(</span><span class="nb">set</span> by /home/br0ke/.pyenv/version<span class="o">)</span>
+* <span class="m">3</span>.8.2 <span class="o">(</span><span class="nb">set</span> by /home/br0ke/.pyenv/version<span class="o">)</span>
+  <span class="m">3</span>.9.0a6
+</code></pre></div>
+<p>А работать это будет вот таким образом:</p>
+<div class="highlight"><pre><span></span><code>$ python -V
+Python <span class="m">3</span>.8.2
+$ python3 -V
+Python <span class="m">3</span>.8.2
+$ python2 -V
+Python <span class="m">2</span>.7.18
+</code></pre></div>
+<p>Грубо говоря, та версия, которая указана первой (3.8.2),
+имеет приоритет и занимает все нужные ей имена. Следующие версии (2.7.18)
+могут занять любые оставшиеся свободные имена (в данном случае, это только имя
+<code>python2</code>).</p>
+<p>А файл глобальной версии <code>~/.pyenv/version</code> на данный момент имеет вот
+такое содержимое:</p>
+<div class="highlight"><pre><span></span><code>$ cat ~/.pyenv/version
+<span class="m">3</span>.8.2
+<span class="m">2</span>.7.18
+</code></pre></div>
+<h3>Локальная версия</h3>
+<p>Давайте создадим директорию и войдём в неё:</p>
+<div class="highlight"><pre><span></span><code>$ mkdir my_project
+$ <span class="nb">cd</span> my_project
+</code></pre></div>
+<p>Представим, что в этой директории мы будем разрабатывать некий
+проект, на котором мы хотим опробовать фишки нового Python 3.9.
+Сообщим об этом <code>pyenv</code>:</p>
+<div class="highlight"><pre><span></span><code>$ pyenv <span class="nb">local</span> <span class="m">3</span>.9.0a
+</code></pre></div>
+<p>В директории появился файл <code>.python-version</code> со следующим содержимым:</p>
+<div class="highlight"><pre><span></span><code>$ cat .python-version
+<span class="m">3</span>.9.0a6
+</code></pre></div>
+<p>На данный момент список версий показывает следующее (удобно использовать
+эту команду, чтобы понять какую версию и почему <code>pyenv</code> активирует):</p>
+<div class="highlight"><pre><span></span><code>$ pyenv versions
+  <span class="m">2</span>.7.18
+  <span class="m">3</span>.8.2
+* <span class="m">3</span>.9.0a6 <span class="o">(</span><span class="nb">set</span> by /home/br0ke/my_project/.python-version<span class="o">)</span>
+</code></pre></div>
+<p>Изменения немедленно вступили в силу:</p>
+<div class="highlight"><pre><span></span><code>$ python -V
+Python <span class="m">3</span>.9.0a6
+</code></pre></div>
+<p>Но эта конфигурация никак не влияет на работу <code>pyenv</code> вне директории проекта:</p>
+<div class="highlight"><pre><span></span><code>$ <span class="nb">cd</span> ..
+$ python -V
+<span class="m">3</span>.8.2
+</code></pre></div>
+<p>Как и в случае с глобальной конфигурацией, можно локально активировать
+сразу несколько версий интерпретатора.</p>
+<h3>Установим IPython</h3>
+<p>Часто бывает нужно установить какой-нибудь пакет так, чтобы он тоже
+стал доступен из командной строки. Допустим, что нам нужно установить
+<a href="https://ipython.org/"><code>ipython</code></a> — более удобную версию REPL Python.
+Сделаем это:</p>
+<div class="highlight"><pre><span></span><code>$ <span class="nb">cd</span> my_project
+$ pip install ipython
+</code></pre></div>
+<p>Запустим:</p>
+<div class="highlight"><pre><span></span><code>$ ipython
+Python <span class="m">3</span>.9.0a6 <span class="o">(</span>default, May  <span class="m">3</span> <span class="m">2020</span>, <span class="m">16</span>:58:20<span class="o">)</span>
+Type <span class="s1">'copyright'</span>, <span class="s1">'credits'</span> or <span class="s1">'license'</span> <span class="k">for</span> more information
+IPython <span class="m">7</span>.14.0 -- An enhanced Interactive Python. Type <span class="s1">'?'</span> <span class="k">for</span> help.
+
+In <span class="o">[</span><span class="m">1</span><span class="o">]</span>:
+</code></pre></div>
+<p>Программа сразу доступна, благодаря тому, что <code>pyenv</code> очень умный и
+создал новый файл-прослойку (shim) автоматически:</p>
+<div class="highlight"><pre><span></span><code>$ which ipython
+/home/br0ke/.pyenv/shims/ipython
+</code></pre></div>
+<p>Вне директории с проектом <code>ipython</code> будет недоступен, ведь он же установлен
+в локальный интерпретатор <code>3.9.0a6</code>, а снаружи активирован другой
+интерпретатор — можете проверить самостоятельно.</p>
+<p>Возникают ситуации, когда по какой-то причине прослойка не создалась
+или с ней случилось что-то ещё, например, удалилась:</p>
+<div class="highlight"><pre><span></span><code>$ rm <span class="k">$(</span>which ipython<span class="k">)</span>
+$ ipython
+No such file or directory
+</code></pre></div>
+<p>Не беда! Можно попросить <code>pyenv</code> пересоздать их все заново:</p>
+<div class="highlight"><pre><span></span><code>$ pyenv rehash
+</code></pre></div>
+<p>И всё работает снова:</p>
+<div class="highlight"><pre><span></span><code>$ ipython
+Python <span class="m">3</span>.9.0a6 <span class="o">(</span>default, May  <span class="m">3</span> <span class="m">2020</span>, <span class="m">16</span>:58:20<span class="o">)</span>
+Type <span class="s1">'copyright'</span>, <span class="s1">'credits'</span> or <span class="s1">'license'</span> <span class="k">for</span> more information
+IPython <span class="m">7</span>.14.0 -- An enhanced Interactive Python. Type <span class="s1">'?'</span> <span class="k">for</span> help.
+
+In <span class="o">[</span><span class="m">1</span><span class="o">]</span>:
+</code></pre></div>
+<p>Можно вообще добавить команду <code>pyenv rehash</code> в свой <code>~/.bashrc</code> (или аналог),
+чтобы при запуске шелла гарантированно иметь рабочие файлы-прослойки (shims).</p>
+<h2>Заключение</h2>
+<p><code>pyenv</code> — очень удобный и полезный инструмент в ситуациях, когда нужную вам
+версию Python нельзя установить средствами операционной системы.
+Я вообще предпочитаю устанавливать все нужные мне версии интерпретатора
+самостоятельно через <code>pyenv</code> или <code>asdf</code>, даже если ОС уже содержит точно
+такую же версию — пусть ОС использует свою копию для служебных целей,
+а я для разработки буду использовать свою собственную копию, где смогу
+проводить любые кровавые эксперименты, не боясь поломать ОС.</p>
+<p>Обязательно
+<a href="https://semakin.dev/pages/subscribe/">подпишитесь на уведомления</a>
+о новых постах в блоге, чтобы ничего не пропустить!</p>
+<h2>Дополнительное чтение</h2>
+<ul>
+<li><a href="https://github.com/pyenv/pyenv">Репозиторий проекта на GitHub</a>;</li>
+<li><a href="https://realpython.com/intro-to-pyenv/">Туториал на RealPython</a>;</li>
+<li><a href="https://asdf-vm.com/#/">Альтернатива: универсальный менеджер версий <code>asdf</code></a>.</li>
+</ul>
+    </article>
+
+        <div class="tags">
+            <p>тэги: <a href="https://semakin.dev/tag/python.html">python</a>, <a href="https://semakin.dev/tag/pyenv.html">pyenv</a></p>
+        </div>
+
+    <hr>
+
+
+        <script
+            src="https://utteranc.es/client.js"
+            repo="and-semakin/and-semakin.github.io"
+            issue-term="pathname"
+            label="comments"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+        </script>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="/feeds/all.atom.xml">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://t.me/pythonic_attacks">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-telegram fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">        &copy; 2020 Андрей Семакин
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="https://semakin.dev/theme/js/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="https://semakin.dev/theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="https://semakin.dev/theme/js/clean-blog.min.js"></script>
+
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript" >
+   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+   m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+   ym(62079343, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true
+   });
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/62079343" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+</body>
+
+</html>
