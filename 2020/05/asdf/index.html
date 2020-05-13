@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/png" href="/favicon_32.png" />
+
+
+        <title>Управление версиями чего угодно при помощи asdf</title>
+
+        <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Питонические атаки Full Atom Feed" />
+        <!-- Bootstrap Core CSS -->
+        <link href="https://semakin.dev/theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="https://semakin.dev/theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="https://semakin.dev/theme/css/code_blocks/monokai.css" rel="stylesheet">
+
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+
+
+        <meta name="description" content="Простое управление версиями кучи языков программирования и инструментов: Python, Node.js, Ruby, Rust и т.д.">
+
+        <meta name="author" content="Андрей Семакин">
+
+        <meta name="tags" content="python">
+        <meta name="tags" content="node.js">
+        <meta name="tags" content="pyenv">
+        <meta name="tags" content="asdf">
+
+	                <meta property="og:locale" content="">
+		<meta property="og:site_name" content="Питонические атаки">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="https://semakin.dev/author/andrei-semakin.html">
+	<meta property="og:url" content="https://semakin.dev/2020/05/asdf/">
+	<meta property="og:title" content="Управление версиями чего угодно при помощи asdf">
+	<meta property="article:published_time" content="2020-05-13 11:05:32+05:00">
+            <meta property="og:description" content="Простое управление версиями кучи языков программирования и инструментов: Python, Node.js, Ruby, Rust и т.д.">
+
+            <meta property="og:image" content="https://semakin.dev/static/asdf_one_tool_to_rule_them_all.jpg">
+</head>
+
+<body class="article-asdf">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="https://semakin.dev/">Питонические атаки</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+
+                            <li><a href="https://semakin.dev/pages/about/">Об авторе</a></li>
+                            <li><a href="https://semakin.dev/pages/subscribe/">Подписаться</a></li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('https://semakin.dev//static/asdf_one_tool_to_rule_them_all.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Управление версиями чего угодно при помощи asdf</h1>
+                        <span class="meta">Опубликовано: Wed 13 May 2020,
+                            автор:
+                                <a href="https://semakin.dev/author/andrei-semakin.html">Андрей Семакин</a>
+                        </span>
+                            <span class="meta">Обновлено: Wed 13 May 2020</span>
+                        
+                            <span class="meta">
+                                <i class="fa fa-clock-o" aria-hidden="true"></i>
+                                6 минут
+                            </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Scroll progress bar -->
+    <div id="_progress"></div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <h1>asdf</h1>
+<p>Нет, это не просто кто-то уронил четыре пальца на клавиатуру!</p>
+<p><a href="https://semakin.dev/2020/05/pyenv/">В предыдущей статье</a> я писал про
+<a href="https://github.com/pyenv/pyenv"><code>pyenv</code></a> —
+отличный инструмент для установки различных версий интерпретатора.
+Для питонистов <code>pyenv</code> вполне достаточно, но люди,
+пишущие на нескольких языках, могут обнаружить себя в ситуации,
+когда им приходится держать установленными
+<a href="https://github.com/pyenv/pyenv"><code>pyenv</code></a>,
+<a href="https://rvm.io/"><code>rvm</code></a> / <a href="https://github.com/rbenv/rbenv"><code>rbenv</code></a>,
+<a href="https://github.com/nvm-sh/nvm"><code>nvm</code></a>,
+<a href="https://rustup.rs/"><code>rustup</code></a>,
+<a href="https://github.com/moovweb/gvm"><code>gvm</code></a>
+или ещё какие-нибудь менеджеры версий для разных языков программирования.
+При этом, конечно же, у каждого инструмента свой синтаксис команд,
+свои тонкости по работе с ним, свои зависимости. Если установить это всё
+сразу в свой шелл, то боюсь представить, что будет с переменной <code>$PATH</code>
+(она будет очень толстой). Потенциально это может замедлить работу шелла вообще.
+Но все эти проблемы остались в прошлом
+— встречайте <code>asdf</code>, универсальный менеджер версий!</p>
+<p><img alt="asdf meme" src="https://semakin.dev/static/asdf_meme.jpg"/></p>
+<p><code>asdf</code>, так же как и <code>pyenv</code>, написан на чистом <code>bash</code>.
+Это означает, что инструмент отлично работает под Linux и MacOS, но,
+к сожалению, никак не работает на Windows (ну, разве что в
+<a href="https://ru.wikipedia.org/wiki/Windows_Subsystem_for_Linux">WSL</a>).
+<code>asdf</code> сам по себе не требует никаких внешних зависимостей, кроме
+некоторых базовых утилит, типа <code>git</code> и <code>curl</code>, которые и так наверняка
+у вас есть. Эти утилиты нужны для установки плагинов.</p>
+<p>Вокруг <code>asdf</code> выстроилась огромная экосистема плагинов.
+Именно благодаря плагинам <code>asdf</code> и именует себя универсальным менеджером версий.</p>
+<p>Преимущества:</p>
+<ul>
+<li>не нужно учить диалекты команд для каждой отдельной утилиты,
+чтобы делать типовые действия;</li>
+<li>умеет управлять версиями всех мыслимых и немыслимых инструментов и
+языков программирования через плагины;</li>
+<li>можно настроить версии локально для определённой директории и
+<code>asdf</code> автоматически переключит версии инструментов при входе в неё;</li>
+<li>классное название — удобно печатать.</li>
+</ul>
+<p>Недостатки:</p>
+<ul>
+<li>у каждого плагина могут быть свои тонкости в плане настройки и свои
+зависимости, так что придётся читать инструкции, но, как правило, это
+единоразовые действия.</li>
+</ul>
+<h2>Установка</h2>
+<p>Установка во всех подробностях
+<a href="https://asdf-vm.com/#/core-manage-asdf-vm">описана на официальном сайте</a>.
+Глупо было бы пытаться описать установку лучше, чем на оф.сайте
+— лучше и не напишешь. Документация у <code>asdf</code> просто бомбическая.
+Есть варианты установки на Linux или MacOS (через <code>brew</code>),
+описана настройка для всех популярных шеллов — <code>bash</code>, <code>zsh</code> и <code>fish</code>.
+Всё просто — выбираете вашу систему и шелл,
+и получаете команды по установке и настройке.</p>
+<p>Обратите внимание, что для корректной работы <code>asdf</code> требует
+наличия <code>git</code> и <code>curl</code>. Если вдруг у вас в системе нет таких утилит,
+то инструкции по установке опять-таки можно
+<a href="https://asdf-vm.com/#/core-manage-asdf-vm?id=dependencies">найти на сайте <code>asdf</code></a>.</p>
+<p>После установки перезапустите ваш шелл и проверьте установку:</p>
+<div class="highlight"><pre><span></span><code>$ asdf
+...
+<span class="s2">"Late but latest"</span>
+-- Rajinikanth
+</code></pre></div>
+<p>Если вы видите этот девиз <code>asdf</code> после справки по командам,
+то установка удалась, можно продолжать.
+Девиз в моём вольном переводе означает что-то типа
+"да, поздновато, но после нас подобных утилит уже не будет".
+Амбициозно, но я думаю, что <code>asdf</code> и правда в силах вытеснить с рынка все
+другие подобные утилиты, которые специфичны для одного языка.</p>
+<h2>Плагины</h2>
+<p>По умолчанию <code>asdf</code> поставляется без плагинов и содержит только базовую
+функциональность, такую как управление плагинами. <code>asdf</code> без плагинов по сути
+не делает ничего полезного. Чтобы управлять версиями чего-либо,
+нужно установить соответствующий плагин.
+Давайте запросим список доступных к установке плагинов:</p>
+<div class="highlight"><pre><span></span><code>$ asdf plugin list all
+</code></pre></div>
+<p>У меня вывелось аж 194 штуки.
+Список плагинов можно посмотреть и на сайте,
+<a href="https://asdf-vm.com/#/plugins-all">вот здесь</a>.</p>
+<p>Есть плагины для всех популярных языков программирования:</p>
+<ul>
+<li><code>python</code>;</li>
+<li><code>nodejs</code>;</li>
+<li><code>rust</code>;</li>
+<li><code>java</code>;</li>
+<li><code>kotlin</code>;</li>
+<li><code>golang</code>;</li>
+<li><code>php</code>;</li>
+<li><code>ruby</code>;</li>
+<li>и, конечно же, для вашего любимого языка плагин тоже наверняка есть.</li>
+</ul>
+<p>Кроме того, через <code>asdf</code> можно управлять версиями различных утилит, например:</p>
+<ul>
+<li><code>github-cli</code>;</li>
+<li><code>jq</code>;</li>
+<li><code>kubectl</code>;</li>
+<li><code>poetry</code>.</li>
+</ul>
+<p>И сервисов, например:</p>
+<ul>
+<li><code>postgres</code>;</li>
+<li><code>mysql</code>;</li>
+<li><code>mongodb</code>;</li>
+<li><code>redis</code>.</li>
+</ul>
+<p>Установка интересующего плагина выполняется следующим образом:</p>
+<div class="highlight"><pre><span></span><code>$ asdf plugin add &lt;имя плагина&gt;
+</code></pre></div>
+<p>Рассмотрим работу с теми плагинами, с которыми мне доводилось работать.</p>
+<h2>Плагин для Python</h2>
+<p>Установим плагин для Python:</p>
+<div class="highlight"><pre><span></span><code>$ asdf plugin add python
+</code></pre></div>
+<p><code>asdf</code> имеет очень логично организованный интерфейс командной строки.
+Запомните одно правило: если хотите просмотреть только установленные
+плагины или версии плагина, то делайте <code>list</code>,
+а если вообще все, то <code>list all</code>.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align:center">плагин</th>
+<th style="text-align:center">версия</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">все</td>
+<td><pre>asdf plugin list all</pre></td>
+<td><pre>asdf list all python</pre></td>
+</tr>
+<tr>
+<td style="text-align:center">установленные</td>
+<td><pre>asdf plugin list</pre></td>
+<td><pre>asdf list python</pre></td>
+</tr>
+</tbody>
+</table>
+<p>Выше мы уже смотрели список всех плагинов (через <code>list all</code>), а теперь
+давайте просмотрим список <em>установленных</em> плагинов. Там должен быть <code>python</code>,
+мы ведь его только что установили:</p>
+<div class="highlight"><pre><span></span><code>$ asdf plugin list
+python
+</code></pre></div>
+<p>Отлично, плагин установлен! Давайте попросим <code>asdf</code> показать
+список доступных версий (хотим вообще все, поэтому <code>list all</code>)
+для плагина <code>python</code>:</p>
+<div class="highlight"><pre><span></span><code>$ asdf list all python
+…
+<span class="m">3</span>.6-dev
+<span class="m">3</span>.6.1
+<span class="m">3</span>.6.2
+<span class="m">3</span>.6.3
+<span class="m">3</span>.6.4
+<span class="m">3</span>.6.5
+<span class="m">3</span>.6.6
+<span class="m">3</span>.6.7
+<span class="m">3</span>.6.8
+<span class="m">3</span>.6.9
+<span class="m">3</span>.6.10
+<span class="m">3</span>.7.0
+<span class="m">3</span>.7-dev
+<span class="m">3</span>.7.1
+<span class="m">3</span>.7.2
+<span class="m">3</span>.7.3
+<span class="m">3</span>.7.4
+<span class="m">3</span>.7.5
+<span class="m">3</span>.7.6
+<span class="m">3</span>.7.7
+<span class="m">3</span>.8.0
+<span class="m">3</span>.8-dev
+<span class="m">3</span>.8.1
+<span class="m">3</span>.8.2
+<span class="m">3</span>.9.0a6
+<span class="m">3</span>.9-dev
+…
+</code></pre></div>
+<p>Список я подсократил, но поверьте — он длинный.
+Там есть как все версии эталонного интерпретатора CPython,
+начиная с 2.1.3, так и альтернативные реализации Python
+— PyPy, IronPython, Jython, MicroPython и другие.
+Этот список очень напоминает подобный список из <code>pyenv</code>, и это не просто
+совпадение. Плагин <code>asdf-python</code> действительно под капотом использует <code>pyenv</code>.</p>
+<p>В процессе установки <code>asdf</code> скачивает исходники Python и
+собирает интерпретатор из них. Это значит, что на машине придётся иметь
+установленные инструменты для сборки кода на C/C++ и все нужные
+библиотеки-зависимости. Список зависимостей для всех ОС и дистрибутивов можно
+<a href="https://github.com/pyenv/pyenv/wiki/common-build-problems">посмотреть здесь</a>.
+Обязательно установите эти зависимости прежде чем пытаться устанавливать
+какой-либо интерпретатор.</p>
+<p>Установка конкретной версии интерпретатора происходит вот так:</p>
+<div class="highlight"><pre><span></span><code>$ asdf install python <span class="m">3</span>.7.7
+$ asdf install python <span class="m">3</span>.8.2
+</code></pre></div>
+<p>Давайте запросим список <em>установленных</em> версий (<code>list</code>):</p>
+<div class="highlight"><pre><span></span><code>$ asdf list python
+  <span class="m">3</span>.7.7
+  <span class="m">3</span>.8.2
+</code></pre></div>
+<p>Давайте назначим глобальной ту версию Python, которую собираемся
+использовать чаще всего. Она будет использоваться по умолчанию, когда
+не найдена никакая локальная версия. Здесь всё работает так же, как и в
+<code>pyenv</code>, но даже если вы никогда им не пользовались, то я надеюсь, что дальше
+по примеру станет понятно как работают глобальные и локальные версии:</p>
+<div class="highlight"><pre><span></span><code>$ asdf global python <span class="m">3</span>.8.2
+$ python -V
+Python <span class="m">3</span>.8.2
+</code></pre></div>
+<p>Если вам интересно, как работает <code>asdf</code>, то:</p>
+<div class="highlight"><pre><span></span><code>$ which python
+/home/br0ke/.asdf/shims/python
+</code></pre></div>
+<p>Опять же, он использует тот же принцип, что и <code>pyenv</code>
+— создает небольшие исполняемые файлы (shims) для всех команд,
+которыми собирается управлять.
+Эти шимы вызывают <code>asdf</code> и он принимает решение о том,
+какую версию программы нужно вызвать.</p>
+<p>Давайте для демонстрации работы локальных версий создадим директорию,
+и представим, что в ней мы собираемся разрабатывать проект под
+определенной версией Python, отличной от глобальной:</p>
+<div class="highlight"><pre><span></span><code>$ mkdir my_project
+$ <span class="nb">cd</span> my_project
+</code></pre></div>
+<p>Установим локальную версию:</p>
+<div class="highlight"><pre><span></span><code>$ asdf <span class="nb">local</span> python <span class="m">3</span>.7.7
+$ python -V
+Python <span class="m">3</span>.7.7
+</code></pre></div>
+<p>В этой директории <code>asdf</code> создал специальный файл <code>.tool-versions</code>
+(аналог <code>.python-version</code> из <code>pyenv</code>):</p>
+<div class="highlight"><pre><span></span><code>$ cat .tool-versions
+python <span class="m">3</span>.7.7
+</code></pre></div>
+<p>Этот файл содержит версии всех утилит, которые мы настроили для директории,
+т.е. потенциально тут может быть не только Python.
+Как правило, этот файл не нужно добавлять в систему контроля версий (git),
+особенно если <code>asdf</code> в рамках проекта пользуетесь только вы.</p>
+<p><code>asdf</code> также вместо универсального <code>.tool-versions</code> умеет использовать
+файлы, специфичные для отдельных языков или инструментов, такие как
+<code>.python-version</code> (<code>pyenv</code>), <code>.ruby-version</code> (<code>rbenv</code>),
+<code>.nvmrc</code> и <code>.node-version</code> (<code>nodejs</code>) и другие. Это сделано для того, чтобы
+облегчить миграцию на <code>asdf</code> с других менеджеров версий. По умолчанию эта
+функциональность выключена, а включатся созданием файла <code>~/.asdfrc</code> со следующим
+содержимым:</p>
+<div class="highlight"><pre><span></span><code>legacy_version_file = yes
+</code></pre></div>
+<p>При выходе из директории локально настроенная версия перестанет действовать
+и версия вернётся на глобальную:</p>
+<div class="highlight"><pre><span></span><code>$ <span class="nb">cd</span> ..
+$ python -V
+Python <span class="m">3</span>.8.2
+</code></pre></div>
+<p>По-моему, это очень удобно.
+В целом <code>asdf</code> работает так же как <code>pyenv</code> и многие другие менеджеры версий
+— в конце концов, они вдохновлены одной идеей.
+Только <code>asdf</code> вдохновился сильнее.</p>
+<p>Допустим, что нужда прижала вас установить IPython:</p>
+<div class="highlight"><pre><span></span><code>$ pip install ipython
+</code></pre></div>
+<p>Чтобы IPython можно было запускать, нужно попросить <code>asdf</code> пересоздать шимы:</p>
+<div class="highlight"><pre><span></span><code>$ asdf reshim
+$ ipython
+Python <span class="m">3</span>.8.2 <span class="o">(</span>default, May <span class="m">10</span> <span class="m">2020</span>, <span class="m">22</span>:17:35<span class="o">)</span> 
+Type <span class="s1">'copyright'</span>, <span class="s1">'credits'</span> or <span class="s1">'license'</span> <span class="k">for</span> more information
+IPython <span class="m">7</span>.14.0 -- An enhanced Interactive Python. Type <span class="s1">'?'</span> <span class="k">for</span> help.
+
+In <span class="o">[</span><span class="m">1</span><span class="o">]</span>: print<span class="o">(</span><span class="s2">"asdf is awesome!"</span><span class="o">)</span>
+</code></pre></div>
+<h2>Плагин для Node.js</h2>
+<p>Установим плагин для Node.js:</p>
+<div class="highlight"><pre><span></span><code>$ asdf plugin add nodejs
+</code></pre></div>
+<p>Запросим список доступных версий:</p>
+<div class="highlight"><pre><span></span><code>$ asdf list all nodejs
+…
+<span class="m">12</span>.16.3
+<span class="m">13</span>.0.0
+<span class="m">13</span>.0.1
+<span class="m">13</span>.1.0
+<span class="m">13</span>.2.0
+<span class="m">13</span>.3.0
+<span class="m">13</span>.4.0
+<span class="m">13</span>.5.0
+<span class="m">13</span>.6.0
+<span class="m">13</span>.7.0
+<span class="m">13</span>.8.0
+<span class="m">13</span>.9.0
+<span class="m">13</span>.10.0
+<span class="m">13</span>.10.1
+<span class="m">13</span>.11.0
+<span class="m">13</span>.12.0
+<span class="m">13</span>.13.0
+<span class="m">13</span>.14.0
+<span class="m">14</span>.0.0
+<span class="m">14</span>.1.0
+<span class="m">14</span>.2.0
+</code></pre></div>
+<p>Все инструменты устанавливаются по-разному, и плагины это учитывают. Например,
+Python собирался из исходников, а Node.js устанавливается простым
+скачиванием бинарника, так что никакие зависимости для сборки не нужны.</p>
+<p>Но у плагина Node.js тоже есть свои тонкости. Чтобы установить версию
+интерпретатора Node.js, нужно добавить ключи мейнтейнеров проекта Node.js
+в систему. Это нужно, чтобы при установке плагин <code>asdf-nodejs</code> проверил
+цифровую подпись бинарника (в системе должна быть установлена
+утилита установлена <code>gpg</code>):</p>
+<div class="highlight"><pre><span></span><code>$ bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring
+</code></pre></div>
+<p>Теперь установим последнюю на данный момент версию Node.js:</p>
+<div class="highlight"><pre><span></span><code>$ asdf install nodejs <span class="m">14</span>.2.0
+</code></pre></div>
+<p>Назначим её глобальной и проверим работу:</p>
+<div class="highlight"><pre><span></span><code>$ asdf global nodejs <span class="m">14</span>.2.0
+$ node
+Welcome to Node.js v14.2.0.
+Type <span class="s2">".help"</span> <span class="k">for</span> more information.
+&gt; console.log<span class="o">(</span><span class="s2">"asdf is super awesome!"</span><span class="o">)</span>
+asdf is super awesome!
+undefined
+</code></pre></div>
+<p>Давайте вернемся в директорию из предыдущего примера и
+добавим там ещё и локальную версию Node.js:</p>
+<div class="highlight"><pre><span></span><code>$ <span class="nb">cd</span> my_project
+$ asdf <span class="nb">local</span> nodejs <span class="m">14</span>.2.0
+</code></pre></div>
+<p>Теперь в <code>.tool-versions</code> лежит следующее содержимое:</p>
+<div class="highlight"><pre><span></span><code>$ cat .tool-versions 
+python <span class="m">3</span>.7.7
+nodejs <span class="m">14</span>.2.0
+</code></pre></div>
+<h1>Заключение</h1>
+<p><code>asdf</code> незаменим, если вы программируете более чем на одном языке.
+Крайне рекомендую присмотреться к нему, даже если сейчас вы
+программируете только на одном языке. Лучше выбирать инструменты на вырост.</p>
+<p>Не бойтесь пробовать устанавливать разные плагины,
+только обязательно читайте инструкции к ним.</p>
+<p>Обязательно
+<a href="https://semakin.dev/pages/subscribe/">подпишитесь на уведомления</a>
+о новых постах в блоге, чтобы ничего не пропустить!</p>
+<h1>Дополнительное чтение</h1>
+<ul>
+<li><a href="https://asdf-vm.com/#/">официальный сайт</a>;</li>
+<li><a href="https://github.com/asdf-vm/asdf">репозиторий проекта на GitHub</a>;</li>
+<li><a href="https://github.com/danhper/asdf-python">Python-плагин</a>;</li>
+<li><a href="https://github.com/asdf-vm/asdf-nodejs">Node.js-плагин</a>.</li>
+</ul>
+<p><em>Обложка: <a href="https://www.flickr.com/photos/purple-lover/13583362554">idreamlikecrazy, One Ring to rule them all</a></em></p>
+    </article>
+
+        <div class="tags">
+            <p>тэги: <a href="https://semakin.dev/tag/python.html">python</a>, <a href="https://semakin.dev/tag/nodejs.html">node.js</a>, <a href="https://semakin.dev/tag/pyenv.html">pyenv</a>, <a href="https://semakin.dev/tag/asdf.html">asdf</a></p>
+        </div>
+
+    <hr>
+
+
+        <script
+            src="https://utteranc.es/client.js"
+            repo="and-semakin/and-semakin.github.io"
+            issue-term="pathname"
+            label="comments"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+        </script>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="/feeds/all.atom.xml">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://t.me/pythonic_attacks">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-telegram fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">        &copy; 2020 Андрей Семакин
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="https://semakin.dev/theme/js/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="https://semakin.dev/theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="https://semakin.dev/theme/js/clean-blog.min.js"></script>
+
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript" >
+   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+   m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+   ym(62079343, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true
+   });
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/62079343" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+</body>
+
+</html>

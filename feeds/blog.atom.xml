@@ -1,5 +1,353 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Питонические атаки - blog</title><link href="https://semakin.dev/" rel="alternate"></link><link href="https://semakin.dev/feeds/blog.atom.xml" rel="self"></link><id>https://semakin.dev/</id><updated>2020-05-04T11:37:11+05:00</updated><subtitle>Про разработку в целом и про Python в частности</subtitle><entry><title>Установка нескольких версий Python параллельно при помощи pyenv</title><link href="https://semakin.dev/2020/05/pyenv/" rel="alternate"></link><published>2020-05-04T11:17:51+05:00</published><updated>2020-05-04T11:37:11+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-05-04:/2020/05/pyenv/</id><summary type="html">&lt;p&gt;Простое управление версиями интерпретатора.&lt;/p&gt;</summary><content type="html">&lt;p&gt;В большинстве операционных систем Python предустановлен
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Питонические атаки - blog</title><link href="https://semakin.dev/" rel="alternate"></link><link href="https://semakin.dev/feeds/blog.atom.xml" rel="self"></link><id>https://semakin.dev/</id><updated>2020-05-13T11:05:32+05:00</updated><subtitle>Про разработку в целом и про Python в частности</subtitle><entry><title>Управление версиями чего угодно при помощи asdf</title><link href="https://semakin.dev/2020/05/asdf/" rel="alternate"></link><published>2020-05-13T11:05:32+05:00</published><updated>2020-05-13T11:05:32+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-05-13:/2020/05/asdf/</id><summary type="html">&lt;p&gt;Простое управление версиями кучи языков программирования и инструментов: Python, Node.js, Ruby, Rust и т.д.&lt;/p&gt;</summary><content type="html">&lt;h1&gt;asdf&lt;/h1&gt;
+&lt;p&gt;Нет, это не просто кто-то уронил четыре пальца на клавиатуру!&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://semakin.dev/2020/05/pyenv/"&gt;В предыдущей статье&lt;/a&gt; я писал про
+&lt;a href="https://github.com/pyenv/pyenv"&gt;&lt;code&gt;pyenv&lt;/code&gt;&lt;/a&gt; —
+отличный инструмент для установки различных версий интерпретатора.
+Для питонистов &lt;code&gt;pyenv&lt;/code&gt; вполне достаточно, но люди,
+пишущие на нескольких языках, могут обнаружить себя в ситуации,
+когда им приходится держать установленными
+&lt;a href="https://github.com/pyenv/pyenv"&gt;&lt;code&gt;pyenv&lt;/code&gt;&lt;/a&gt;,
+&lt;a href="https://rvm.io/"&gt;&lt;code&gt;rvm&lt;/code&gt;&lt;/a&gt; / &lt;a href="https://github.com/rbenv/rbenv"&gt;&lt;code&gt;rbenv&lt;/code&gt;&lt;/a&gt;,
+&lt;a href="https://github.com/nvm-sh/nvm"&gt;&lt;code&gt;nvm&lt;/code&gt;&lt;/a&gt;,
+&lt;a href="https://rustup.rs/"&gt;&lt;code&gt;rustup&lt;/code&gt;&lt;/a&gt;,
+&lt;a href="https://github.com/moovweb/gvm"&gt;&lt;code&gt;gvm&lt;/code&gt;&lt;/a&gt;
+или ещё какие-нибудь менеджеры версий для разных языков программирования.
+При этом, конечно же, у каждого инструмента свой синтаксис команд,
+свои тонкости по работе с ним, свои зависимости. Если установить это всё
+сразу в свой шелл, то боюсь представить, что будет с переменной &lt;code&gt;$PATH&lt;/code&gt;
+(она будет очень толстой). Потенциально это может замедлить работу шелла вообще.
+Но все эти проблемы остались в прошлом
+— встречайте &lt;code&gt;asdf&lt;/code&gt;, универсальный менеджер версий!&lt;/p&gt;
+&lt;p&gt;&lt;img alt="asdf meme" src="https://semakin.dev/static/asdf_meme.jpg"/&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;asdf&lt;/code&gt;, так же как и &lt;code&gt;pyenv&lt;/code&gt;, написан на чистом &lt;code&gt;bash&lt;/code&gt;.
+Это означает, что инструмент отлично работает под Linux и MacOS, но,
+к сожалению, никак не работает на Windows (ну, разве что в
+&lt;a href="https://ru.wikipedia.org/wiki/Windows_Subsystem_for_Linux"&gt;WSL&lt;/a&gt;).
+&lt;code&gt;asdf&lt;/code&gt; сам по себе не требует никаких внешних зависимостей, кроме
+некоторых базовых утилит, типа &lt;code&gt;git&lt;/code&gt; и &lt;code&gt;curl&lt;/code&gt;, которые и так наверняка
+у вас есть. Эти утилиты нужны для установки плагинов.&lt;/p&gt;
+&lt;p&gt;Вокруг &lt;code&gt;asdf&lt;/code&gt; выстроилась огромная экосистема плагинов.
+Именно благодаря плагинам &lt;code&gt;asdf&lt;/code&gt; и именует себя универсальным менеджером версий.&lt;/p&gt;
+&lt;p&gt;Преимущества:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;не нужно учить диалекты команд для каждой отдельной утилиты,
+чтобы делать типовые действия;&lt;/li&gt;
+&lt;li&gt;умеет управлять версиями всех мыслимых и немыслимых инструментов и
+языков программирования через плагины;&lt;/li&gt;
+&lt;li&gt;можно настроить версии локально для определённой директории и
+&lt;code&gt;asdf&lt;/code&gt; автоматически переключит версии инструментов при входе в неё;&lt;/li&gt;
+&lt;li&gt;классное название — удобно печатать.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Недостатки:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;у каждого плагина могут быть свои тонкости в плане настройки и свои
+зависимости, так что придётся читать инструкции, но, как правило, это
+единоразовые действия.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Установка&lt;/h2&gt;
+&lt;p&gt;Установка во всех подробностях
+&lt;a href="https://asdf-vm.com/#/core-manage-asdf-vm"&gt;описана на официальном сайте&lt;/a&gt;.
+Глупо было бы пытаться описать установку лучше, чем на оф.сайте
+— лучше и не напишешь. Документация у &lt;code&gt;asdf&lt;/code&gt; просто бомбическая.
+Есть варианты установки на Linux или MacOS (через &lt;code&gt;brew&lt;/code&gt;),
+описана настройка для всех популярных шеллов — &lt;code&gt;bash&lt;/code&gt;, &lt;code&gt;zsh&lt;/code&gt; и &lt;code&gt;fish&lt;/code&gt;.
+Всё просто — выбираете вашу систему и шелл,
+и получаете команды по установке и настройке.&lt;/p&gt;
+&lt;p&gt;Обратите внимание, что для корректной работы &lt;code&gt;asdf&lt;/code&gt; требует
+наличия &lt;code&gt;git&lt;/code&gt; и &lt;code&gt;curl&lt;/code&gt;. Если вдруг у вас в системе нет таких утилит,
+то инструкции по установке опять-таки можно
+&lt;a href="https://asdf-vm.com/#/core-manage-asdf-vm?id=dependencies"&gt;найти на сайте &lt;code&gt;asdf&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;После установки перезапустите ваш шелл и проверьте установку:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf
+...
+&lt;span class="s2"&gt;"Late but latest"&lt;/span&gt;
+-- Rajinikanth
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Если вы видите этот девиз &lt;code&gt;asdf&lt;/code&gt; после справки по командам,
+то установка удалась, можно продолжать.
+Девиз в моём вольном переводе означает что-то типа
+"да, поздновато, но после нас подобных утилит уже не будет".
+Амбициозно, но я думаю, что &lt;code&gt;asdf&lt;/code&gt; и правда в силах вытеснить с рынка все
+другие подобные утилиты, которые специфичны для одного языка.&lt;/p&gt;
+&lt;h2&gt;Плагины&lt;/h2&gt;
+&lt;p&gt;По умолчанию &lt;code&gt;asdf&lt;/code&gt; поставляется без плагинов и содержит только базовую
+функциональность, такую как управление плагинами. &lt;code&gt;asdf&lt;/code&gt; без плагинов по сути
+не делает ничего полезного. Чтобы управлять версиями чего-либо,
+нужно установить соответствующий плагин.
+Давайте запросим список доступных к установке плагинов:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf plugin list all
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;У меня вывелось аж 194 штуки.
+Список плагинов можно посмотреть и на сайте,
+&lt;a href="https://asdf-vm.com/#/plugins-all"&gt;вот здесь&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Есть плагины для всех популярных языков программирования:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;python&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;nodejs&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;rust&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;java&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;kotlin&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;golang&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;php&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ruby&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;и, конечно же, для вашего любимого языка плагин тоже наверняка есть.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Кроме того, через &lt;code&gt;asdf&lt;/code&gt; можно управлять версиями различных утилит, например:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;github-cli&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;jq&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;kubectl&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;poetry&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;И сервисов, например:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;postgres&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;mysql&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;mongodb&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;redis&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Установка интересующего плагина выполняется следующим образом:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf plugin add &amp;lt;имя плагина&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Рассмотрим работу с теми плагинами, с которыми мне доводилось работать.&lt;/p&gt;
+&lt;h2&gt;Плагин для Python&lt;/h2&gt;
+&lt;p&gt;Установим плагин для Python:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf plugin add python
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;asdf&lt;/code&gt; имеет очень логично организованный интерфейс командной строки.
+Запомните одно правило: если хотите просмотреть только установленные
+плагины или версии плагина, то делайте &lt;code&gt;list&lt;/code&gt;,
+а если вообще все, то &lt;code&gt;list all&lt;/code&gt;.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th style="text-align:center"&gt;плагин&lt;/th&gt;
+&lt;th style="text-align:center"&gt;версия&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="text-align:center"&gt;все&lt;/td&gt;
+&lt;td&gt;&lt;pre&gt;asdf plugin list all&lt;/pre&gt;&lt;/td&gt;
+&lt;td&gt;&lt;pre&gt;asdf list all python&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:center"&gt;установленные&lt;/td&gt;
+&lt;td&gt;&lt;pre&gt;asdf plugin list&lt;/pre&gt;&lt;/td&gt;
+&lt;td&gt;&lt;pre&gt;asdf list python&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Выше мы уже смотрели список всех плагинов (через &lt;code&gt;list all&lt;/code&gt;), а теперь
+давайте просмотрим список &lt;em&gt;установленных&lt;/em&gt; плагинов. Там должен быть &lt;code&gt;python&lt;/code&gt;,
+мы ведь его только что установили:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf plugin list
+python
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Отлично, плагин установлен! Давайте попросим &lt;code&gt;asdf&lt;/code&gt; показать
+список доступных версий (хотим вообще все, поэтому &lt;code&gt;list all&lt;/code&gt;)
+для плагина &lt;code&gt;python&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf list all python
+…
+&lt;span class="m"&gt;3&lt;/span&gt;.6-dev
+&lt;span class="m"&gt;3&lt;/span&gt;.6.1
+&lt;span class="m"&gt;3&lt;/span&gt;.6.2
+&lt;span class="m"&gt;3&lt;/span&gt;.6.3
+&lt;span class="m"&gt;3&lt;/span&gt;.6.4
+&lt;span class="m"&gt;3&lt;/span&gt;.6.5
+&lt;span class="m"&gt;3&lt;/span&gt;.6.6
+&lt;span class="m"&gt;3&lt;/span&gt;.6.7
+&lt;span class="m"&gt;3&lt;/span&gt;.6.8
+&lt;span class="m"&gt;3&lt;/span&gt;.6.9
+&lt;span class="m"&gt;3&lt;/span&gt;.6.10
+&lt;span class="m"&gt;3&lt;/span&gt;.7.0
+&lt;span class="m"&gt;3&lt;/span&gt;.7-dev
+&lt;span class="m"&gt;3&lt;/span&gt;.7.1
+&lt;span class="m"&gt;3&lt;/span&gt;.7.2
+&lt;span class="m"&gt;3&lt;/span&gt;.7.3
+&lt;span class="m"&gt;3&lt;/span&gt;.7.4
+&lt;span class="m"&gt;3&lt;/span&gt;.7.5
+&lt;span class="m"&gt;3&lt;/span&gt;.7.6
+&lt;span class="m"&gt;3&lt;/span&gt;.7.7
+&lt;span class="m"&gt;3&lt;/span&gt;.8.0
+&lt;span class="m"&gt;3&lt;/span&gt;.8-dev
+&lt;span class="m"&gt;3&lt;/span&gt;.8.1
+&lt;span class="m"&gt;3&lt;/span&gt;.8.2
+&lt;span class="m"&gt;3&lt;/span&gt;.9.0a6
+&lt;span class="m"&gt;3&lt;/span&gt;.9-dev
+…
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Список я подсократил, но поверьте — он длинный.
+Там есть как все версии эталонного интерпретатора CPython,
+начиная с 2.1.3, так и альтернативные реализации Python
+— PyPy, IronPython, Jython, MicroPython и другие.
+Этот список очень напоминает подобный список из &lt;code&gt;pyenv&lt;/code&gt;, и это не просто
+совпадение. Плагин &lt;code&gt;asdf-python&lt;/code&gt; действительно под капотом использует &lt;code&gt;pyenv&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;В процессе установки &lt;code&gt;asdf&lt;/code&gt; скачивает исходники Python и
+собирает интерпретатор из них. Это значит, что на машине придётся иметь
+установленные инструменты для сборки кода на C/C++ и все нужные
+библиотеки-зависимости. Список зависимостей для всех ОС и дистрибутивов можно
+&lt;a href="https://github.com/pyenv/pyenv/wiki/common-build-problems"&gt;посмотреть здесь&lt;/a&gt;.
+Обязательно установите эти зависимости прежде чем пытаться устанавливать
+какой-либо интерпретатор.&lt;/p&gt;
+&lt;p&gt;Установка конкретной версии интерпретатора происходит вот так:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf install python &lt;span class="m"&gt;3&lt;/span&gt;.7.7
+$ asdf install python &lt;span class="m"&gt;3&lt;/span&gt;.8.2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Давайте запросим список &lt;em&gt;установленных&lt;/em&gt; версий (&lt;code&gt;list&lt;/code&gt;):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf list python
+  &lt;span class="m"&gt;3&lt;/span&gt;.7.7
+  &lt;span class="m"&gt;3&lt;/span&gt;.8.2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Давайте назначим глобальной ту версию Python, которую собираемся
+использовать чаще всего. Она будет использоваться по умолчанию, когда
+не найдена никакая локальная версия. Здесь всё работает так же, как и в
+&lt;code&gt;pyenv&lt;/code&gt;, но даже если вы никогда им не пользовались, то я надеюсь, что дальше
+по примеру станет понятно как работают глобальные и локальные версии:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf global python &lt;span class="m"&gt;3&lt;/span&gt;.8.2
+$ python -V
+Python &lt;span class="m"&gt;3&lt;/span&gt;.8.2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Если вам интересно, как работает &lt;code&gt;asdf&lt;/code&gt;, то:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ which python
+/home/br0ke/.asdf/shims/python
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Опять же, он использует тот же принцип, что и &lt;code&gt;pyenv&lt;/code&gt;
+— создает небольшие исполняемые файлы (shims) для всех команд,
+которыми собирается управлять.
+Эти шимы вызывают &lt;code&gt;asdf&lt;/code&gt; и он принимает решение о том,
+какую версию программы нужно вызвать.&lt;/p&gt;
+&lt;p&gt;Давайте для демонстрации работы локальных версий создадим директорию,
+и представим, что в ней мы собираемся разрабатывать проект под
+определенной версией Python, отличной от глобальной:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ mkdir my_project
+$ &lt;span class="nb"&gt;cd&lt;/span&gt; my_project
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Установим локальную версию:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf &lt;span class="nb"&gt;local&lt;/span&gt; python &lt;span class="m"&gt;3&lt;/span&gt;.7.7
+$ python -V
+Python &lt;span class="m"&gt;3&lt;/span&gt;.7.7
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;В этой директории &lt;code&gt;asdf&lt;/code&gt; создал специальный файл &lt;code&gt;.tool-versions&lt;/code&gt;
+(аналог &lt;code&gt;.python-version&lt;/code&gt; из &lt;code&gt;pyenv&lt;/code&gt;):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ cat .tool-versions
+python &lt;span class="m"&gt;3&lt;/span&gt;.7.7
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Этот файл содержит версии всех утилит, которые мы настроили для директории,
+т.е. потенциально тут может быть не только Python.
+Как правило, этот файл не нужно добавлять в систему контроля версий (git),
+особенно если &lt;code&gt;asdf&lt;/code&gt; в рамках проекта пользуетесь только вы.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;asdf&lt;/code&gt; также вместо универсального &lt;code&gt;.tool-versions&lt;/code&gt; умеет использовать
+файлы, специфичные для отдельных языков или инструментов, такие как
+&lt;code&gt;.python-version&lt;/code&gt; (&lt;code&gt;pyenv&lt;/code&gt;), &lt;code&gt;.ruby-version&lt;/code&gt; (&lt;code&gt;rbenv&lt;/code&gt;),
+&lt;code&gt;.nvmrc&lt;/code&gt; и &lt;code&gt;.node-version&lt;/code&gt; (&lt;code&gt;nodejs&lt;/code&gt;) и другие. Это сделано для того, чтобы
+облегчить миграцию на &lt;code&gt;asdf&lt;/code&gt; с других менеджеров версий. По умолчанию эта
+функциональность выключена, а включатся созданием файла &lt;code&gt;~/.asdfrc&lt;/code&gt; со следующим
+содержимым:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;legacy_version_file = yes
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;При выходе из директории локально настроенная версия перестанет действовать
+и версия вернётся на глобальную:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ &lt;span class="nb"&gt;cd&lt;/span&gt; ..
+$ python -V
+Python &lt;span class="m"&gt;3&lt;/span&gt;.8.2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;По-моему, это очень удобно.
+В целом &lt;code&gt;asdf&lt;/code&gt; работает так же как &lt;code&gt;pyenv&lt;/code&gt; и многие другие менеджеры версий
+— в конце концов, они вдохновлены одной идеей.
+Только &lt;code&gt;asdf&lt;/code&gt; вдохновился сильнее.&lt;/p&gt;
+&lt;p&gt;Допустим, что нужда прижала вас установить IPython:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install ipython
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Чтобы IPython можно было запускать, нужно попросить &lt;code&gt;asdf&lt;/code&gt; пересоздать шимы:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf reshim
+$ ipython
+Python &lt;span class="m"&gt;3&lt;/span&gt;.8.2 &lt;span class="o"&gt;(&lt;/span&gt;default, May &lt;span class="m"&gt;10&lt;/span&gt; &lt;span class="m"&gt;2020&lt;/span&gt;, &lt;span class="m"&gt;22&lt;/span&gt;:17:35&lt;span class="o"&gt;)&lt;/span&gt; 
+Type &lt;span class="s1"&gt;'copyright'&lt;/span&gt;, &lt;span class="s1"&gt;'credits'&lt;/span&gt; or &lt;span class="s1"&gt;'license'&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; more information
+IPython &lt;span class="m"&gt;7&lt;/span&gt;.14.0 -- An enhanced Interactive Python. Type &lt;span class="s1"&gt;'?'&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; help.
+
+In &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;: print&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"asdf is awesome!"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;Плагин для Node.js&lt;/h2&gt;
+&lt;p&gt;Установим плагин для Node.js:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf plugin add nodejs
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Запросим список доступных версий:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf list all nodejs
+…
+&lt;span class="m"&gt;12&lt;/span&gt;.16.3
+&lt;span class="m"&gt;13&lt;/span&gt;.0.0
+&lt;span class="m"&gt;13&lt;/span&gt;.0.1
+&lt;span class="m"&gt;13&lt;/span&gt;.1.0
+&lt;span class="m"&gt;13&lt;/span&gt;.2.0
+&lt;span class="m"&gt;13&lt;/span&gt;.3.0
+&lt;span class="m"&gt;13&lt;/span&gt;.4.0
+&lt;span class="m"&gt;13&lt;/span&gt;.5.0
+&lt;span class="m"&gt;13&lt;/span&gt;.6.0
+&lt;span class="m"&gt;13&lt;/span&gt;.7.0
+&lt;span class="m"&gt;13&lt;/span&gt;.8.0
+&lt;span class="m"&gt;13&lt;/span&gt;.9.0
+&lt;span class="m"&gt;13&lt;/span&gt;.10.0
+&lt;span class="m"&gt;13&lt;/span&gt;.10.1
+&lt;span class="m"&gt;13&lt;/span&gt;.11.0
+&lt;span class="m"&gt;13&lt;/span&gt;.12.0
+&lt;span class="m"&gt;13&lt;/span&gt;.13.0
+&lt;span class="m"&gt;13&lt;/span&gt;.14.0
+&lt;span class="m"&gt;14&lt;/span&gt;.0.0
+&lt;span class="m"&gt;14&lt;/span&gt;.1.0
+&lt;span class="m"&gt;14&lt;/span&gt;.2.0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Все инструменты устанавливаются по-разному, и плагины это учитывают. Например,
+Python собирался из исходников, а Node.js устанавливается простым
+скачиванием бинарника, так что никакие зависимости для сборки не нужны.&lt;/p&gt;
+&lt;p&gt;Но у плагина Node.js тоже есть свои тонкости. Чтобы установить версию
+интерпретатора Node.js, нужно добавить ключи мейнтейнеров проекта Node.js
+в систему. Это нужно, чтобы при установке плагин &lt;code&gt;asdf-nodejs&lt;/code&gt; проверил
+цифровую подпись бинарника (в системе должна быть установлена
+утилита установлена &lt;code&gt;gpg&lt;/code&gt;):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Теперь установим последнюю на данный момент версию Node.js:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf install nodejs &lt;span class="m"&gt;14&lt;/span&gt;.2.0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Назначим её глобальной и проверим работу:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf global nodejs &lt;span class="m"&gt;14&lt;/span&gt;.2.0
+$ node
+Welcome to Node.js v14.2.0.
+Type &lt;span class="s2"&gt;".help"&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; more information.
+&amp;gt; console.log&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"asdf is super awesome!"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+asdf is super awesome!
+undefined
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Давайте вернемся в директорию из предыдущего примера и
+добавим там ещё и локальную версию Node.js:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ &lt;span class="nb"&gt;cd&lt;/span&gt; my_project
+$ asdf &lt;span class="nb"&gt;local&lt;/span&gt; nodejs &lt;span class="m"&gt;14&lt;/span&gt;.2.0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Теперь в &lt;code&gt;.tool-versions&lt;/code&gt; лежит следующее содержимое:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ cat .tool-versions 
+python &lt;span class="m"&gt;3&lt;/span&gt;.7.7
+nodejs &lt;span class="m"&gt;14&lt;/span&gt;.2.0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;Заключение&lt;/h1&gt;
+&lt;p&gt;&lt;code&gt;asdf&lt;/code&gt; незаменим, если вы программируете более чем на одном языке.
+Крайне рекомендую присмотреться к нему, даже если сейчас вы
+программируете только на одном языке. Лучше выбирать инструменты на вырост.&lt;/p&gt;
+&lt;p&gt;Не бойтесь пробовать устанавливать разные плагины,
+только обязательно читайте инструкции к ним.&lt;/p&gt;
+&lt;p&gt;Обязательно
+&lt;a href="https://semakin.dev/pages/subscribe/"&gt;подпишитесь на уведомления&lt;/a&gt;
+о новых постах в блоге, чтобы ничего не пропустить!&lt;/p&gt;
+&lt;h1&gt;Дополнительное чтение&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://asdf-vm.com/#/"&gt;официальный сайт&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/asdf-vm/asdf"&gt;репозиторий проекта на GitHub&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/danhper/asdf-python"&gt;Python-плагин&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/asdf-vm/asdf-nodejs"&gt;Node.js-плагин&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;em&gt;Обложка: &lt;a href="https://www.flickr.com/photos/purple-lover/13583362554"&gt;idreamlikecrazy, One Ring to rule them all&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;</content><category term="blog"></category><category term="python"></category><category term="node.js"></category><category term="pyenv"></category><category term="asdf"></category></entry><entry><title>Установка нескольких версий Python параллельно при помощи pyenv</title><link href="https://semakin.dev/2020/05/pyenv/" rel="alternate"></link><published>2020-05-04T11:17:51+05:00</published><updated>2020-05-04T11:37:11+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-05-04:/2020/05/pyenv/</id><summary type="html">&lt;p&gt;Простое управление версиями интерпретатора.&lt;/p&gt;</summary><content type="html">&lt;p&gt;В большинстве операционных систем Python предустановлен
 (ну, кроме Windows, но даже там теперь есть
 &lt;a href="https://devblogs.microsoft.com/python/python-in-the-windows-10-may-2019-update/"&gt;команда &lt;code&gt;python&lt;/code&gt;, которая предложит установить интерпретатор из магазина приложений&lt;/a&gt;).
 В Unix-подобных операционных системах, таких как Linux и MacOS, Python
