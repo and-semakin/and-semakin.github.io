@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/png" href="/favicon_32.png" />
+
+
+        <title>Линтеры в Python</title>
+
+        <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Питонические атаки Full Atom Feed" />
+        <!-- Bootstrap Core CSS -->
+        <link href="https://semakin.dev/theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="https://semakin.dev/theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="https://semakin.dev/theme/css/code_blocks/monokai.css" rel="stylesheet">
+
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+
+
+        <meta name="description" content="Обзор популярных статических анализаторов для Python-кода и как они экономят разработчику один день жизни в месяц.">
+
+        <meta name="author" content="Андрей Семакин">
+
+        <meta name="tags" content="python">
+        <meta name="tags" content="flake8">
+        <meta name="tags" content="pylint">
+
+	                <meta property="og:locale" content="">
+		<meta property="og:site_name" content="Питонические атаки">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="https://semakin.dev/author/andrei-semakin.html">
+	<meta property="og:url" content="https://semakin.dev/2020/05/python_linters/">
+	<meta property="og:title" content="Линтеры в Python">
+	<meta property="article:published_time" content="2020-05-17 22:38:56+05:00">
+            <meta property="og:description" content="Обзор популярных статических анализаторов для Python-кода и как они экономят разработчику один день жизни в месяц.">
+
+            <meta property="og:image" content="https://semakin.dev/static/traffic_lights.jpg">
+</head>
+
+<body class="article-python_linters">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="https://semakin.dev/">Питонические атаки</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+
+                            <li><a href="https://semakin.dev/pages/about/">Об авторе</a></li>
+                            <li><a href="https://semakin.dev/pages/subscribe/">Подписаться</a></li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('https://semakin.dev//static/traffic_lights.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Линтеры в Python</h1>
+                        <span class="meta">Опубликовано: Sun 17 May 2020,
+                            автор:
+                                <a href="https://semakin.dev/author/andrei-semakin.html">Андрей Семакин</a>
+                        </span>
+                            <span class="meta">Обновлено: Sun 17 May 2020</span>
+                        
+                            <span class="meta">
+                                <i class="fa fa-clock-o" aria-hidden="true"></i>
+                                12 минут
+                            </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Scroll progress bar -->
+    <div id="_progress"></div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <h1>Линтеры</h1>
+<p>В сообществе Python, как и в любой другой группе людей, существует некое
+коллективное знание. Множество людей прошлось по всем возможным граблям
+и получило опыт через набитые шишки. Затем через какое-то время,
+благодаря выступлениям на конференциях, официальным заявлениям,
+документам, статьям в блогах, код-ревью и личному общению,
+это знание стало коллективным. Теперь мы просто называем его
+“хорошими практиками”.</p>
+<p>К таким хорошим практикам можно отнести, например, следующие.</p>
+<ul>
+<li>Форматировать код по <a href="https://www.python.org/dev/peps/pep-0008/">PEP8</a>
+— если этого не делать, то другим людям будет намного сложнее понимать
+ваш код; в плохо оформленном коде сложнее увидеть суть,
+потому что мозг постоянно отвлекается на не несущие смысловой нагрузки
+особенности оформления.</li>
+<li>Не допускать объявленных, но неиспользуемых переменных/функций/импортов
+— опять же, это усложняет восприятие кода; читателю потребуется потратить
+время на то, чтобы осознать, что вот на эту сущность обращать внимания не
+нужно.</li>
+<li>Писать короткие функции — слишком сложные функции с большим
+количеством ветвлений и циклов тяжело понимать.</li>
+<li>Не использовать изменяемый объект в качестве значения аргумента
+функции по умолчанию — иначе в результате можно получить
+<a href="https://docs.python-guide.org/writing/gotchas/#mutable-default-arguments">очень неожиданные эффекты</a>.</li>
+</ul>
+<p>Соблюдать (и даже просто помнить) все хорошие практики — не самая простая
+задача. Зачастую люди плохо справляются с тем, чтобы отсчитывать пробелы
+и контролировать переменные, и вообще склонны допускать ошибки по
+невнимательности. Таковы люди, ничего не поделаешь. Машины, наоборот,
+прекрасно справляются с такими хорошо определёнными задачами, поэтому
+появились инструменты, которые контролируют следование хорошим практикам.</p>
+<p>В компилируемых языках ещё на этапе компиляции программист может получить
+<s>по щщам</s> первый полезный фидбэк о написанном коде.
+Компилятор проверит, что код валиден и может быть скомпилирован, а также может
+выдать предупреждения и рекомендации, как сделать код лучше или читаемее.
+Т.к. Python является интерпретируемым языком, где этап компиляции как таковой
+отсутствует, линтеры особенно полезны. На самом деле, это очень важно и
+круто — узнать, что твой код как минимум является валидным Python-кодом,
+даже не запуская его.</p>
+<p>В этом посте я рассмотрю два самых популярных линтера для Python:</p>
+<ul>
+<li><a href="https://flake8.pycqa.org/en/latest/">flake8</a>;</li>
+<li><a href="https://www.pylint.org/">pylint</a>.</li>
+</ul>
+<blockquote>
+<p>Термин “lint” впервые начал использоваться в таком значении в 1979 году.
+Так называлась программа для статического анализа кода на C,
+которая предупреждала об использовании непортабельных на другие архитектуры
+языковых конструкций. С тех пор “линтерами” называют любые статические
+анализаторы кода, которые помогают находить распространённые ошибки, делать
+его однообразным и более читаемым. А названо оно "lint" в честь вот такой
+штуки:</p>
+</blockquote>
+<p><img alt="lint roller" src="https://semakin.dev/static/lint_roller.jpg"/></p>
+<h2>flake8</h2>
+<p><code>flake8</code> — это утилита-комбайн, которая органично объединяет в себе несколько
+других анализаторов кода (<code>pycodestyle</code>, <code>pyflakes</code> и <code>mccabe</code>), а также
+имеет огромную экосистему плагинов, которые могут добавить к стандартной
+поставке ещё кучу различных проверок. На данный момент, это самый
+популярный линтер для Python-кода. Кроме того, он предельно прост в
+настройке и использовании.</p>
+<h3>Установка</h3>
+<p><code>flake8</code> устанавливается, как и любой другой Python-пакет,
+через <code>pip</code>. <strong>Внутри виртуального окружения</strong> проекта выполните:</p>
+<div class="highlight"><pre><span></span><code>$ pip install flake8
+</code></pre></div>
+<p>Если вы пользуетесь <code>pipenv</code>, то <code>flake8</code> нужно устанавливать
+как dev-зависимость (ведь для работы программы линтер не нужен,
+он нужен только для разработчика):</p>
+<div class="highlight"><pre><span></span><code>$ pipenv install --dev flake8
+</code></pre></div>
+<p>Аналогично с <code>poetry</code>:</p>
+<div class="highlight"><pre><span></span><code>$ poetry add --dev flake8
+</code></pre></div>
+<p>Проверим установку:</p>
+<div class="highlight"><pre><span></span><code>$ flake8 --version
+<span class="m">3</span>.8.1 <span class="o">(</span>mccabe: <span class="m">0</span>.6.1, pycodestyle: <span class="m">2</span>.6.0, pyflakes: <span class="m">2</span>.2.0<span class="o">)</span> CPython <span class="m">3</span>.8.2 on Linux
+</code></pre></div>
+<h3>Использование</h3>
+<p>Для работы <code>flake8</code> нужно просто указать файл или директорию, которые
+нужно проверять, например:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># проверить один файл</span>
+$ flake8 file.py
+
+<span class="c1"># проверить директорию рекурсивно </span>
+$ flake8 src/
+
+<span class="c1"># проверить текущую директорию рекурсивно</span>
+$ flake8 .
+</code></pre></div>
+<p>Давайте для демонстрации попытаемся написать программу с как можно большим
+количеством “плохих практик”:</p>
+<script src="https://gist.github.com/and-semakin/6080c25e106dedcecb0326aa4514b738.js?file=bad_code.py"></script>
+<p>Возможно, вам не видно всего, но в этом коде точно есть следующие "запахи кода":</p>
+<ul>
+<li><code>import *</code> — импортирование всех имен из модуля, хотя используется
+из них только одно;</li>
+<li><code>import itertools</code> — ненужный импорт;</li>
+<li>во множестве мест стоят лишние или отсутствующие пробелы;</li>
+<li>название функции написано в стиле PascalCase;</li>
+<li>в некоторых местах используются табы для отступов;</li>
+<li>используется список (изменяемый объект) в качестве значения аргумента
+функции по умолчанию;</li>
+<li>используется слишком “широкое” выражение <code>except:</code> без указания
+конкретного исключения.</li>
+</ul>
+<p>Давайте посмотрим, что <code>flake8</code> скажет по поводу этого файла:</p>
+<div class="highlight"><pre><span></span><code>$ flake8 bad_code.py
+bad_code.py:1:1: F403 <span class="s1">'from math import *'</span> used<span class="p">;</span> unable to detect undefined names
+bad_code.py:2:1: F401 <span class="s1">'itertools'</span> imported but unused
+bad_code.py:4:1: E302 expected <span class="m">2</span> blank lines, found <span class="m">1</span>
+bad_code.py:4:4: E271 multiple spaces after keyword
+bad_code.py:4:25: E211 whitespace before <span class="s1">'('</span>
+bad_code.py:4:33: E202 whitespace before <span class="s1">')'</span>
+bad_code.py:5:1: W191 indentation contains tabs
+bad_code.py:5:8: E271 multiple spaces after keyword
+bad_code.py:5:10: F405 <span class="s1">'sqrt'</span> may be undefined, or defined from star imports: math
+bad_code.py:5:21: E202 whitespace before <span class="s1">')'</span>
+bad_code.py:7:1: E302 expected <span class="m">2</span> blank lines, found <span class="m">1</span>
+bad_code.py:7:23: E741 ambiguous variable name <span class="s1">'l'</span>
+bad_code.py:8:1: E101 indentation contains mixed spaces and tabs
+bad_code.py:9:1: E101 indentation contains mixed spaces and tabs
+bad_code.py:11:1: E305 expected <span class="m">2</span> blank lines after class or <span class="k">function</span> definition, found <span class="m">1</span>
+bad_code.py:12:1: E101 indentation contains mixed spaces and tabs
+bad_code.py:13:1: E101 indentation contains mixed spaces and tabs
+bad_code.py:13:20: E225 missing whitespace around operator
+bad_code.py:14:1: E101 indentation contains mixed spaces and tabs
+bad_code.py:14:67: W291 trailing whitespace
+bad_code.py:15:1: E101 indentation contains mixed spaces and tabs
+bad_code.py:15:14: W291 trailing whitespace
+bad_code.py:16:1: E101 indentation contains mixed spaces and tabs
+bad_code.py:16:5: E722 <span class="k">do</span> not use bare <span class="s1">'except'</span>
+bad_code.py:17:1: E101 indentation contains mixed spaces and tabs
+</code></pre></div>
+<p>Как видите, <code>flake8</code> нашёл кучу ошибок. Для каждой ошибки указана строка
+и номер символа в строке (не всегда точный), где произошла ошибка.
+Также у каждой категории ошибок есть свой код: <code>E101</code>, <code>W291</code> и т.д.
+Эти коды ошибок могут использоваться для включения/отключения правил.
+Тем не менее, не все ошибки были найдены. Давайте установим пару плагинов,
+чтобы добавить ещё правил!</p>
+<h3>Плагины</h3>
+<p>Как я уже говорил, для <code>flake8</code> написано множество плагинов.
+Обычно плагины легко гуглятся или находятся в <a href="https://github.com/DmytroLitvinov/awesome-flake8-extensions">списках плагинов</a>.
+Есть плагины для всех популярных фреймворков и библиотек — пользуйтесь ими!
+Давайте для нашего простого примера установим
+<a href="https://github.com/PyCQA/flake8-bugbear"><code>flake8-bugbear</code></a>
+(находит распространённые логические ошибки) и 
+<a href="https://github.com/PyCQA/pep8-naming"><code>pep8-naming</code></a>
+(проверяет имена на соответствие PEP8).</p>
+<p>Плагины устанавливаются так же, как и сам <code>flake8</code> (для краткости я
+не буду писать примеры для <code>pipenv</code> и <code>poetry</code> — сами сможете обобщить):</p>
+<div class="highlight"><pre><span></span><code>$ pip install flake8-bugbear pep8-naming
+</code></pre></div>
+<p>Давайте убедимся, что плагины действительно установились
+и <code>flake8</code> может их найти:</p>
+<div class="highlight"><pre><span></span><code>$ flake8 --version
+<span class="m">3</span>.8.1 <span class="o">(</span>flake8-bugbear: <span class="m">20</span>.1.4, mccabe: <span class="m">0</span>.6.1, naming: <span class="m">0</span>.10.0, pycodestyle: <span class="m">2</span>.6.0, pyflakes: <span class="m">2</span>.2.0<span class="o">)</span> CPython <span class="m">3</span>.8.2 on Linux
+</code></pre></div>
+<p>Если вы видите в списке в скобках названия ваших плагинов, то всё хорошо.</p>
+<p>Теперь снова проверим наш файл:</p>
+<div class="highlight"><pre><span></span><code>$ flake8 bad_code.py
+bad_code.py:1:1: F403 <span class="s1">'from math import *'</span> used<span class="p">;</span> unable to detect undefined names
+bad_code.py:2:1: F401 <span class="s1">'itertools'</span> imported but unused
+bad_code.py:4:1: E302 expected <span class="m">2</span> blank lines, found <span class="m">1</span>
+bad_code.py:4:4: E271 multiple spaces after keyword
+bad_code.py:4:6: N802 <span class="k">function</span> name <span class="s1">'CalculateSquareRoot'</span> should be lowercase
+bad_code.py:4:25: E211 whitespace before <span class="s1">'('</span>
+bad_code.py:4:28: N803 argument name <span class="s1">'Number'</span> should be lowercase
+bad_code.py:4:33: E202 whitespace before <span class="s1">')'</span>
+bad_code.py:5:1: W191 indentation contains tabs
+bad_code.py:5:8: E271 multiple spaces after keyword
+bad_code.py:5:10: F405 <span class="s1">'sqrt'</span> may be undefined, or defined from star imports: math
+bad_code.py:5:21: E202 whitespace before <span class="s1">')'</span>
+bad_code.py:7:1: E302 expected <span class="m">2</span> blank lines, found <span class="m">1</span>
+bad_code.py:7:23: E741 ambiguous variable name <span class="s1">'l'</span>
+bad_code.py:7:25: B006 Do not use mutable data structures <span class="k">for</span> argument defaults.  They are created during <span class="k">function</span> definition time. All calls to the <span class="k">function</span> reuse this one instance of that data structure, persisting changes between them.
+bad_code.py:8:1: E101 indentation contains mixed spaces and tabs
+bad_code.py:9:1: E101 indentation contains mixed spaces and tabs
+bad_code.py:11:1: E305 expected <span class="m">2</span> blank lines after class or <span class="k">function</span> definition, found <span class="m">1</span>
+bad_code.py:12:1: E101 indentation contains mixed spaces and tabs
+bad_code.py:13:1: E101 indentation contains mixed spaces and tabs
+bad_code.py:13:20: E225 missing whitespace around operator
+bad_code.py:14:1: E101 indentation contains mixed spaces and tabs
+bad_code.py:14:67: W291 trailing whitespace
+bad_code.py:15:1: E101 indentation contains mixed spaces and tabs
+bad_code.py:15:14: W291 trailing whitespace
+bad_code.py:16:1: E101 indentation contains mixed spaces and tabs
+bad_code.py:16:5: E722 <span class="k">do</span> not use bare <span class="s1">'except'</span>
+bad_code.py:16:5: B001 Do not use bare <span class="sb">`</span>except:<span class="sb">`</span>, it also catches unexpected events like memory errors, interrupts, system exit, and so on.  Prefer <span class="sb">`</span>except Exception:<span class="sb">`</span>.  If you<span class="s1">'re sure what you'</span>re doing, be explicit and write <span class="sb">`</span>except BaseException:<span class="sb">`</span>.
+bad_code.py:17:1: E101 indentation contains mixed spaces and tabs
+</code></pre></div>
+<p>В выводе появились новые категории ошибок (<code>N802</code>, <code>B006</code>)
+— они как раз добавлены плагинами. На этот раз, как мне кажется,
+найдены все ошибки. К сожалению, <code>flake8</code> не умеет сам чинить
+найденные ошибки, поэтому давайте сделаем это вручную:</p>
+<script src="https://gist.github.com/and-semakin/6080c25e106dedcecb0326aa4514b738.js?file=not_so_bad_code.py"></script>
+<p>Обратите внимание на строки 8 и 10, там содержится комментарии <code># noqa</code>.
+При помощи этих комментариев можно заставить <code>flake8</code> игнорировать ошибки.
+Это бывает полезно, когда по какой-то причине код должен остаться именно
+таким, например:</p>
+<ul>
+<li>он автоматически сгенерирован и исправление в нём ошибок не имеет смысла;</li>
+<li>исправление этой ошибки породит куда более уродливый код,
+чем комментарий <code># noqa</code>;</li>
+<li>у вас просто сейчас нет времени, чтобы исправлять эту ошибку
+(плохая отмазка, серьёзно).</li>
+</ul>
+<p>Если не указать код ошибки, то будут проигнорированы все ошибки в строке
+— я не рекомендую так делать, потому что так можно пропустить
+и на самом деле плохие ошибки. Если указать номер правила, то
+<code>flake8</code> будет игнорировать только указанную категорию,
+а о других ошибках в этой же строке доложит.
+Вообще, комментариями <code># noqa</code> нужно пользоваться с большой осторожностью.
+Считайте, что каждый раз, когда вы это делаете, вы берёте на
+себя ответственность за эту строку кода. Если программа сломается
+в этом месте, то пеняйте на себя — <s>минздрав</s> линтер вас предупреждал.</p>
+<h3>Конфигурация</h3>
+<p><code>flake8</code> для работы не требует никакой конфигурации.
+Он имеет достаточно (но не слишком) строгие настройки по умолчанию,
+которые подойдут большинству пользователей, но иногда бывает нужно
+отключить (или наоборот включить) определённые правила на уровне всего проекта.
+Сделать это можно через файлы <code>.flake8</code> или <code>setup.cfg</code> в корне проекта.
+Если у вас в проекте уже есть файл <code>setup.cfg</code>, то можно добавить конфигурацию
+<code>flake8</code> в него. Если вы предпочитаете для каждой утилиты держать
+отдельный файл конфигурации, то используйте <code>.flake8</code>. В любом случае,
+формат для обоих этих файлов совпадает:</p>
+<div class="highlight"><pre><span></span><code><span class="k">[flake8]</span>
+<span class="na">ignore</span> <span class="o">=</span> <span class="s">D203,E741</span>
+<span class="na">exclude</span> <span class="o">=</span><span class="s"></span>
+<span class="s">    # No need to traverse our git directory</span>
+<span class="s">    .git,</span>
+<span class="s">    # There's no value in checking cache directories</span>
+<span class="s">    __pycache__,</span>
+<span class="s">    # The conf file is mostly autogenerated, ignore it</span>
+<span class="s">    docs/source/conf.py,</span>
+<span class="s">    # The old directory contains Flake8 2.0</span>
+<span class="s">    old,</span>
+<span class="s">    # This contains our built documentation</span>
+<span class="s">    build,</span>
+<span class="s">    # This contains builds of flake8 that we don't want to check</span>
+<span class="s">    dist</span>
+<span class="na">max-complexity</span> <span class="o">=</span> <span class="s">10</span>
+</code></pre></div>
+<p>В конфигурации можно перечислить игнорируемые правила и директории,
+в которые <code>flake8</code> заглядывать не будет, а также максимальную
+<a href="https://ru.wikipedia.org/wiki/%D0%A6%D0%B8%D0%BA%D0%BB%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B0%D1%8F_%D1%81%D0%BB%D0%BE%D0%B6%D0%BD%D0%BE%D1%81%D1%82%D1%8C">цикломатическую сложность</a>
+для функций. Все эти настройки будут автоматически применяться
+к запускам <code>flake8</code> во всех поддиректориях проекта.</p>
+<p>Если же вам не хватает какого-нибудь правила, и его нет даже в уже
+готовых плагинах, то <a href="https://flake8.pycqa.org/en/latest/plugin-development/">написание собственного плагина</a>
+— не такая уж и сложная задача.
+<a href="https://github.com/and-semakin/flake8-pytestrail/">Я попробовал</a>,
+у меня на это ушло 2-3 часа.</p>
+<h2>pylint</h2>
+<p><code>pylint</code> — это ещё один популярный линтер для Python.
+Этот линтер значительно умнее и продвинутее <code>flake8</code>.
+В <code>pylint</code> из коробки заложено очень много правил и рекомендаций,
+и по умолчанию они все включены, так что он достаточно строгий и придирчивый.
+Чтобы интегрировать его в существующий большой проект придётся потратить
+некоторое время, чтобы выбрать те правила, которые для вас важны.
+Так же как и <code>flake8</code>, <code>pylint</code> поддерживает плагины для расширения
+базовой функциональности, но насколько я вижу, экосистема плагинов у <code>pylint</code>
+значительно беднее.</p>
+<p>Также при каждом запуске <code>pylint</code> выводит оценку качества кода
+по десятибалльной шкале, а также следит, как эта оценка меняется
+с течением времени. Достичь десятки очень сложно, но это благородная цель,
+к которой нужно стремиться.</p>
+<h3>Установка</h3>
+<p>Установка <code>pylint</code> принципиально ничем не отличается от установки <code>flake8</code>.
+Выполнить внутри виртуального окружения проекта:</p>
+<div class="highlight"><pre><span></span><code>$ pip install pylint
+</code></pre></div>
+<p>Для <code>pipenv</code>:</p>
+<div class="highlight"><pre><span></span><code>$ pipenv install --dev pylint
+</code></pre></div>
+<p>Для <code>poetry</code>:</p>
+<div class="highlight"><pre><span></span><code>$ poetry add --dev pylint
+</code></pre></div>
+<h3>Использование</h3>
+<p><code>pylint</code> можно натравить на определённый файл:</p>
+<div class="highlight"><pre><span></span><code>$ pylint file.py
+</code></pre></div>
+<p>С директориями у <code>pylint</code> дела обстоят чуть сложнее. Все директории он
+обрабатывает как питоновские модули, поэтому если в директории нет хотя бы
+пустого файла <code>__init__.py</code>, то работать с ней <code>pylint</code> не сможет. Имейте
+это ввиду.</p>
+<p>Давайте попросим <code>pylint</code> прокомментировать файл с плохими практиками
+из предыдущего примера:</p>
+<div class="highlight"><pre><span></span><code>$ pylint bad_code.py
+************* Module bad_code
+bad_code.py:4:25: C0326: No space allowed before bracket
+def  CalculateSquareRoot <span class="o">(</span>Number <span class="o">)</span>:
+                         ^ <span class="o">(</span>bad-whitespace<span class="o">)</span>
+bad_code.py:4:33: C0326: No space allowed before bracket
+def  CalculateSquareRoot <span class="o">(</span>Number <span class="o">)</span>:
+                                 ^ <span class="o">(</span>bad-whitespace<span class="o">)</span>
+bad_code.py:5:0: W0312: Found indentation with tabs instead of spaces <span class="o">(</span>mixed-indentation<span class="o">)</span>
+bad_code.py:5:21: C0326: No space allowed before bracket
+    <span class="k">return</span>  sqrt<span class="o">(</span>Number <span class="o">)</span>
+                     ^ <span class="o">(</span>bad-whitespace<span class="o">)</span>
+bad_code.py:13:19: C0326: Exactly one space required around assignment
+        <span class="nv">your_number</span><span class="o">=</span>float<span class="o">(</span>input<span class="o">(</span><span class="s1">'Enter your number: '</span><span class="o">))</span>
+                   ^ <span class="o">(</span>bad-whitespace<span class="o">)</span>
+bad_code.py:14:66: C0303: Trailing whitespace <span class="o">(</span>trailing-whitespace<span class="o">)</span>
+bad_code.py:15:13: C0303: Trailing whitespace <span class="o">(</span>trailing-whitespace<span class="o">)</span>
+bad_code.py:1:0: W0622: Redefining built-in <span class="s1">'pow'</span> <span class="o">(</span>redefined-builtin<span class="o">)</span>
+bad_code.py:1:0: C0114: Missing module docstring <span class="o">(</span>missing-module-docstring<span class="o">)</span>
+bad_code.py:1:0: W0401: Wildcard import math <span class="o">(</span>wildcard-import<span class="o">)</span>
+bad_code.py:4:0: C0103: Function name <span class="s2">"CalculateSquareRoot"</span> doesn<span class="s1">'t conform to snake_case naming style (invalid-name)</span>
+<span class="s1">bad_code.py:4:0: C0103: Argument name "Number" doesn'</span>t conform to snake_case naming style <span class="o">(</span>invalid-name<span class="o">)</span>
+bad_code.py:4:0: C0116: Missing <span class="k">function</span> or method docstring <span class="o">(</span>missing-function-docstring<span class="o">)</span>
+bad_code.py:7:0: W0102: Dangerous default value <span class="o">[]</span> as argument <span class="o">(</span>dangerous-default-value<span class="o">)</span>
+bad_code.py:7:0: C0103: Argument name <span class="s2">"l"</span> doesn<span class="err">'</span>t conform to snake_case naming style <span class="o">(</span>invalid-name<span class="o">)</span>
+bad_code.py:7:0: C0116: Missing <span class="k">function</span> or method docstring <span class="o">(</span>missing-function-docstring<span class="o">)</span>
+bad_code.py:16:4: W0702: No exception type<span class="o">(</span>s<span class="o">)</span> specified <span class="o">(</span>bare-except<span class="o">)</span>
+bad_code.py:1:0: W0614: Unused import acos from wildcard import <span class="o">(</span>unused-wildcard-import<span class="o">)</span>
+bad_code.py:1:0: W0614: Unused import acosh from wildcard import <span class="o">(</span>unused-wildcard-import<span class="o">)</span>
+bad_code.py:1:0: W0614: Unused import asin from wildcard import <span class="o">(</span>unused-wildcard-import<span class="o">)</span>
+bad_code.py:1:0: W0614: Unused import asinh from wildcard import <span class="o">(</span>unused-wildcard-import<span class="o">)</span>
+...
+bad_code.py:2:0: W0611: Unused import itertools <span class="o">(</span>unused-import<span class="o">)</span>
+-------------------------------------
+Your code has been rated at -41.43/10
+</code></pre></div>
+<p>Я немного сократил вывод. Как видите, даже без плагинов <code>pylint</code> нашёл
+все ожидаемые ошибки, и даже больше — например, он даже предлагает написать
+документацию.</p>
+<p>По каждой ошибке можно запросить более подробную справку, используя
+название правила из конца строки с ошибкой или код:</p>
+<div class="highlight"><pre><span></span><code>$ pylint --help-msg<span class="o">=</span>missing-docstring
+$ pylint --help-msg<span class="o">=</span>R0902
+</code></pre></div>
+<p>Вот какие ошибки <code>pylint</code> находит для файла, который с точки зрения <code>flake8</code>
+не содержит никаких ошибок:</p>
+<div class="highlight"><pre><span></span><code>$ pylint not_so_bad_code.py 
+************* Module not_so_bad_code
+not_so_bad_code.py:1:0: C0114: Missing module docstring <span class="o">(</span>missing-module-docstring<span class="o">)</span>
+not_so_bad_code.py:4:0: C0116: Missing <span class="k">function</span> or method docstring <span class="o">(</span>missing-function-docstring<span class="o">)</span>
+not_so_bad_code.py:8:0: C0103: Argument name <span class="s2">"l"</span> doesn<span class="err">'</span>t conform to snake_case naming style <span class="o">(</span>invalid-name<span class="o">)</span>
+not_so_bad_code.py:8:0: C0116: Missing <span class="k">function</span> or method docstring <span class="o">(</span>missing-function-docstring<span class="o">)</span>
+not_so_bad_code.py:20:11: W0703: Catching too general exception Exception <span class="o">(</span>broad-except<span class="o">)</span>
+-----------------------------------
+Your code has been rated at <span class="m">6</span>.67/10
+</code></pre></div>
+<p>А вот так в <code>pylint</code> можно игнорировать отдельную ошибку на строке прямо в файлах
+с кодом:</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">append_item</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># pylint: disable=C0103</span>
+   <span class="o">...</span>
+</code></pre></div>
+<p>Ещё <code>pylint</code> умеет игнорировать ошибки в блоках кода:</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">test</span><span class="p">():</span>
+    <span class="c1"># Disable all the no-member violations in this function</span>
+    <span class="c1"># pylint: disable=no-member</span>
+    <span class="o">...</span>
+</code></pre></div>
+<p>И для файлов целиком. Вот так можно отключить все ошибки из категорий
+Warning, Convention и Refactor:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># pylint: disable=W,C,R</span>
+</code></pre></div>
+<p>А можно не проверять файл вообще:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># pylint: skip-file</span>
+</code></pre></div>
+<p>Подробнее о правилах управления сообщениями
+<a href="http://pylint.pycqa.org/en/latest/user_guide/message-control.html">смотрите в документации</a>.
+Для более сложной настройки правил, придётся по-настоящему сконфигурировать
+<code>pylint</code>.</p>
+<h3>Конфигурация</h3>
+<p><code>pylint</code> настраивается через файл <code>.pylintrc</code> в корне проекта. Чтобы создать
+дефолтный файл конфигурации, нужно выполнить следующую команду:</p>
+<div class="highlight"><pre><span></span><code>$ pylint --generate-rcfile &gt; .pylintrc
+</code></pre></div>
+<p>Созданный файл содержит все поддерживаемые <code>pylint</code> опции с довольно
+подробными комментариями, так что углубляться я не буду.</p>
+<h3>Плагины</h3>
+<p>Давайте установим какой-нибудь популярный плагин, например,
+<a href="https://pypi.org/project/pylint-django/"><code>pylint-django</code></a>:</p>
+<div class="highlight"><pre><span></span><code>$ pip install pylint-django
+</code></pre></div>
+<p>Теперь запускать <code>pylint</code> нужно вот так:</p>
+<div class="highlight"><pre><span></span><code>$ pylint --load-plugins pylint_django <span class="o">[</span>..other options..<span class="o">]</span> &lt;path_to_your_sources&gt;
+</code></pre></div>
+<p>либо в <code>.pylintrc</code> нужно исправить директиву <code>load-plugins</code>:</p>
+<div class="highlight"><pre><span></span><code>load-plugins=pylint_django
+</code></pre></div>
+<h2>Интеграция линтера в проект</h2>
+<p>Интегрировать линтер в проект можно на трёх уровнях.
+Я рекомендую по возможности использовать все три, но обязательным
+является как минимум один (лучше всего, чтобы это была CI система).</p>
+<h3>Редактор кода или IDE</h3>
+<p>Популярные IDE для Python умеют легко интегрировать с линтерами и
+подсвечивать ошибки линтера прямо в редактируемом файле.
+Это удобно, потому что позволяет не выходя из редактора получить
+полезную обратную связь.</p>
+<p>PyCharm автоматически находить установленные <code>flake8</code> и <code>pylint</code> внутри
+<a href="https://www.jetbrains.com/help/pycharm/configuring-python-interpreter.html">интерпретатора проекта</a>
+и подключается к ним.</p>
+<p>VS Code требует небольшой настройки, которая
+<a href="https://code.visualstudio.com/docs/python/linting">описана здесь</a>.</p>
+<h3>Git-хуки</h3>
+<p>В git есть <a href="https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks">возможность запрограммировать</a>
+определенные скрипты (хуки) в ответ на действия пользователя.
+Например, можно запускать
+какие-нибудь проверки перед коммитом, заново скачивать зависимости проекта
+при переключении веток, высылать сообщение в рабочий чат
+после пуша в удалённый репозиторий и вообще что угодно.</p>
+<p><img alt="я запушель" src="https://semakin.dev/static/i_have_pushed_meme.jpg"/></p>
+<p>Нас интересует возможность запускать линтер перед коммитом так,
+чтобы если линтер найдёт какие-нибудь проблемы, операция коммита прерывалась.
+Git-хуки можно настроить, написав несложный shell-скрипт,
+но я рекомендую использовать для этого специальные утилиты,
+такие как <a href="https://pre-commit.com/">pre-commit</a>.
+<a href="https://ljvmiranda921.github.io/notebook/2018/06/21/precommits-using-black-and-flake8/">Вот здесь</a>
+можно найти описание процесса настройки запуска <code>flake8</code> через <code>pre-commit</code>.</p>
+<p>Обратите внимание, что git-хуки нужно будет настроить на машине каждого
+разработчика в проекте.</p>
+<h3>Continuous Integration (CI)</h3>
+<p>Последний эшелоном защиты от попадания “сломанного” кода в основную ветку
+репозитория является система непрерывной интеграции (CI) — такая, как:</p>
+<ul>
+<li><a href="https://help.github.com/en/actions">GitHub Actions</a>;</li>
+<li><a href="https://docs.gitlab.com/ce/ci/">GitLab CI</a>
+(а ещё читайте пост в блоге моего хорошего товарища про
+<a href="https://alse-code.ru/gitlab-ci-intro/">основы GitLab CI</a>);</li>
+<li><a href="https://travis-ci.org/">Travis CI</a>;</li>
+<li>или <a href="https://github.com/ligurio/awesome-ci">другая</a>.</li>
+</ul>
+<p>На каждый пуш в репозиторий система непрерывной интеграции должна
+запускать проверки (включая все линтеры и тесты), и если что-то идёт
+не так, рядом с коммитом должен появиться красный крестик.
+Ветку с таким коммитом на конце нельзя будет слить с основной
+веткой проекта через пулл-реквест на GitHub (или мёрдж-реквест на GitLab).
+<a href="https://help.github.com/en/actions/language-and-framework-guides/using-python-with-github-actions#starting-with-the-python-workflow-template">Пример того, как настроить GitHub Actions</a>
+для запуска <code>flake8</code> и других питоновских проверок.</p>
+<p>CI — это единственный надёжный способ обеспечить качество кода.
+Предыдущие способы нужны скорее для удобства разработчика, чтобы он
+как можно скорее получал обратную связь, но разработчик вправе проигнорировать
+или отключить эти предупреждения.</p>
+<h1>Заключение</h1>
+<p>В подзаголовке этой статьи я написал фразу, что линтер способен
+сэкономить разработчику один день жизни в месяц. Фраза может показаться
+кликбейтной, но, поверьте мне, это так это и работает.
+Возможно, я даже преуменьшил.
+Чем раньше найдена ошибка, тем быстрее идёт разработка.
+Иногда линтер предотвращает баги, иногда спасает от мучительного
+траблшутинга. Линтеры абсолютно точно значительно сокращают время,
+потраченное коллегами на код-ревью, потому что все тривиальные
+ошибки будут отловлены автоматикой.</p>
+<p>Не стоит недооценивать линтеры. Это те инструменты,
+которые делают из “кодера” настоящего “software engineer”,
+из мальчика — мужчину. Если вы до сих пор не пользуетесь каким-нибудь
+линтером, то рекомендую всерьез задуматься над внедрением!</p>
+<p>Я предпочитаю использовать <code>flake8</code>, потому что он простой
+и понятный, как топор. С ним легко работать, его легко настроить
+под свои нужды, а почти любые недостающие правила можно получить
+через уже готовые плагины.</p>
+<p>У <code>pylint</code> тоже есть свои последователи. Его ценят за подробный вывод
+и большое количество правил в стандартной поставке.
+Мне же <code>pylint</code> всегда казался слишком сложным в эксплуатации.</p>
+<p>А кто-то вообще рекомендует устанавливать <code>flake8</code> и <code>pylint</code> параллельно.</p>
+<p>Если понравилась статья, то
+<a href="https://semakin.dev/pages/subscribe/">подпишитесь на уведомления</a>
+о новых постах в блоге, чтобы ничего не пропустить!</p>
+<h1>Дополнительное чтение</h1>
+<ul>
+<li><a href="https://flake8.pycqa.org/en/latest/">документация <code>flake8</code></a>;</li>
+<li><a href="https://gitlab.com/pycqa/flake8">исходный код <code>flake8</code></a>;</li>
+<li><a href="https://github.com/DmytroLitvinov/awesome-flake8-extensions">список плагинов <code>flake8</code></a>;</li>
+<li><a href="https://lintlyci.github.io/Flake8Rules/">сайт, где можно посмотреть правила <code>flake8</code></a>;</li>
+<li><a href="http://pylint.pycqa.org/en/latest/">документация <code>pylint</code></a>;</li>
+<li><a href="https://github.com/PyCQA/pylint">исходный код <code>pylint</code></a>;</li>
+<li><a href="https://www.reddit.com/r/Python/comments/82hgzm/any_advantages_of_flake8_over_pylint/">обсуждение “flake8 vs pylint” на Reddit</a>;</li>
+<li><a href="https://realpython.com/python-code-quality/">пост на RealPython про качество кода</a>;</li>
+<li><a href="https://habr.com/ru/company/dataart/blog/318776/">статья на Хабре про линтеры</a>.</li>
+</ul>
+<p><em>Обложка: <a href="https://flic.kr/p/DQTiBS">Sa Mu, Traffic Light</a></em></p>
+    </article>
+
+        <div class="tags">
+            <p>тэги: <a href="https://semakin.dev/tag/python.html">python</a>, <a href="https://semakin.dev/tag/flake8.html">flake8</a>, <a href="https://semakin.dev/tag/pylint.html">pylint</a></p>
+        </div>
+
+    <hr>
+
+
+        <script
+            src="https://utteranc.es/client.js"
+            repo="and-semakin/and-semakin.github.io"
+            issue-term="pathname"
+            label="comments"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+        </script>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="/feeds/all.atom.xml">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://t.me/pythonic_attacks">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-telegram fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">        &copy; 2020 Андрей Семакин
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="https://semakin.dev/theme/js/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="https://semakin.dev/theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="https://semakin.dev/theme/js/clean-blog.min.js"></script>
+
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript" >
+   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+   m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+   ym(62079343, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true
+   });
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/62079343" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+</body>
+
+</html>
