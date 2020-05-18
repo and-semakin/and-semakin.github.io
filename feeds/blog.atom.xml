@@ -1,5 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Питонические атаки - blog</title><link href="https://semakin.dev/" rel="alternate"></link><link href="https://semakin.dev/feeds/blog.atom.xml" rel="self"></link><id>https://semakin.dev/</id><updated>2020-05-17T22:38:56+05:00</updated><subtitle>Про разработку в целом и про Python в частности</subtitle><entry><title>Линтеры в Python</title><link href="https://semakin.dev/2020/05/python_linters/" rel="alternate"></link><published>2020-05-17T22:38:56+05:00</published><updated>2020-05-17T22:38:56+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-05-17:/2020/05/python_linters/</id><summary type="html">&lt;p&gt;Обзор популярных статических анализаторов для Python-кода и как они экономят разработчику один день жизни в месяц.&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Линтеры&lt;/h1&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Питонические атаки - blog</title><link href="https://semakin.dev/" rel="alternate"></link><link href="https://semakin.dev/feeds/blog.atom.xml" rel="self"></link><id>https://semakin.dev/</id><updated>2020-05-18T13:22:50+05:00</updated><subtitle>Про разработку в целом и про Python в частности</subtitle><entry><title>Chocolatey — пакетный менеджер для Windows</title><link href="https://semakin.dev/2020/05/chocolatey/" rel="alternate"></link><published>2020-05-18T13:22:50+05:00</published><updated>2020-05-18T13:22:50+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-05-18:/2020/05/chocolatey/</id><summary type="html">&lt;p&gt;Самая важная программа для любителей окошек.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Как сказал один мудрец (и по совместительству просто мой друг):&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;“нет плохих или хороших операционных систем, есть подходящие и
+не подходящие для решения конкретных пользовательских задач”.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Глубокая мысль, я с этим полностью согласен.
+Хотя для решения конкретно моих рабочих задач намного лучше подходят
+другие ОС, у Windows тоже есть своя ниша.
+Я уже давно привык пользоваться в повседневной деятельности
+Unix-подобными операционными системами, такими как Fedora Linux и macOS.
+Но недавно я решил совершить очередной набег в мир Windows
+— попробовать новые классные фичи &lt;a href="https://docs.microsoft.com/ru-ru/windows/wsl/"&gt;WSL2&lt;/a&gt;
+да в игры поиграть.&lt;/p&gt;
+&lt;p&gt;Только в этот раз я решил сразу сделать всё по-правильному, и
+устанавливать весь софт так, чтобы им потом было удобно управлять и обновлять.
+В поисках решения для этой задачи я открыл для себя
+&lt;a href="https://chocolatey.org/"&gt;замечательный инструмент Chocolatey&lt;/a&gt;,
+который теперь считаю жизненно необходимым для комфортного пользования
+Windows.&lt;/p&gt;
+&lt;p&gt;Chocolatey — это пакетный менеджер для Windows,
+примерно как &lt;a href="https://ru.wikipedia.org/wiki/Advanced_Packaging_Tool"&gt;&lt;code&gt;apt&lt;/code&gt;&lt;/a&gt;
+в мире Debian/Ubuntu или
+&lt;a href="https://ru.wikipedia.org/wiki/DNF_(%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%B5%D1%80_%D0%BF%D0%B0%D0%BA%D0%B5%D1%82%D0%BE%D0%B2)"&gt;&lt;code&gt;dnf&lt;/code&gt;&lt;/a&gt;
+в мире Fedora/CentOS.
+Пакетный менеджер занимается установкой, удалением и обновлением программ.
+Если вам, как и мне, надоело ставить галочки под текстом лицензии
+(хоть раз вообще читали?)
+и безразлично нажимать кнопку “далее”, то Chocolatey вам поможет.
+Он имеет интерфейс командной строки — то, что надо для такого гика, как я!
+У Chocolatey &lt;a href="https://chocolatey.org/packages"&gt;большая библиотека пакетов&lt;/a&gt;
+— больше 7500 штук, всё популярное там точно есть.&lt;/p&gt;
+&lt;p&gt;Хоть я привёл в пример &lt;code&gt;apt&lt;/code&gt; и &lt;code&gt;dnf&lt;/code&gt;, на самом деле,
+Chocolatey имеет намного больше общего с
+&lt;a href="https://ru.wikipedia.org/wiki/Homebrew_(%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%B5%D1%80_%D0%BF%D0%B0%D0%BA%D0%B5%D1%82%D0%BE%D0%B2_%D0%B2_Mac_OS)"&gt;Homebrew — пакетным менеджером для macOS&lt;/a&gt;.
+В Linux пакетные менеджеры уже давно стали насущной необходимостью
+— там этим никого не удивить, а Chocolatey и Homebrew работают в окружениях,
+где изначально пакетные менеджеры не предусмотрены.
+При этом оба они отлично справляются со своими задачами.&lt;/p&gt;
+&lt;p&gt;Chocolatey написан на C# и PowerShell, имеет
+&lt;a href="https://github.com/chocolatey/choco"&gt;открытый исходный код&lt;/a&gt;.
+Для работы требует Windows 7 или новее.&lt;/p&gt;
+&lt;h2&gt;Установка&lt;/h2&gt;
+&lt;p&gt;Чтобы установить Chocolatey, нужно запустить командную строку
+с правами администратора. Сделать это в Windows 10 можно так:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Нажимаем на клавиатуре кнопку Win или просто открываем меню "Пуск";&lt;/li&gt;
+&lt;li&gt;Набираем &lt;code&gt;cmd&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;На найденной программе нажимаем правой кнопкой мыши;
+и выбираем пункт “Run as administrator” или, в русской локализации,
+“Запуск от имени администратора”.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img alt="Run as administrator" src="https://semakin.dev/static/cmd_run_as_administrator.jpg"/&gt;&lt;/p&gt;
+&lt;p&gt;В открывшееся окно терминала нужно вставить следующую команду:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;@&lt;span class="s2"&gt;"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe"&lt;/span&gt; -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command &lt;span class="s2"&gt;" [System.Net.ServicePointManager]::SecurityProtocol = 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))"&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; SET &lt;span class="s2"&gt;"PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;На всякий случай, если эта команда устареет и перестанет работать,
+или вы предпочитаете вставлять в администраторский терминал команды
+только из официальных источников (и правильно делаете), то документация
+по установке находится
+&lt;a href="https://chocolatey.org/docs/installation#install-with-cmdexe"&gt;вот здесь&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;После того, как команда отработает (у меня установка заняла примерно минуту),
+нужно перезапустить терминал. Вместо &lt;code&gt;cmd&lt;/code&gt;
+можно запустить PowerShell (тоже от имени администратора) — он немного
+удобнее. Можно проверить установку:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;choco -?
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Если вы видите справку по команде, то установка прошла успешно.&lt;/p&gt;
+&lt;h2&gt;Установка программ&lt;/h2&gt;
+&lt;p&gt;Давайте установим через &lt;code&gt;choco&lt;/code&gt; первые программы.
+Все эти программы найдены в &lt;a href="https://chocolatey.org/packages"&gt;реестре пакетов&lt;/a&gt;
+и проверены мной — работают.
+При установке вы можете заметить, что все программы скачиваются с
+официальных сайтов разработчиков.
+Если вы переживаете по поводу вирусов, то рекомендую почитать,
+&lt;a href="https://chocolatey.org/docs/security"&gt;какие меры предпринимают мейнтейнеры Chocolatey&lt;/a&gt;,
+чтобы обеспечить безопасность пакетов (там всё серьезно).&lt;/p&gt;
+&lt;p&gt;Во всех командах я добавил флаг &lt;code&gt;-y&lt;/code&gt;, чтобы установщик не задавал
+вообще никаких вопросов. Эта команда автоматически соглашается с
+лицензиями и разрешает запуск скриптов установки. Ради интереса
+можете попробовать убрать этот флаг из команд, и посмотреть, что будет.&lt;/p&gt;
+&lt;p&gt;Допустим, что вам нужен браузер (удалите из команды ненужные названия):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;choco install -y googlechrome firefox
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Или текстовый редактор/IDE (удалите из команды ненужные названия):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;choco install -y notepadplusplus.install vscode
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Я являюсь заядлым пользователем PyCharm, который лучше всего установить
+через &lt;a href="https://www.jetbrains.com/ru-ru/toolbox-app/"&gt;JetBrains Toolbox&lt;/a&gt;
+(как и любые другие IDE от JetBrains):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;choco install -y jetbrainstoolbox
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Инструменты для разработки:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;choco install -y git python3 microsoft-windows-terminal postman
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Мессенджеры и видео-конференции:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;choco install -y telegram.install slack zoom 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Игры:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;choco install -y steam epicgameslauncher
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Всякое прочее-разное полезное:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;choco install -y 7zip vlc paint.net teamviewer qbittorrent thunderbird putty.install
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;И для установки даже не пришлось кликать мышью по кнопкам!&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://chocolatey.org/docs/commands-uninstall"&gt;Тут&lt;/a&gt; можете почитать
+про удаление программ при помощи &lt;code&gt;choco&lt;/code&gt;.&lt;/p&gt;
+&lt;h2&gt;Обновление&lt;/h2&gt;
+&lt;p&gt;Вот так можно обновить все установленные через &lt;code&gt;choco&lt;/code&gt; программы
+до актуальных версий:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;choco upgrade all -y
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;По-моему, это очень круто и удобно!&lt;/p&gt;
+&lt;h1&gt;Заключение&lt;/h1&gt;
+&lt;p&gt;&lt;code&gt;choco&lt;/code&gt; — теперь для меня это просто маст-хэв на Windows.
+Самая первая программа, которую я буду устанавливать.
+Благодаря Chocolatey, для меня Windows стала немного дружелюбнее.
+Всем рекомендую попробовать!&lt;/p&gt;
+&lt;p&gt;Если понравилась статья, то
+&lt;a href="https://semakin.dev/pages/subscribe/"&gt;подпишитесь на уведомления&lt;/a&gt;
+о новых постах в блоге, чтобы ничего не пропустить!&lt;/p&gt;
+&lt;h1&gt;Дополнительное чтение&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://chocolatey.org/"&gt;официальный сайт Chocolatey&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://chocolatey.org/packages"&gt;реестр пакетов&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/chocolatey/choco"&gt;исходный код&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.youtube.com/watch?v=hfgZYpo5moA"&gt;видео про Chocolatey для тех, кто больше любит воспринимать информацию визуально&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;em&gt;Обложка: &lt;a href="https://www.publicdomainpictures.net/ru/view-image.php?image=285902&amp;amp;picture="&gt;Jean Beaufort, Chocolate&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;</content><category term="blog"></category><category term="windows"></category><category term="choco"></category></entry><entry><title>Линтеры в Python</title><link href="https://semakin.dev/2020/05/python_linters/" rel="alternate"></link><published>2020-05-17T22:38:56+05:00</published><updated>2020-05-17T22:38:56+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-05-17:/2020/05/python_linters/</id><summary type="html">&lt;p&gt;Обзор популярных статических анализаторов для Python-кода и как они экономят разработчику один день жизни в месяц.&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Линтеры&lt;/h1&gt;
 &lt;p&gt;В сообществе Python, как и в любой другой группе людей, существует некое
 коллективное знание. Множество людей прошлось по всем возможным граблям
 и получило опыт через набитые шишки. Затем через какое-то время,
