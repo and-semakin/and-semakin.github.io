@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Питонические атаки</title><link href="https://semakin.dev/" rel="alternate"></link><link href="https://semakin.dev/feeds/all.atom.xml" rel="self"></link><id>https://semakin.dev/</id><updated>2020-05-18T13:22:50+05:00</updated><subtitle>Про разработку в целом и про Python в частности</subtitle><entry><title>Chocolatey — пакетный менеджер для Windows</title><link href="https://semakin.dev/2020/05/chocolatey/" rel="alternate"></link><published>2020-05-18T13:22:50+05:00</published><updated>2020-05-18T13:22:50+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-05-18:/2020/05/chocolatey/</id><summary type="html">&lt;p&gt;Самая важная программа для любителей окошек.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Как сказал один мудрец (и по совместительству просто мой друг):&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Питонические атаки</title><link href="https://semakin.dev/" rel="alternate"></link><link href="https://semakin.dev/feeds/all.atom.xml" rel="self"></link><id>https://semakin.dev/</id><updated>2020-05-18T13:32:18+05:00</updated><subtitle>Про разработку в целом и про Python в частности</subtitle><entry><title>Chocolatey — пакетный менеджер для Windows</title><link href="https://semakin.dev/2020/05/chocolatey/" rel="alternate"></link><published>2020-05-18T13:22:50+05:00</published><updated>2020-05-18T13:32:18+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-05-18:/2020/05/chocolatey/</id><summary type="html">&lt;p&gt;Самая важная программа для любителей окошек.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Как сказал один мудрец (и по совместительству просто мой друг):&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;“нет плохих или хороших операционных систем, есть подходящие и
 не подходящие для решения конкретных пользовательских задач”.&lt;/p&gt;
@@ -46,7 +46,7 @@ Chocolatey имеет намного больше общего с
 &lt;ol&gt;
 &lt;li&gt;Нажимаем на клавиатуре кнопку Win или просто открываем меню "Пуск";&lt;/li&gt;
 &lt;li&gt;Набираем &lt;code&gt;cmd&lt;/code&gt;;&lt;/li&gt;
-&lt;li&gt;На найденной программе нажимаем правой кнопкой мыши;
+&lt;li&gt;На найденной программе нажимаем правой кнопкой мыши
 и выбираем пункт “Run as administrator” или, в русской локализации,
 “Запуск от имени администратора”.&lt;/li&gt;
 &lt;/ol&gt;
@@ -85,7 +85,7 @@ Chocolatey имеет намного больше общего с
 &lt;p&gt;Или текстовый редактор/IDE (удалите из команды ненужные названия):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;choco install -y notepadplusplus.install vscode
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Я являюсь заядлым пользователем PyCharm, который лучше всего установить
+&lt;p&gt;Я являюсь заядлым пользователем PyCharm, который лучше всего устанавливать
 через &lt;a href="https://www.jetbrains.com/ru-ru/toolbox-app/"&gt;JetBrains Toolbox&lt;/a&gt;
 (как и любые другие IDE от JetBrains):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;choco install -y jetbrainstoolbox
