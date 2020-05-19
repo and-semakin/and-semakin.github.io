@@ -88,7 +88,7 @@
                             автор:
                                 <a href="https://semakin.dev/author/andrei-semakin.html">Андрей Семакин</a>
                         </span>
-                            <span class="meta">Обновлено: Mon 04 May 2020</span>
+                            <span class="meta">Обновлено: Tue 19 May 2020</span>
                         
                             <span class="meta">
                                 <i class="fa fa-clock-o" aria-hidden="true"></i>
@@ -148,10 +148,13 @@
 <p>Проект написан целиком на <code>bash</code>. Это значит, что он никак не зависит
 от Python — было бы забавно, если бы для установки Python нужен был бы Python.
 Также это означает, что на Windows <code>pyenv</code> работать не будет
-(<a href="https://github.com/pyenv/pyenv/issues/62">тред с обсуждением</a>),
-но есть форк — <a href="https://github.com/pyenv-win/pyenv-win"><code>pyenv-win</code></a>,
-который пытается заимплементить ту же функциональность на <code>.bat</code>-скриптах 
-(пока что работает только часть команд). Пользователи современных версий
+(<a href="https://github.com/pyenv/pyenv/issues/62">тред с обсуждением</a>).
+Следует отметить, что в Windows проблема установки нескольких версий
+и не возникает — там всегда можно скачать и установить
+сколько угодно интерпретаторов <a href="https://www.python.org/downloads/windows/">с официального сайта</a>,
+а <a href="https://www.python.org/dev/peps/pep-0397/"><code>pylauncher</code></a> поможет выбрать
+из них нужную версию. 
+Кроме того, пользователи современных версий
 Windows могут использовать <code>pyenv</code> внутри WSL (Windows Subsystem for Linux).
 Ещё это означает, что у авторов много отваги — я бы не решился писать
 на <code>bash</code> что-то настолько сложное. Как же хорошо, что всё уже написано.</p>
