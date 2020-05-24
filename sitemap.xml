@@ -5,35 +5,35 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://semakin.dev/</loc>
-<lastmod>2020-05-24T11:59:22-00:00</lastmod>
+<lastmod>2020-05-24T18:10:52-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://semakin.dev/tags.html</loc>
-<lastmod>2020-05-24T11:59:22-00:00</lastmod>
+<lastmod>2020-05-24T18:10:52-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://semakin.dev/categories.html</loc>
-<lastmod>2020-05-24T11:59:22-00:00</lastmod>
+<lastmod>2020-05-24T18:10:52-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://semakin.dev/authors.html</loc>
-<lastmod>2020-05-24T11:59:22-00:00</lastmod>
+<lastmod>2020-05-24T18:10:52-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://semakin.dev/archives.html</loc>
-<lastmod>2020-05-24T11:59:22-00:00</lastmod>
+<lastmod>2020-05-24T18:10:52-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -47,7 +47,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://semakin.dev/pages/subscribe/</loc>
-<lastmod>2020-05-01T12:08:49+05:00</lastmod>
+<lastmod>2020-05-24T12:01:53+05:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
