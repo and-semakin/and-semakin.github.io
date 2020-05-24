@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Питонические атаки - blog</title><link href="https://semakin.dev/" rel="alternate"></link><link href="https://semakin.dev/feeds/blog.atom.xml" rel="self"></link><id>https://semakin.dev/</id><updated>2020-05-24T11:55:59+05:00</updated><subtitle>Про разработку в целом и про Python в частности</subtitle><entry><title>Почему print("Hello") работает в Python 2</title><link href="https://semakin.dev/2020/05/python2_print/" rel="alternate"></link><published>2020-05-24T11:45:37+05:00</published><updated>2020-05-24T11:55:59+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-05-24:/2020/05/python2_print/</id><summary type="html">&lt;p&gt;Объяснение синтаксического трюка, который позволяет использовать print() как функцию в Python 2 и 3.&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Почему print("Hello") работает в Python 2&lt;/h1&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Питонические атаки - blog</title><link href="https://semakin.dev/" rel="alternate"></link><link href="https://semakin.dev/feeds/blog.atom.xml" rel="self"></link><id>https://semakin.dev/</id><updated>2020-05-24T11:59:14+05:00</updated><subtitle>Про разработку в целом и про Python в частности</subtitle><entry><title>Почему print("Hello") работает в Python 2</title><link href="https://semakin.dev/2020/05/python2_print/" rel="alternate"></link><published>2020-05-24T11:45:37+05:00</published><updated>2020-05-24T11:59:14+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-05-24:/2020/05/python2_print/</id><summary type="html">&lt;p&gt;Объяснение синтаксического трюка, который позволяет использовать print() как функцию в Python 2 и 3.&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Почему print("Hello") работает в Python 2&lt;/h1&gt;
 &lt;p&gt;Одним из самых заметных отличий Python 3 от Python 2 является разжалование
 &lt;code&gt;print&lt;/code&gt; из инструкции языка (statement) до обычной функции.&lt;/p&gt;
 &lt;p&gt;Python 3:&lt;/p&gt;
@@ -167,6 +167,9 @@
 &lt;p&gt;Благодаря этому случаю я узнал про странный трюк с &lt;code&gt;print&lt;/code&gt; и извлёк урок,
 что нужно как минимум проверять свой фикс, прежде чем засылать куда-то
 пулл-реквест.&lt;/p&gt;
+&lt;p&gt;Если понравилась статья, то
+&lt;a href="https://semakin.dev/pages/subscribe/"&gt;подпишитесь на уведомления&lt;/a&gt;
+о новых постах в блоге, чтобы ничего не пропустить!&lt;/p&gt;
 &lt;h1&gt;Дополнительное чтение&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="https://realpython.com/python-print/"&gt;Большой гайд про print на RealPython&lt;/a&gt;;&lt;/li&gt;
