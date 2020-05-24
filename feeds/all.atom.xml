@@ -1,5 +1,164 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Питонические атаки</title><link href="https://semakin.dev/" rel="alternate"></link><link href="https://semakin.dev/feeds/all.atom.xml" rel="self"></link><id>https://semakin.dev/</id><updated>2020-05-19T21:51:55+05:00</updated><subtitle>Про разработку в целом и про Python в частности</subtitle><entry><title>Chocolatey — пакетный менеджер для Windows</title><link href="https://semakin.dev/2020/05/chocolatey/" rel="alternate"></link><published>2020-05-18T13:22:50+05:00</published><updated>2020-05-19T21:39:59+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-05-18:/2020/05/chocolatey/</id><summary type="html">&lt;p&gt;Самая важная программа для любителей окошек.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Как сказал один мудрец (и по совместительству просто мой друг):&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Питонические атаки</title><link href="https://semakin.dev/" rel="alternate"></link><link href="https://semakin.dev/feeds/all.atom.xml" rel="self"></link><id>https://semakin.dev/</id><updated>2020-05-24T11:45:37+05:00</updated><subtitle>Про разработку в целом и про Python в частности</subtitle><entry><title>Почему print("Hello") работает в Python 2</title><link href="https://semakin.dev/2020/05/python2_print/" rel="alternate"></link><published>2020-05-24T11:45:37+05:00</published><updated>2020-05-24T11:45:37+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-05-24:/2020/05/python2_print/</id><summary type="html">&lt;p&gt;Объяснение синтаксического трюка, который позволяет использовать print() как функцию в Python 2 и 3.&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Почему print("Hello") работает в Python 2&lt;/h1&gt;
+&lt;p&gt;Одним из самых заметных отличий Python 3 от Python 2 является разжалование
+&lt;code&gt;print&lt;/code&gt; из инструкции языка (statement) до обычной функции.&lt;/p&gt;
+&lt;p&gt;Python 3:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# простое использование&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Hello"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;# выводит: Hello&lt;/span&gt;
+
+&lt;span class="c1"&gt;# переданные аргументы по умолчанию объединяются через пробел&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Hello"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"world!"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;# выводит: Hello world!&lt;/span&gt;
+
+&lt;span class="c1"&gt;# объединяющий символ можно заменить на свой&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Pythonic"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"attacks!"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;sep&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"_"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;# выводит: Pythonic_attacks!&lt;/span&gt;
+
+&lt;span class="c1"&gt;# можно заменить символ конца строки на пустую строку,&lt;/span&gt;
+&lt;span class="c1"&gt;# чтобы продолжить выводить что-нибудь в той же строке&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Hello "&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;end&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;""&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"world!"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;# выводит: Hello world!&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Python 2:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# простое использование&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"Hello"&lt;/span&gt;
+&lt;span class="c1"&gt;# выводит: Hello&lt;/span&gt;
+
+&lt;span class="c1"&gt;# перечисленные аргументы объединяются через пробел&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"Hello"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"world!"&lt;/span&gt;
+&lt;span class="c1"&gt;# выводит: Hello world!&lt;/span&gt;
+
+&lt;span class="c1"&gt;# если нужен не пробел, а другой символ для объединения,&lt;/span&gt;
+&lt;span class="c1"&gt;# то остаётся делать только вот так:&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"_"&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="s2"&gt;"Hello"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"world!"&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;span class="c1"&gt;# выводит: Hello_world!&lt;/span&gt;
+
+&lt;span class="c1"&gt;# можно при помощи запятой в конце избежать вывода \n (символа конца строки)&lt;/span&gt;
+&lt;span class="c1"&gt;# и продолжить печатать что-нибудь на той же строке:&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"Hello"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"world!"&lt;/span&gt;
+&lt;span class="c1"&gt;# выводит: Hello world!&lt;/span&gt;
+
+&lt;span class="c1"&gt;# если сделать специальный импорт из “будущего”, то&lt;/span&gt;
+&lt;span class="c1"&gt;# в Python 2.7 `print` начинает работать как функция:&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;__future__&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;print_function&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Hello"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"world!"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;# выводит: Hello world!&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Обычно инструкциями в Python являются только очень базовые вещи,
+такие как условия (&lt;code&gt;if&lt;/code&gt;), циклы (&lt;code&gt;for&lt;/code&gt;, &lt;code&gt;while&lt;/code&gt;),
+возврат из функций (&lt;code&gt;return&lt;/code&gt;) и т.д.&lt;/p&gt;
+&lt;p&gt;Преобразование &lt;code&gt;print&lt;/code&gt; в функцию было сделано
+&lt;a href="https://snarky.ca/why-print-became-a-function-in-python-3/"&gt;во имя упрощения синтаксиса языка&lt;/a&gt;.
+Инструкция &lt;code&gt;print&lt;/code&gt; для работы требовала значительного количества синтаксических
+конструкций, например, для отсутствия символа переноса строки (&lt;code&gt;,&lt;/code&gt;) или
+перенаправления вывода в файл (&lt;code&gt;&amp;gt;&amp;gt;&lt;/code&gt;).
+Всё это можно было заставить играть по общим правилам
+(и даже значительно расширить функционал) через позиционные и именованные
+аргументы функций, вообще без какого-либо расширения синтаксиса языка.
+Кроме того, &lt;code&gt;print&lt;/code&gt; как функцию можно использовать гораздо гибче — например,
+фиксируя часть аргументов
+(&lt;a href="https://ru.wikipedia.org/wiki/%D0%9A%D0%B0%D1%80%D1%80%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5"&gt;каррирование&lt;/a&gt;)
+через
+&lt;a href="https://docs.python.org/3/library/functools.html#functools.partial"&gt;&lt;code&gt;functools.partial&lt;/code&gt;&lt;/a&gt;
+или использовать её в других функциях (передавать саму функцию как аргумент), типа
+&lt;a href="https://docs.python.org/3/library/functions.html#map"&gt;&lt;code&gt;map()&lt;/code&gt;&lt;/a&gt; или
+&lt;a href="https://docs.python.org/3/library/functions.html#filter"&gt;&lt;code&gt;filter()&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Недавно в исходниках библиотеки
+&lt;a href="https://github.com/brandon-rhodes/logging_tree"&gt;&lt;code&gt;logging_tree&lt;/code&gt;&lt;/a&gt;
+я увидел, что
+&lt;a href="https://github.com/brandon-rhodes/logging_tree/blob/e3743d223d465a1ecbc5d01a91d54c237e04ccec/logging_tree/format.py#L17"&gt;&lt;code&gt;print&lt;/code&gt; используется как функция&lt;/a&gt;
+без каких-либо импортов из будущего, при этом у библиотеки
+&lt;a href="https://github.com/brandon-rhodes/logging_tree/blob/e3743d223d465a1ecbc5d01a91d54c237e04ccec/setup.py#L15"&gt;заявлена поддержка версий Python&lt;/a&gt;,
+начиная аж с 2.3:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;build_description&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="p"&gt;)[:&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Меня это удивило. Я даже
+&lt;a href="https://github.com/brandon-rhodes/logging_tree/pull/24"&gt;создал пулл-реквест&lt;/a&gt;,
+будучи уверен, что нашёл ошибку. После того, как автор возразил,
+что к нему не поступало никаких жалоб по поводу такого использования &lt;code&gt;print&lt;/code&gt;,
+я решил всё-таки проверить, как это работает.
+И к ещё большему моему удивлению, это и правда работало на всех версиях Python
+2, до которых я смог дотянуться, включая 2.7, 2.6, 2.5, 2.4 и даже 2.3:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# как??&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Hello"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;# выводит: Hello&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Немного поразмыслив и почитав, я осознал, где тут собака зарыта.
+Хоть это и выглядит как вызов функции &lt;code&gt;print()&lt;/code&gt;, на самом деле это всё та же
+старая добрая инструкция &lt;code&gt;print&lt;/code&gt;. Давайте разложим всё по полочкам:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# сначала отодвинем скобки от print, чтобы было нагляднее, что это инструкция:&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Hello"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;# выводит: Hello&lt;/span&gt;
+
+&lt;span class="c1"&gt;# в Python можно засунуть в скобки любое выражение, но пока оно там одно,&lt;/span&gt;
+&lt;span class="c1"&gt;# то скобки не оказывают никакого влияния:&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Hello"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;# получается просто строка: 'Hello'&lt;/span&gt;
+
+&lt;span class="c1"&gt;# а если выражений несколько, или там есть запятая, то тогда уже&lt;/span&gt;
+&lt;span class="c1"&gt;# создаётся кортеж:&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Hello"&lt;/span&gt;&lt;span class="p"&gt;,)&lt;/span&gt;  &lt;span class="c1"&gt;# кортеж из одного элемента&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Hello"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"world"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;  &lt;span class="c1"&gt;# кортеж из двух элементов&lt;/span&gt;
+
+&lt;span class="c1"&gt;# в нашем случае выражение только одно, поэтому скобки можно отбросить:&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"Hello"&lt;/span&gt;
+&lt;span class="c1"&gt;# выводит: Hello&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Как выяснилось, в Python 2 &lt;code&gt;print&lt;/code&gt; и правда можно так, что со стороны это будет
+выглядеть как вызов функции, но для очень ограниченного множества случаев,
+а именно — должен быть только один позиционный аргумент.
+Такой код будет успешно выполняться и на Python 2 (благодаря описанному трюку),
+и на Python 3 (по-настоящему).&lt;/p&gt;
+&lt;p&gt;Разница становится очевидной, если попытаться узнать тип:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# у инструкций нельзя запросить тип, это синтаксически невозможно&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;"&amp;lt;stdin&amp;gt;"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+    &lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+             &lt;span class="o"&gt;^&lt;/span&gt;
+&lt;span class="ne"&gt;SyntaxError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;invalid&lt;/span&gt; &lt;span class="n"&gt;syntax&lt;/span&gt;
+
+&lt;span class="c1"&gt;# а у функций можно&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;__future__&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;print_function&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nb"&gt;type&lt;/span&gt; &lt;span class="s1"&gt;'builtin_function_or_method'&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Трюки из той же серии:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# условие со скобками как в C:&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;span class="o"&gt;...&lt;/span&gt;     &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Equal!"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;...&lt;/span&gt;
+&lt;span class="n"&gt;Equal&lt;/span&gt;&lt;span class="err"&gt;!&lt;/span&gt;
+
+&lt;span class="c1"&gt;# return как функция:&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;func&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;span class="o"&gt;...&lt;/span&gt;     &lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;...&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;func&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="kc"&gt;True&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Это код синтаксически верен, но просто обычно так не пишут. И правильно.&lt;/p&gt;
+&lt;h1&gt;Заключение&lt;/h1&gt;
+&lt;p&gt;Python 2.7 недавно
+&lt;a href="https://mail.python.org/archives/list/python-dev@python.org/message/OFCIETIXLX34X7FVK5B5WPZH22HXV342/"&gt;получил свой последний релиз&lt;/a&gt;
+с исправлениями ошибок, и больше никогда не будет обновляться —
+даже новые найденные баги, связанные с безопасностью, не будут пофикшены.
+Хочется верить, что все заинтересованные уже обновились до Python 3,
+и никто больше активно не использует Python 2, в 2020-то году.
+К сожалению, вряд ли это так.
+Боюсь, что предсмертная агония Python 2 продлится ещё как минимум несколько лет.
+Поэтому знать про него хотя бы что-то всё равно полезно.&lt;/p&gt;
+&lt;p&gt;Благодаря этому случаю я узнал про странный трюк с &lt;code&gt;print&lt;/code&gt; и извлёк урок,
+что нужно как минимум проверять свой фикс, прежде чем засылать куда-то
+пулл-реквест.&lt;/p&gt;
+&lt;h1&gt;Дополнительное чтение&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://realpython.com/python-print/"&gt;Большой гайд про print на RealPython&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://snarky.ca/why-print-became-a-function-in-python-3/"&gt;Брэтт Кэннон, "Why &lt;code&gt;print&lt;/code&gt; became a function in Python 3"&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;em&gt;Обложка: &lt;a href="http://web.archive.org/web/*/https://www.pexels.com/photo/vintage-letters-typo-vintage-typewriter-101710/"&gt;Photo by mali maeder from Pexels&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;</content><category term="blog"></category><category term="python"></category><category term="print"></category></entry><entry><title>Chocolatey — пакетный менеджер для Windows</title><link href="https://semakin.dev/2020/05/chocolatey/" rel="alternate"></link><published>2020-05-18T13:22:50+05:00</published><updated>2020-05-19T21:39:59+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-05-18:/2020/05/chocolatey/</id><summary type="html">&lt;p&gt;Самая важная программа для любителей окошек.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Как сказал один мудрец (и по совместительству просто мой друг):&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;“нет плохих или хороших операционных систем, есть подходящие и
 не подходящие для решения конкретных пользовательских задач”.&lt;/p&gt;
