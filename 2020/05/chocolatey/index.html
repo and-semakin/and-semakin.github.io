@@ -160,10 +160,12 @@ Chocolatey имеет намного больше общего с
 и выбираем пункт “Run as administrator” или, в русской локализации,
 “Запуск от имени администратора”.</li>
 </ol>
-<p><img alt="Run as administrator" src="https://semakin.dev/static/cmd_run_as_administrator.jpg"/></p>
+<p><img alt="Run as administrator" src="https://semakin.dev/static/cmd_run_as_administrator.jpg"></p>
 <p>В открывшееся окно терминала нужно вставить следующую команду:</p>
-<div class="highlight"><pre><span></span><code>@<span class="s2">"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe"</span> -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command <span class="s2">" [System.Net.ServicePointManager]::SecurityProtocol = 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))"</span> <span class="o">&amp;&amp;</span> SET <span class="s2">"PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"</span>
+<div class="highlight"><pre><span></span><code>@<span class="s2">&quot;%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe&quot;</span> -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command <span class="s2">&quot; [System.Net.ServicePointManager]::SecurityProtocol = 3072; iex ((New-Object System.Net.WebClient).DownloadString(&#39;https://chocolatey.org/install.ps1&#39;))&quot;</span> <span class="o">&amp;&amp;</span> SET <span class="s2">&quot;PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin&quot;</span>
 </code></pre></div>
+
+
 <p>На всякий случай, если эта команда устареет и перестанет работать,
 или вы предпочитаете вставлять в администраторский терминал команды
 только из официальных источников (и правильно делаете), то документация
@@ -175,6 +177,8 @@ Chocolatey имеет намного больше общего с
 удобнее. Можно проверить установку:</p>
 <div class="highlight"><pre><span></span><code>choco -?
 </code></pre></div>
+
+
 <p>Если вы видите справку по команде, то установка прошла успешно.</p>
 <h2>Установка программ</h2>
 <p>Давайте установим через <code>choco</code> первые программы.
@@ -192,26 +196,40 @@ Chocolatey имеет намного больше общего с
 <p>Допустим, что вам нужен браузер (удалите из команды ненужные названия):</p>
 <div class="highlight"><pre><span></span><code>choco install -y googlechrome firefox
 </code></pre></div>
+
+
 <p>Или текстовый редактор/IDE (удалите из команды ненужные названия):</p>
 <div class="highlight"><pre><span></span><code>choco install -y notepadplusplus.install vscode
 </code></pre></div>
+
+
 <p>Я являюсь заядлым пользователем PyCharm, который лучше всего устанавливать
 через <a href="https://www.jetbrains.com/ru-ru/toolbox-app/">JetBrains Toolbox</a>
 (как и любые другие IDE от JetBrains):</p>
 <div class="highlight"><pre><span></span><code>choco install -y jetbrainstoolbox
 </code></pre></div>
+
+
 <p>Инструменты для разработки:</p>
 <div class="highlight"><pre><span></span><code>choco install -y git python3 microsoft-windows-terminal postman
 </code></pre></div>
+
+
 <p>Мессенджеры и видео-конференции:</p>
 <div class="highlight"><pre><span></span><code>choco install -y telegram.install slack zoom 
 </code></pre></div>
+
+
 <p>Игры:</p>
 <div class="highlight"><pre><span></span><code>choco install -y steam epicgameslauncher
 </code></pre></div>
+
+
 <p>Всякое прочее-разное полезное:</p>
 <div class="highlight"><pre><span></span><code>choco install -y 7zip vlc paint.net teamviewer qbittorrent thunderbird putty.install
 </code></pre></div>
+
+
 <p>И для установки даже не пришлось кликать мышью по кнопкам!</p>
 <p><a href="https://chocolatey.org/docs/commands-uninstall">Тут</a> можете почитать
 про удаление программ при помощи <code>choco</code>.</p>
@@ -220,6 +238,8 @@ Chocolatey имеет намного больше общего с
 до актуальных версий:</p>
 <div class="highlight"><pre><span></span><code>choco upgrade all -y
 </code></pre></div>
+
+
 <p>По-моему, это очень круто и удобно!</p>
 <h1>Заключение</h1>
 <p><code>choco</code> — теперь для меня это просто маст-хэв на Windows.

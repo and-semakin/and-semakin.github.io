@@ -114,49 +114,53 @@
 <code>print</code> из инструкции языка (statement) до обычной функции.</p>
 <p>Python 3:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># простое использование</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Hello"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello&quot;</span><span class="p">)</span>
 <span class="c1"># выводит: Hello</span>
 
 <span class="c1"># переданные аргументы по умолчанию объединяются через пробел</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Hello"</span><span class="p">,</span> <span class="s2">"world!"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello&quot;</span><span class="p">,</span> <span class="s2">&quot;world!&quot;</span><span class="p">)</span>
 <span class="c1"># выводит: Hello world!</span>
 
 <span class="c1"># объединяющий символ можно заменить на свой</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Pythonic"</span><span class="p">,</span> <span class="s2">"attacks!"</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">"_"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Pythonic&quot;</span><span class="p">,</span> <span class="s2">&quot;attacks!&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
 <span class="c1"># выводит: Pythonic_attacks!</span>
 
 <span class="c1"># можно заменить символ конца строки на пустую строку,</span>
 <span class="c1"># чтобы продолжить выводить что-нибудь в той же строке</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Hello "</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">""</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"world!"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello &quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;world!&quot;</span><span class="p">)</span>
 <span class="c1"># выводит: Hello world!</span>
 </code></pre></div>
+
+
 <p>Python 2:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># простое использование</span>
-<span class="nb">print</span> <span class="s2">"Hello"</span>
+<span class="nb">print</span> <span class="s2">&quot;Hello&quot;</span>
 <span class="c1"># выводит: Hello</span>
 
 <span class="c1"># перечисленные аргументы объединяются через пробел</span>
-<span class="nb">print</span> <span class="s2">"Hello"</span><span class="p">,</span> <span class="s2">"world!"</span>
+<span class="nb">print</span> <span class="s2">&quot;Hello&quot;</span><span class="p">,</span> <span class="s2">&quot;world!&quot;</span>
 <span class="c1"># выводит: Hello world!</span>
 
 <span class="c1"># если нужен не пробел, а другой символ для объединения,</span>
 <span class="c1"># то остаётся делать только вот так:</span>
-<span class="nb">print</span> <span class="s2">"_"</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">"Hello"</span><span class="p">,</span> <span class="s2">"world!"</span><span class="p">])</span>
+<span class="nb">print</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;Hello&quot;</span><span class="p">,</span> <span class="s2">&quot;world!&quot;</span><span class="p">])</span>
 <span class="c1"># выводит: Hello_world!</span>
 
 <span class="c1"># можно при помощи запятой в конце избежать вывода \n (символа конца строки)</span>
 <span class="c1"># и продолжить печатать что-нибудь на той же строке:</span>
-<span class="nb">print</span> <span class="s2">"Hello"</span><span class="p">,</span>
-<span class="nb">print</span> <span class="s2">"world!"</span>
+<span class="nb">print</span> <span class="s2">&quot;Hello&quot;</span><span class="p">,</span>
+<span class="nb">print</span> <span class="s2">&quot;world!&quot;</span>
 <span class="c1"># выводит: Hello world!</span>
 
 <span class="c1"># если сделать специальный импорт из “будущего”, то</span>
-<span class="c1"># в Python 2.7 `print` начинает работать как функция:</span>
+<span class="c1"># в Python 2.6+ `print` начинает работать как функция:</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Hello"</span><span class="p">,</span> <span class="s2">"world!"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello&quot;</span><span class="p">,</span> <span class="s2">&quot;world!&quot;</span><span class="p">)</span>
 <span class="c1"># выводит: Hello world!</span>
 </code></pre></div>
+
+
 <p>Обычно инструкциями в Python являются только очень базовые вещи,
 такие как условия (<code>if</code>), циклы (<code>for</code>, <code>while</code>),
 возврат из функций (<code>return</code>) и т.д.</p>
@@ -185,6 +189,8 @@
 начиная аж с 2.3:</p>
 <div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">build_description</span><span class="p">(</span><span class="n">node</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 </code></pre></div>
+
+
 <p>Меня это удивило. Я даже
 <a href="https://github.com/brandon-rhodes/logging_tree/pull/24">создал пулл-реквест</a>,
 будучи уверен, что нашёл ошибку. После того, как автор возразил,
@@ -193,30 +199,34 @@
 И к ещё большему моему удивлению, это и правда работало на всех версиях Python
 2, до которых я смог дотянуться, включая 2.7, 2.6, 2.5, 2.4 и даже 2.3:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># как??</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Hello"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello&quot;</span><span class="p">)</span>
 <span class="c1"># выводит: Hello</span>
 </code></pre></div>
+
+
 <p>Немного поразмыслив и почитав, я осознал, где тут собака зарыта.
 Хоть это и выглядит как вызов функции <code>print()</code>, на самом деле это всё та же
 старая добрая инструкция <code>print</code>. Давайте разложим всё по полочкам:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># сначала отодвинем скобки от print, чтобы было нагляднее, что это инструкция:</span>
-<span class="nb">print</span> <span class="p">(</span><span class="s2">"Hello"</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Hello&quot;</span><span class="p">)</span>
 <span class="c1"># выводит: Hello</span>
 
 <span class="c1"># в Python можно засунуть в скобки любое выражение, но пока оно там одно,</span>
 <span class="c1"># то скобки не оказывают никакого влияния:</span>
-<span class="p">(</span><span class="s2">"Hello"</span><span class="p">)</span>
-<span class="c1"># получается просто строка: 'Hello'</span>
+<span class="p">(</span><span class="s2">&quot;Hello&quot;</span><span class="p">)</span>
+<span class="c1"># получается просто строка: &#39;Hello&#39;</span>
 
 <span class="c1"># а если выражений несколько, или там есть запятая, то тогда уже</span>
 <span class="c1"># создаётся кортеж:</span>
-<span class="p">(</span><span class="s2">"Hello"</span><span class="p">,)</span>  <span class="c1"># кортеж из одного элемента</span>
-<span class="p">(</span><span class="s2">"Hello"</span><span class="p">,</span> <span class="s2">"world"</span><span class="p">)</span>  <span class="c1"># кортеж из двух элементов</span>
+<span class="p">(</span><span class="s2">&quot;Hello&quot;</span><span class="p">,)</span>  <span class="c1"># кортеж из одного элемента</span>
+<span class="p">(</span><span class="s2">&quot;Hello&quot;</span><span class="p">,</span> <span class="s2">&quot;world&quot;</span><span class="p">)</span>  <span class="c1"># кортеж из двух элементов</span>
 
 <span class="c1"># в нашем случае выражение только одно, поэтому скобки можно отбросить:</span>
-<span class="nb">print</span> <span class="s2">"Hello"</span>
+<span class="nb">print</span> <span class="s2">&quot;Hello&quot;</span>
 <span class="c1"># выводит: Hello</span>
 </code></pre></div>
+
+
 <p>Как выяснилось, в Python 2 <code>print</code> и правда можно так, что со стороны это будет
 выглядеть как вызов функции, но для очень ограниченного множества случаев,
 а именно — должен быть только один позиционный аргумент.
@@ -225,7 +235,7 @@
 <p>Разница становится очевидной, если попытаться узнать тип:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># у инструкций нельзя запросить тип, это синтаксически невозможно</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="nb">print</span><span class="p">)</span>
-  <span class="n">File</span> <span class="s2">"&lt;stdin&gt;"</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span>
+  <span class="n">File</span> <span class="s2">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span>
     <span class="nb">type</span><span class="p">(</span><span class="nb">print</span><span class="p">)</span>
              <span class="o">^</span>
 <span class="ne">SyntaxError</span><span class="p">:</span> <span class="n">invalid</span> <span class="n">syntax</span>
@@ -233,12 +243,14 @@
 <span class="c1"># а у функций можно</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="nb">print</span><span class="p">)</span>
-<span class="o">&lt;</span><span class="nb">type</span> <span class="s1">'builtin_function_or_method'</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="nb">type</span> <span class="s1">&#39;builtin_function_or_method&#39;</span><span class="o">&gt;</span>
 </code></pre></div>
+
+
 <p>Трюки из той же серии:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># условие со скобками как в C:</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="k">if</span><span class="p">(</span><span class="mi">1</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
-<span class="o">...</span>     <span class="nb">print</span><span class="p">(</span><span class="s2">"Equal!"</span><span class="p">)</span>
+<span class="o">...</span>     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Equal!&quot;</span><span class="p">)</span>
 <span class="o">...</span>
 <span class="n">Equal</span><span class="err">!</span>
 
@@ -249,6 +261,8 @@
 <span class="o">&gt;&gt;&gt;</span> <span class="n">func</span><span class="p">()</span>
 <span class="kc">True</span>
 </code></pre></div>
+
+
 <p>Это код синтаксически верен, но просто обычно так не пишут. И правильно.</p>
 <h1>Заключение</h1>
 <p>Python 2.7 недавно
@@ -268,7 +282,7 @@
 <li><a href="https://realpython.com/python-print/">Большой гайд про print на RealPython</a>;</li>
 <li><a href="https://snarky.ca/why-print-became-a-function-in-python-3/">Брэтт Кэннон, "Why <code>print</code> became a function in Python 3"</a>.</li>
 </ul>
-<p><em>Обложка: <a href="http://web.archive.org/web/*/https://www.pexels.com/photo/vintage-letters-typo-vintage-typewriter-101710/">Photo by mali maeder from Pexels</a></em></p>
+<p><em>Обложка: <a href="https://www.pexels.com/photo/vintage-letters-typo-vintage-typewriter-101710/">Photo by mali maeder from Pexels</a></em></p>
     </article>
 
         <div class="tags">

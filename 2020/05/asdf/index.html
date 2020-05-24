@@ -131,7 +131,7 @@
 (она будет очень толстой). Потенциально это может замедлить работу шелла вообще.
 Но все эти проблемы остались в прошлом
 — встречайте <code>asdf</code>, универсальный менеджер версий!</p>
-<p><img alt="asdf meme" src="https://semakin.dev/static/asdf_meme.jpg"/></p>
+<p><img alt="asdf meme" src="https://semakin.dev/static/asdf_meme.jpg"></p>
 <p><code>asdf</code>, так же как и <code>pyenv</code>, написан на чистом <code>bash</code>.
 Это означает, что инструмент отлично работает под Linux и MacOS, но,
 к сожалению, никак не работает на Windows (ну, разве что в
@@ -173,9 +173,11 @@
 <p>После установки перезапустите ваш шелл и проверьте установку:</p>
 <div class="highlight"><pre><span></span><code>$ asdf
 ...
-<span class="s2">"Late but latest"</span>
+<span class="s2">&quot;Late but latest&quot;</span>
 -- Rajinikanth
 </code></pre></div>
+
+
 <p>Если вы видите этот девиз <code>asdf</code> после справки по командам,
 то установка удалась, можно продолжать.
 Девиз в моём вольном переводе означает что-то типа
@@ -190,6 +192,8 @@
 Давайте запросим список доступных к установке плагинов:</p>
 <div class="highlight"><pre><span></span><code>$ asdf plugin list all
 </code></pre></div>
+
+
 <p>У меня вывелось аж 194 штуки.
 Список плагинов можно посмотреть и на сайте,
 <a href="https://asdf-vm.com/#/plugins-all">вот здесь</a>.</p>
@@ -222,42 +226,49 @@
 <p>Установка интересующего плагина выполняется следующим образом:</p>
 <div class="highlight"><pre><span></span><code>$ asdf plugin add &lt;имя плагина&gt;
 </code></pre></div>
+
+
 <p>Рассмотрим работу с теми плагинами, с которыми мне доводилось работать.</p>
 <h2>Плагин для Python</h2>
 <p>Установим плагин для Python:</p>
 <div class="highlight"><pre><span></span><code>$ asdf plugin add python
 </code></pre></div>
+
+
 <p><code>asdf</code> имеет очень логично организованный интерфейс командной строки.
 Запомните одно правило: если хотите просмотреть только установленные
 плагины или версии плагина, то делайте <code>list</code>,
 а если вообще все, то <code>list all</code>.</p>
 <table>
-<thead>
-<tr>
-<th></th>
-<th style="text-align:center">плагин</th>
-<th style="text-align:center">версия</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">все</td>
-<td><pre>asdf plugin list all</pre></td>
-<td><pre>asdf list all python</pre></td>
-</tr>
-<tr>
-<td style="text-align:center">установленные</td>
-<td><pre>asdf plugin list</pre></td>
-<td><pre>asdf list python</pre></td>
-</tr>
-</tbody>
+    <thead>
+        <tr>
+            <th></th>
+            <th style="text-align:center">плагин</th>
+            <th style="text-align:center">версия</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="text-align:center">все</td>
+            <td><pre>asdf plugin list all</pre></td>
+            <td><pre>asdf list all python</pre></td>
+        </tr>
+        <tr>
+            <td style="text-align:center">установленные</td>
+            <td><pre>asdf plugin list</pre></td>
+            <td><pre>asdf list python</pre></td>
+        </tr>
+    </tbody>
 </table>
+
 <p>Выше мы уже смотрели список всех плагинов (через <code>list all</code>), а теперь
 давайте просмотрим список <em>установленных</em> плагинов. Там должен быть <code>python</code>,
 мы ведь его только что установили:</p>
 <div class="highlight"><pre><span></span><code>$ asdf plugin list
 python
 </code></pre></div>
+
+
 <p>Отлично, плагин установлен! Давайте попросим <code>asdf</code> показать
 список доступных версий (хотим вообще все, поэтому <code>list all</code>)
 для плагина <code>python</code>:</p>
@@ -291,6 +302,8 @@ python
 <span class="m">3</span>.9-dev
 …
 </code></pre></div>
+
+
 <p>Список я подсократил, но поверьте — он длинный.
 Там есть как все версии эталонного интерпретатора CPython,
 начиная с 2.1.3, так и альтернативные реализации Python
@@ -308,11 +321,15 @@ python
 <div class="highlight"><pre><span></span><code>$ asdf install python <span class="m">3</span>.7.7
 $ asdf install python <span class="m">3</span>.8.2
 </code></pre></div>
+
+
 <p>Давайте запросим список <em>установленных</em> версий (<code>list</code>):</p>
 <div class="highlight"><pre><span></span><code>$ asdf list python
   <span class="m">3</span>.7.7
   <span class="m">3</span>.8.2
 </code></pre></div>
+
+
 <p>Давайте назначим глобальной ту версию Python, которую собираемся
 использовать чаще всего. Она будет использоваться по умолчанию, когда
 не найдена никакая локальная версия. Здесь всё работает так же, как и в
@@ -322,10 +339,14 @@ $ asdf install python <span class="m">3</span>.8.2
 $ python -V
 Python <span class="m">3</span>.8.2
 </code></pre></div>
+
+
 <p>Если вам интересно, как работает <code>asdf</code>, то:</p>
 <div class="highlight"><pre><span></span><code>$ which python
 /home/br0ke/.asdf/shims/python
 </code></pre></div>
+
+
 <p>Опять же, он использует тот же принцип, что и <code>pyenv</code>
 — создает небольшие исполняемые файлы (shims) для всех команд,
 которыми собирается управлять.
@@ -337,16 +358,22 @@ Python <span class="m">3</span>.8.2
 <div class="highlight"><pre><span></span><code>$ mkdir my_project
 $ <span class="nb">cd</span> my_project
 </code></pre></div>
+
+
 <p>Установим локальную версию:</p>
 <div class="highlight"><pre><span></span><code>$ asdf <span class="nb">local</span> python <span class="m">3</span>.7.7
 $ python -V
 Python <span class="m">3</span>.7.7
 </code></pre></div>
+
+
 <p>В этой директории <code>asdf</code> создал специальный файл <code>.tool-versions</code>
 (аналог <code>.python-version</code> из <code>pyenv</code>):</p>
 <div class="highlight"><pre><span></span><code>$ cat .tool-versions
 python <span class="m">3</span>.7.7
 </code></pre></div>
+
+
 <p>Этот файл содержит версии всех утилит, которые мы настроили для директории,
 т.е. потенциально тут может быть не только Python.
 Как правило, этот файл не нужно добавлять в систему контроля версий (git),
@@ -360,12 +387,16 @@ python <span class="m">3</span>.7.7
 содержимым:</p>
 <div class="highlight"><pre><span></span><code>legacy_version_file = yes
 </code></pre></div>
+
+
 <p>При выходе из директории локально настроенная версия перестанет действовать
 и версия вернётся на глобальную:</p>
 <div class="highlight"><pre><span></span><code>$ <span class="nb">cd</span> ..
 $ python -V
 Python <span class="m">3</span>.8.2
 </code></pre></div>
+
+
 <p>По-моему, это очень удобно.
 В целом <code>asdf</code> работает так же как <code>pyenv</code> и многие другие менеджеры версий
 — в конце концов, они вдохновлены одной идеей.
@@ -373,19 +404,25 @@ Python <span class="m">3</span>.8.2
 <p>Допустим, что нужда прижала вас установить IPython:</p>
 <div class="highlight"><pre><span></span><code>$ pip install ipython
 </code></pre></div>
+
+
 <p>Чтобы IPython можно было запускать, нужно попросить <code>asdf</code> пересоздать шимы:</p>
 <div class="highlight"><pre><span></span><code>$ asdf reshim
 $ ipython
 Python <span class="m">3</span>.8.2 <span class="o">(</span>default, May <span class="m">10</span> <span class="m">2020</span>, <span class="m">22</span>:17:35<span class="o">)</span> 
-Type <span class="s1">'copyright'</span>, <span class="s1">'credits'</span> or <span class="s1">'license'</span> <span class="k">for</span> more information
-IPython <span class="m">7</span>.14.0 -- An enhanced Interactive Python. Type <span class="s1">'?'</span> <span class="k">for</span> help.
+Type <span class="s1">&#39;copyright&#39;</span>, <span class="s1">&#39;credits&#39;</span> or <span class="s1">&#39;license&#39;</span> <span class="k">for</span> more information
+IPython <span class="m">7</span>.14.0 -- An enhanced Interactive Python. Type <span class="s1">&#39;?&#39;</span> <span class="k">for</span> help.
 
-In <span class="o">[</span><span class="m">1</span><span class="o">]</span>: print<span class="o">(</span><span class="s2">"asdf is awesome!"</span><span class="o">)</span>
+In <span class="o">[</span><span class="m">1</span><span class="o">]</span>: print<span class="o">(</span><span class="s2">&quot;asdf is awesome!&quot;</span><span class="o">)</span>
 </code></pre></div>
+
+
 <h2>Плагин для Node.js</h2>
 <p>Установим плагин для Node.js:</p>
 <div class="highlight"><pre><span></span><code>$ asdf plugin add nodejs
 </code></pre></div>
+
+
 <p>Запросим список доступных версий:</p>
 <div class="highlight"><pre><span></span><code>$ asdf list all nodejs
 …
@@ -411,6 +448,8 @@ In <span class="o">[</span><span class="m">1</span><span class="o">]</span>: pri
 <span class="m">14</span>.1.0
 <span class="m">14</span>.2.0
 </code></pre></div>
+
+
 <p>Все инструменты устанавливаются по-разному, и плагины это учитывают. Например,
 Python собирался из исходников, а Node.js устанавливается простым
 скачиванием бинарника, так что никакие зависимости для сборки не нужны.</p>
@@ -421,28 +460,38 @@ Python собирался из исходников, а Node.js устанавл
 утилита установлена <code>gpg</code>):</p>
 <div class="highlight"><pre><span></span><code>$ bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring
 </code></pre></div>
+
+
 <p>Теперь установим последнюю на данный момент версию Node.js:</p>
 <div class="highlight"><pre><span></span><code>$ asdf install nodejs <span class="m">14</span>.2.0
 </code></pre></div>
+
+
 <p>Назначим её глобальной и проверим работу:</p>
 <div class="highlight"><pre><span></span><code>$ asdf global nodejs <span class="m">14</span>.2.0
 $ node
 Welcome to Node.js v14.2.0.
-Type <span class="s2">".help"</span> <span class="k">for</span> more information.
-&gt; console.log<span class="o">(</span><span class="s2">"asdf is super awesome!"</span><span class="o">)</span>
+Type <span class="s2">&quot;.help&quot;</span> <span class="k">for</span> more information.
+&gt; console.log<span class="o">(</span><span class="s2">&quot;asdf is super awesome!&quot;</span><span class="o">)</span>
 asdf is super awesome!
 undefined
 </code></pre></div>
+
+
 <p>Давайте вернемся в директорию из предыдущего примера и
 добавим там ещё и локальную версию Node.js:</p>
 <div class="highlight"><pre><span></span><code>$ <span class="nb">cd</span> my_project
 $ asdf <span class="nb">local</span> nodejs <span class="m">14</span>.2.0
 </code></pre></div>
+
+
 <p>Теперь в <code>.tool-versions</code> лежит следующее содержимое:</p>
 <div class="highlight"><pre><span></span><code>$ cat .tool-versions 
 python <span class="m">3</span>.7.7
 nodejs <span class="m">14</span>.2.0
 </code></pre></div>
+
+
 <h1>Заключение</h1>
 <p><code>asdf</code> незаменим, если вы программируете более чем на одном языке.
 Крайне рекомендую присмотреться к нему, даже если сейчас вы

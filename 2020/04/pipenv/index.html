@@ -167,24 +167,34 @@
 <p>Например, на MacOS <code>pipenv</code> можно установить через <code>brew</code>:</p>
 <div class="highlight"><pre><span></span><code>$ brew install pipenv
 </code></pre></div>
+
+
 <p>А на Fedora Linux вот так:</p>
 <div class="highlight"><pre><span></span><code>$ sudo dnf install pipenv
 </code></pre></div>
+
+
 <p>На Ubuntu можно установить <code>pipenv</code> из <a href="https://launchpad.net/~pypa/+archive/ubuntu/ppa">специального PPA</a>:</p>
 <div class="highlight"><pre><span></span><code>$ sudo apt install software-properties-common python-software-properties
 $ sudo add-apt-repository ppa:pypa/ppa
 $ sudo apt update
 $ sudo apt install pipenv
 </code></pre></div>
+
+
 <p>Во всех остальных случаях, в частности на Windows, самый простой способ — это установка
 в домашнюю директорию пользователя
 (опять же, см. <a href="https://semakin.dev/2020/04/python_virtualenv/">пост про виртуальные окружения</a>):</p>
 <div class="highlight"><pre><span></span><code>$ pip install --user pipenv
 </code></pre></div>
+
+
 <p>Теперь проверим установку:</p>
 <div class="highlight"><pre><span></span><code>$ pipenv --version
 pipenv, version <span class="m">2018</span>.11.26
 </code></pre></div>
+
+
 <p>Если вы получили похожий вывод, значит, всё в порядке.</p>
 <p>При возникновении проблем с установкой, обратитесь к
 <a href="https://pipenv.pypa.io/en/latest/install/">официальной документации</a>.
@@ -219,9 +229,13 @@ pipenv, version <span class="m">2018</span>.11.26
 <div class="highlight"><pre><span></span><code>$ mkdir pipenv_demo
 $ <span class="nb">cd</span> pipenv_demo
 </code></pre></div>
+
+
 <p>Создать новый проект, использующий конкретную версию Python можно вот такой командой:</p>
 <div class="highlight"><pre><span></span><code>$ pipenv --python <span class="m">3</span>.8
 </code></pre></div>
+
+
 <p>Если же вам не нужно указывать версию так конкретно, то есть шорткаты:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Создает проект с Python 3, версию выберет автоматически.</span>
 $ pipenv --three
@@ -230,13 +244,15 @@ $ pipenv --three
 <span class="c1"># В 2020 году эта опция противопоказана.</span>
 $ pipenv --two
 </code></pre></div>
+
+
 <p>После выполнения одной из этих команд, <code>pipenv</code> создал файл <code>Pipfile</code> и
 виртуальное окружение где-то в заранее определенной директории
 (по умолчанию вне директории проекта).</p>
 <div class="highlight"><pre><span></span><code>$ cat Pipfile
 <span class="o">[[</span>source<span class="o">]]</span>
-<span class="nv">name</span> <span class="o">=</span> <span class="s2">"pypi"</span>
-<span class="nv">url</span> <span class="o">=</span> <span class="s2">"https://pypi.org/simple"</span>
+<span class="nv">name</span> <span class="o">=</span> <span class="s2">&quot;pypi&quot;</span>
+<span class="nv">url</span> <span class="o">=</span> <span class="s2">&quot;https://pypi.org/simple&quot;</span>
 <span class="nv">verify_ssl</span> <span class="o">=</span> <span class="nb">true</span>
 
 <span class="o">[</span>dev-packages<span class="o">]</span>
@@ -244,8 +260,10 @@ $ pipenv --two
 <span class="o">[</span>packages<span class="o">]</span>
 
 <span class="o">[</span>requires<span class="o">]</span>
-<span class="nv">python_version</span> <span class="o">=</span> <span class="s2">"3.8"</span>
+<span class="nv">python_version</span> <span class="o">=</span> <span class="s2">&quot;3.8&quot;</span>
 </code></pre></div>
+
+
 <p>Это минимальный образец <code>Pipfile</code>. В секции <code>[[source]]</code> перечисляются
 индексы пакетов — сейчас тут только PyPI, но может быть и ваш
 собственный индекс пакетов. В секциях <code>[packages]</code> и <code>[dev-packages]</code>
@@ -262,21 +280,27 @@ $ pipenv --two
 <div class="highlight"><pre><span></span><code>$ pipenv --py
 /Users/and-semakin/.local/share/virtualenvs/pipenv_demo-1dgGUSFy/bin/python
 </code></pre></div>
+
+
 <h3>Управление зависимостями через <code>pipenv</code></h3>
 <p>Теперь давайте установим в проект первую зависимость. Делается
 это при помощи команды <code>pipenv install</code>:</p>
 <div class="highlight"><pre><span></span><code>$ pipenv install requests
 </code></pre></div>
+
+
 <p>Давайте посмотрим, что поменялось в <code>Pipfile</code> (здесь и дальше я
 буду сокращать вывод команд или содержимое файлов при помощи <code>...</code>):</p>
 <div class="highlight"><pre><span></span><code>$ cat Pipfile
 ...
 
 <span class="o">[</span>packages<span class="o">]</span>
-<span class="nv">requests</span> <span class="o">=</span> <span class="s2">"*"</span>
+<span class="nv">requests</span> <span class="o">=</span> <span class="s2">&quot;*&quot;</span>
 
 ...
 </code></pre></div>
+
+
 <p>В секцию <code>[packages]</code> добавилась зависимость <code>requests</code> с версией <code>*</code>
 (версия не фиксирована).</p>
 <p>А теперь давайте установим зависимость, которая нужна для разработки,
@@ -288,10 +312,12 @@ $ cat Pipfile
 ...
 
 <span class="o">[</span>dev-packages<span class="o">]</span>
-<span class="nv">flake8</span> <span class="o">=</span> <span class="s2">"*"</span>
+<span class="nv">flake8</span> <span class="o">=</span> <span class="s2">&quot;*&quot;</span>
 
 ...
 </code></pre></div>
+
+
 <p>Теперь можно увидеть всё дерево зависимостей проекта при помощи команды
 <code>pipenv graph</code>:</p>
 <div class="highlight"><pre><span></span><code>$ pipenv graph
@@ -306,6 +332,8 @@ $ cat Pipfile
   - idna <span class="o">[</span>required: &gt;<span class="o">=</span><span class="m">2</span>.5,&lt;<span class="m">3</span>, installed: <span class="m">2</span>.9<span class="o">]</span>
   - urllib3 <span class="o">[</span>required: &gt;<span class="o">=</span><span class="m">1</span>.21.1,&lt;<span class="m">1</span>.26,!<span class="o">=</span><span class="m">1</span>.25.1,!<span class="o">=</span><span class="m">1</span>.25.0, installed: <span class="m">1</span>.25.9<span class="o">]</span>
 </code></pre></div>
+
+
 <p>Это бывает полезно, чтобы узнать, что от чего зависит, или почему в вашем
 виртуальном окружении есть определённый пакет.</p>
 <p>Также, пока мы устанавливали пакеты, <code>pipenv</code> создал <code>Pipfile.lock</code>,
@@ -317,25 +345,35 @@ $ cat Pipfile
 <div class="highlight"><pre><span></span><code>$ pipenv uninstall --help
 $ pipenv update --help
 </code></pre></div>
+
+
 <h3>Управление виртуальными окружениями</h3>
 <p>Давайте удалим созданное виртуальное окружение:</p>
 <div class="highlight"><pre><span></span><code>$ pipenv --rm
 </code></pre></div>
+
+
 <p>И представим себя в роли другого разработчика, который только присоединился
 к вашему проекту. Чтобы создать виртуальное окружение и установить
 в него зависимости нужно выполнить следующую команду:</p>
 <div class="highlight"><pre><span></span><code>$ pipenv sync --dev
 </code></pre></div>
+
+
 <p>Эта команда на основе <code>Pipfile.lock</code> воссоздаст точно то же самое виртуальное
 окружение, что и у других разработчиков проекта.</p>
 <p>Если же вам не нужны dev-зависимости (например, вы разворачиваете ваш
 проект на продакшн), то можно не передавать флаг <code>--dev</code>:</p>
 <div class="highlight"><pre><span></span><code>$ pipenv sync
 </code></pre></div>
+
+
 <p>Чтобы "войти" внутрь виртуального окружения, нужно выполнить:</p>
 <div class="highlight"><pre><span></span><code>$ pipenv shell
 <span class="o">(</span>pipenv_demo<span class="o">)</span> $
 </code></pre></div>
+
+
 <p>В этом режиме будут доступны все установленные пакеты, а имена <code>python</code> и <code>pip</code>
 будут указывать на соответствующие программы внутри виртуального окружения.</p>
 <p>Есть и другой способ запускать что-то внутри виртуального окружения без
@@ -349,6 +387,8 @@ $ pipenv run python script.py
 <span class="c1"># а так можно получить список пакетов внутри виртуального окружения</span>
 $ pipenv run pip freeze
 </code></pre></div>
+
+
 <h3>Переменные окружения</h3>
 <p>Согласно идеологии 12-факторных приложений, конфигурацию принято хранить
 отдельно от кода, а <a href="https://12factor.net/ru/config">лучше всего конфигурацию вообще
@@ -362,6 +402,8 @@ $ pipenv run pip freeze
 <p>Давайте создадим файл <code>.env</code> и запишем туда какое-нибудь значение:</p>
 <div class="highlight"><pre><span></span><code>SECRET_VALUE=hello pipenv!
 </code></pre></div>
+
+
 <p><strong>ВАЖНО:</strong> файл <code>.env</code> может содержать пароли для подключения к СУБД
 или токены для доступа к внешним сервисам. Такие данные <strong>никогда</strong> не должны
 попадать в git.</p>
@@ -369,12 +411,16 @@ $ pipenv run pip freeze
 переменную окружения:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">os</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Secret value:"</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"SECRET_VALUE"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Secret value:&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SECRET_VALUE&quot;</span><span class="p">))</span>
 </code></pre></div>
+
+
 <p>Попробуем запустить его без использования <code>pipenv</code>:</p>
 <div class="highlight"><pre><span></span><code>$ python script.py
 Secret value: None
 </code></pre></div>
+
+
 <p>Скрипт вместо секретного значения вывел <code>None</code>, потому что переменная
 окружения так и осталась просто лежать в файле, и никак не повлияла на
 работу скрипта. А теперь запустим этот же скрипт через <code>pipenv</code>:</p>
@@ -382,6 +428,8 @@ Secret value: None
 Loading .env environment variables…
 Secret value: hello pipenv!
 </code></pre></div>
+
+
 <p><code>pipenv</code> увидел файл <code>.env</code> и автоматически загрузил переменные из него.
 Скрипт вывел то значение, которое мы и ожидали увидеть. Команда
 <code>pipenv shell</code> тоже подгружает переменные окружения из файла.</p>
@@ -400,14 +448,20 @@ Secret value: hello pipenv!
 но примера ради будем передавать всё через командную строку):</p>
 <div class="highlight"><pre><span></span><code>$ flake8 --exclude<span class="o">=</span>tests --ignore<span class="o">=</span>E121 .
 </code></pre></div>
+
+
 <p>Отредактируем <code>Pipfile</code>, создав там секцию <code>[scripts]</code> со следующим
 содержимым:</p>
 <div class="highlight"><pre><span></span><code><span class="k">[scripts]</span>
-<span class="n">lint</span> <span class="o">=</span> <span class="s">"flake8 --exclude=tests --ignore=E121 ."</span>
+<span class="n">lint</span> <span class="o">=</span> <span class="s">&quot;flake8 --exclude=tests --ignore=E121 .&quot;</span>
 </code></pre></div>
+
+
 <p>Теперь тот же самый скрипт можно запустить при помощи команды:</p>
 <div class="highlight"><pre><span></span><code>$ pipenv run lint
 </code></pre></div>
+
+
 <p>В качестве бонуса <code>pipenv</code> автоматически подгрузит переменные окружения,
 так что таким же образом можно выполнять и скрипты, которые зависят от
 конфигурации проекта (миграции БД, очистки кэшей, удаление временных файлов,
@@ -432,6 +486,8 @@ Secret value: hello pipenv!
 приходится удалять его полностью и создавать заново:</p>
 <div class="highlight"><pre><span></span><code>$ pipenv --rm <span class="o">&amp;&amp;</span> pipenv sync --dev
 </code></pre></div>
+
+
 <h3>Пререлизные зависимости</h3>
 <p>По умолчанию <code>pipenv</code> игнорирует нестабильные альфа- и бета-версии пакетов,
 и устанавливает только стабильные. Может случиться так, что вам нужно
@@ -444,6 +500,8 @@ ERROR: ERROR: Could not find a version that matches black
 Skipped pre-versions: <span class="m">18</span>.3a0, <span class="m">18</span>.3a0, <span class="m">18</span>.3a1, <span class="m">18</span>.3a1, <span class="m">18</span>.3a2, <span class="m">18</span>.3a2, <span class="m">18</span>.3a3, <span class="m">18</span>.3a3, <span class="m">18</span>.3a4, <span class="m">18</span>.3a4, <span class="m">18</span>.4a0, <span class="m">18</span>.4a0, <span class="m">18</span>.4a1, <span class="m">18</span>.4a1, <span class="m">18</span>.4a2, <span class="m">18</span>.4a2, <span class="m">18</span>.4a3, <span class="m">18</span>.4a3, <span class="m">18</span>.4a4, <span class="m">18</span>.4a4, <span class="m">18</span>.5b0, <span class="m">18</span>.5b0, <span class="m">18</span>.5b1, <span class="m">18</span>.5b1, <span class="m">18</span>.6b0, <span class="m">18</span>.6b0, <span class="m">18</span>.6b1, <span class="m">18</span>.6b1, <span class="m">18</span>.6b2, <span class="m">18</span>.6b2, <span class="m">18</span>.6b3, <span class="m">18</span>.6b3, <span class="m">18</span>.6b4, <span class="m">18</span>.6b4, <span class="m">18</span>.9b0, <span class="m">18</span>.9b0, <span class="m">19</span>.3b0, <span class="m">19</span>.3b0, <span class="m">19</span>.10b0, <span class="m">19</span>.10b0
 There are incompatible versions in the resolved dependencies.
 </code></pre></div>
+
+
 <p>Команда завершилась ошибкой, но <code>pipenv</code> предлагает воспользоваться опцией
 <code>--pre</code>, чтобы установить пререлизную зависимость. <strong>Избегайте искушения
 сделать так.</strong></p>
@@ -452,12 +510,16 @@ There are incompatible versions in the resolved dependencies.
 ...
 ✔ Installation Succeeded
 </code></pre></div>
+
+
 <p>На первый взгляд, всё хорошо. Но давайте заглянем в <code>Pipfile</code>:</p>
 <div class="highlight"><pre><span></span><code>$ cat Pipfile
 ...
 <span class="o">[</span>pipenv<span class="o">]</span>
 <span class="nv">allow_prereleases</span> <span class="o">=</span> <span class="nb">true</span>
 </code></pre></div>
+
+
 <p>Там появилась директива <code>allow_prereleases = true</code>, которая глобально меняет
 поведение <code>pipenv</code> и разрешает ему устанавливать пререлизные версии
 вообще любых зависимостей, а не только той, которую вы хотели установить.
@@ -469,6 +531,8 @@ There are incompatible versions in the resolved dependencies.
 конкретную версию:</p>
 <div class="highlight"><pre><span></span><code>$ pipenv install --dev <span class="nv">black</span><span class="o">==</span><span class="m">19</span>.10b0
 </code></pre></div>
+
+
 <p>Если же вы уже попались в эту ловушку <code>pipenv</code>, то просто отредактируйте
 <code>Pipfile</code> и либо удалите оттуда директиву <code>allow_prereleases</code> вообще,
 либо поменяйте значение на <code>false</code>. После этого можно спать спокойно.</p>
@@ -482,6 +546,8 @@ There are incompatible versions in the resolved dependencies.
 ...
 json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes: line <span class="m">3</span> column <span class="m">8</span> <span class="o">(</span>char <span class="m">24</span><span class="o">)</span>
 </code></pre></div>
+
+
 <p>План выхода из такой ситуации следующий:
 1. Не пытайтесь осознанно решать конфликты в <code>Pipfile.lock</code> вручную, всё равно
 не сможете; <code>pipenv</code> сам создал этот файл, вот пусть сам и разбирается.
@@ -490,6 +556,8 @@ json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes:
 3. Пересоздайте <code>Pipfile.lock</code> заново:</p>
 <div class="highlight"><pre><span></span><code>$ pipenv lock --keep-outdated
 </code></pre></div>
+
+
 <p>Флаг <code>--keep-outdated</code> позволяет избежать лишних обновлений версий — вы
 ведь просто хотите разрешить конфликты, а не обновить все пакеты, верно?
 Тем не менее, <code>pipenv</code> может вас проигнорировать, и всё равно обновить
@@ -516,7 +584,7 @@ json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes:
     <span class="n">use_dot_env_file</span><span class="p">()</span>
     <span class="n">use_scripts</span><span class="p">()</span>
     <span class="n">know_pitfalls</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"PROFIT!!!!!"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;PROFIT!!!!!&quot;</span><span class="p">)</span>
 
 
 <span class="k">if</span> <span class="n">work_on_application</span><span class="p">:</span>
@@ -524,9 +592,11 @@ json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes:
 <span class="k">elif</span> <span class="n">work_on_library</span><span class="p">:</span>
     <span class="n">use_poetry</span><span class="p">()</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"wtf"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;wtf&quot;</span><span class="p">)</span>
     <span class="n">use_pip</span><span class="p">()</span>
 </code></pre></div>
+
+
 <h2>Дополнительное чтение</h2>
 <ul>
 <li><a href="https://github.com/pypa/pipenv">Исходный код <code>pipenv</code></a>;</li>

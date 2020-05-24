@@ -127,6 +127,8 @@
 <p>Каждый начинающий программист знает, как установить библиотеку. Набираем</p>
 <div class="highlight"><pre><span></span><code>$ pip install requests
 </code></pre></div>
+
+
 <p>и понеслась! Множество библиотек в своих инструкциях по установке именно так
 и предлагают их устанавливать. Это и правда работает, это и правда так просто,
 <em>но есть нюансы</em>. В этом месте закопаны очень популярные грабли, по которым
@@ -152,16 +154,18 @@
 именно происходит установка? Это можно узнать, выполнив следующую команду:</p>
 <div class="highlight"><pre><span></span><code>$ python -m site
 sys.path <span class="o">=</span> <span class="o">[</span>
-    <span class="s1">'/Users/and-semakin'</span>,
-    <span class="s1">'/Users/and-semakin/.asdf/installs/python/3.8.2/lib/python38.zip'</span>,
-    <span class="s1">'/Users/and-semakin/.asdf/installs/python/3.8.2/lib/python3.8'</span>,
-    <span class="s1">'/Users/and-semakin/.asdf/installs/python/3.8.2/lib/python3.8/lib-dynload'</span>,
-    <span class="s1">'/Users/and-semakin/env/lib/python3.8/site-packages'</span>,
+    <span class="s1">&#39;/Users/and-semakin&#39;</span>,
+    <span class="s1">&#39;/Users/and-semakin/.asdf/installs/python/3.8.2/lib/python38.zip&#39;</span>,
+    <span class="s1">&#39;/Users/and-semakin/.asdf/installs/python/3.8.2/lib/python3.8&#39;</span>,
+    <span class="s1">&#39;/Users/and-semakin/.asdf/installs/python/3.8.2/lib/python3.8/lib-dynload&#39;</span>,
+    <span class="s1">&#39;/Users/and-semakin/env/lib/python3.8/site-packages&#39;</span>,
 <span class="o">]</span>
-USER_BASE: <span class="s1">'/Users/and-semakin/.local'</span> <span class="o">(</span>exists<span class="o">)</span>
-USER_SITE: <span class="s1">'/Users/and-semakin/.local/lib/python3.8/site-packages'</span> <span class="o">(</span>doesn<span class="err">'</span>t exist<span class="o">)</span>
+USER_BASE: <span class="s1">&#39;/Users/and-semakin/.local&#39;</span> <span class="o">(</span>exists<span class="o">)</span>
+USER_SITE: <span class="s1">&#39;/Users/and-semakin/.local/lib/python3.8/site-packages&#39;</span> <span class="o">(</span>doesn<span class="err">&#39;</span>t exist<span class="o">)</span>
 ENABLE_USER_SITE: False
 </code></pre></div>
+
+
 <p>В списке <code>sys.path</code> можно увидеть директорию <code>site-packages</code> — именно туда
 и будет установлена библиотека. Давайте в этом убедимся.</p>
 <p>До установки пакета:</p>
@@ -175,9 +179,13 @@ drwxr-xr-x   <span class="m">7</span> and-semakin  awesome   <span class="m">224
 drwxr-xr-x  <span class="m">42</span> and-semakin  awesome  <span class="m">1344</span> Apr <span class="m">18</span> <span class="m">17</span>:39 setuptools
 drwxr-xr-x  <span class="m">11</span> and-semakin  awesome   <span class="m">352</span> Apr <span class="m">18</span> <span class="m">17</span>:39 setuptools-41.2.0.dist-info
 </code></pre></div>
+
+
 <p>Установим пакет:</p>
 <div class="highlight"><pre><span></span><code>$ pip install requests
 </code></pre></div>
+
+
 <p>После установки пакета:</p>
 <div class="highlight"><pre><span></span><code>$ ls -l /Users/and-semakin/env/lib/python3.8/site-packages
 total <span class="m">8</span>
@@ -199,6 +207,8 @@ drwxr-xr-x  <span class="m">11</span> and-semakin  awesome   <span class="m">352
 drwxr-xr-x  <span class="m">16</span> and-semakin  awesome   <span class="m">512</span> Apr <span class="m">18</span> <span class="m">17</span>:41 urllib3
 drwxr-xr-x   <span class="m">8</span> and-semakin  awesome   <span class="m">256</span> Apr <span class="m">18</span> <span class="m">17</span>:41 urllib3-1.25.9.dist-info
 </code></pre></div>
+
+
 <p>Как видим, в директорию <code>site-packages</code> добавилась библиотека <code>requests</code> вместе
 со всеми своими зависимостями.</p>
 <p>Важные мысли, которые я пытаюсь донести:</p>
@@ -221,10 +231,14 @@ drwxr-xr-x   <span class="m">8</span> and-semakin  awesome   <span class="m">256
 <div class="highlight"><pre><span></span><code># requirements.txt
 requests==2.23.0
 </code></pre></div>
+
+
 <p>Проект Б:</p>
 <div class="highlight"><pre><span></span><code># requirements.txt
 requests==1.2.3
 </code></pre></div>
+
+
 <p>Вы просто не сможете работать над такими проектами одновременно. Установка
 зависимостей одного проекта сломает другой, и наоборот. При переключении между
 проектами придётся каждый раз устанавливать зависимости нужного проекта, что
@@ -256,6 +270,8 @@ requests==1.2.3
 очень просто:</p>
 <div class="highlight"><pre><span></span><code>$ python -m venv &lt;путь к виртуальному окружению&gt;
 </code></pre></div>
+
+
 <p>Например, допустим, что мы работаем над проектом <code>blog_source</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># заходим в директорию с проектом</span>
 $ <span class="nb">cd</span> src/blog_source
@@ -263,6 +279,8 @@ $ <span class="nb">cd</span> src/blog_source
 <span class="c1"># создаем виртуальное окружение прямо рядом с кодом в директории env</span>
 $ python -m venv env
 </code></pre></div>
+
+
 <p>Создавать виртуальное окружения рядом с кодом — это распространённая практика,
 так проще ничего не перепутать, но вообще виртуальное окружение может быть
 где угодно, и директория тоже может называться как угодно. Обратите внимание,
@@ -274,10 +292,14 @@ $ python -m venv env
 <div class="highlight"><pre><span></span><code>$ python -V
 Python <span class="m">3</span>.8.2
 </code></pre></div>
+
+
 <p>то в виртуальном окружении будет та же самая версия:</p>
 <div class="highlight"><pre><span></span><code>$ env/bin/python -V
 Python <span class="m">3</span>.8.2
 </code></pre></div>
+
+
 <h3>Активируем окружение</h3>
 <p>Посмотрим, что внутри директории <code>env</code>:</p>
 <div class="highlight"><pre><span></span><code>$ ls -l env/
@@ -301,6 +323,8 @@ total <span class="m">88</span>
 lrwxr-xr-x  <span class="m">1</span> and-semakin  awesome    <span class="m">59</span> Apr <span class="m">18</span> <span class="m">18</span>:55 python -&gt; /Users/and-semakin/.asdf/installs/python/3.8.2/bin/python
 lrwxr-xr-x  <span class="m">1</span> and-semakin  awesome     <span class="m">6</span> Apr <span class="m">18</span> <span class="m">18</span>:55 python3 -&gt; python
 </code></pre></div>
+
+
 <p>Обратите внимание, что в директории <code>bin</code> есть некий файл <code>activate</code> в
 нескольких вариантах для разных шеллов. Это и есть "точка входа" в виртуальное
 окружение. Просто создать виртуальное окружение мало, нужно его активировать.
@@ -311,11 +335,15 @@ lrwxr-xr-x  <span class="m">1</span> and-semakin  awesome     <span class="m">6<
 $ which pip
 /Users/and-semakin/.asdf/shims/pip
 </code></pre></div>
+
+
 <p>Это мой обычный Python, вне виртуального окружения, назовём его глобальным.
 Теперь активируем виртуальное окружение:</p>
 <div class="highlight"><pre><span></span><code>$ <span class="nb">source</span> env/bin/activate
 <span class="o">(</span>env<span class="o">)</span> $
 </code></pre></div>
+
+
 <p>Для Windows процесс активации будет отличаться (допустим, что виртуальное окружение
 создано в <code>C:\src\blog_source</code>):</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># cmd</span>
@@ -324,6 +352,8 @@ C:<span class="se">\s</span>rc<span class="se">\b</span>log_source<span class="s
 <span class="c1"># либо в PowerShell</span>
 PS C:<span class="se">\s</span>rc<span class="se">\b</span>log_source<span class="se">\&gt;</span> env<span class="se">\S</span>cripts<span class="se">\A</span>ctivate.ps1
 </code></pre></div>
+
+
 <p>Обратите внимание, что приветствие шелла изменилось (добавилось <code>(env)</code>), чтобы
 показать, что мы "внутри" виртуального окружения под названием <code>env</code>.</p>
 <p>Теперь проверим еще раз, какие <code>python</code> и <code>pip</code> используются:</p>
@@ -332,15 +362,21 @@ PS C:<span class="se">\s</span>rc<span class="se">\b</span>log_source<span class
 <span class="o">(</span>env<span class="o">)</span> $ which pip
 /Users/and-semakin/src/blog_source/env/bin/pip
 </code></pre></div>
+
+
 <p>Посмотрите на пути — мы внутри виртуального окружения! Теперь можно смело
 устанавливать любые пакеты, и это никак не повлияет на глобальный Python или
 на другие виртуальные окружения:</p>
 <div class="highlight"><pre><span></span><code><span class="o">(</span>env<span class="o">)</span> $ pip install requests flask whatever-you-need
 </code></pre></div>
+
+
 <p>Можно запускать любые файлы, и они будут иметь доступ к установленным пакетам:</p>
 <div class="highlight"><pre><span></span><code><span class="o">(</span>env<span class="o">)</span> $ python make_money.py
 Done! You are rich!
 </code></pre></div>
+
+
 <p>IDE тоже нужно настроить, указав путь к <code>bin/python</code> внутри виртуального
 окружения, тогда редактор сможет лучше вам помогать.</p>
 <p>По завершению работы с виртуальным окружением можно просто набрать <code>deactivate</code>,
@@ -349,6 +385,8 @@ Done! You are rich!
 $ which python
 /Users/and-semakin/.asdf/shims/python
 </code></pre></div>
+
+
 <p>И мы видим, что команда <code>python</code> снова вызывает глобальный интерпретатор.
 При этом виртуальное окружение осталось в своей директории, оно просто не
 активно. В следующий раз, когда будет нужно поработать с виртуальным
@@ -357,6 +395,8 @@ $ which python
 нужным:</p>
 <div class="highlight"><pre><span></span><code>$ rm -r env/
 </code></pre></div>
+
+
 <p>В идеале, у вас должна быть возможность в любой момент удалить и пересоздать
 виртуальное окружение заново, для этого храните список зависимостей проекта и
 содержите его в актуальном состоянии (например, в <code>requirements.txt</code>).
@@ -380,10 +420,14 @@ $ which python
 <a href="https://pypi.org/project/howdoi/"><code>howdoi</code></a>. Руки набирают в терминал:</p>
 <div class="highlight"><pre><span></span><code>$ pip install poetry
 </code></pre></div>
+
+
 <p>Установка начинается, прогресс-бары заполняются, но в итоге всё завершается
 чем-то типа такого:</p>
-<div class="highlight"><pre><span></span><code><span class="n">error</span><span class="o">:</span> <span class="n">could</span> <span class="n">not</span> <span class="n">create</span> <span class="s1">'/lib/python2.7/site-packages/poetry'</span><span class="o">:</span> <span class="n">Permission</span> <span class="n">denied</span>
+<div class="highlight"><pre><span></span><code><span class="n">error</span><span class="o">:</span> <span class="n">could</span> <span class="n">not</span> <span class="n">create</span> <span class="s1">&#39;/lib/python2.7/site-packages/poetry&#39;</span><span class="o">:</span> <span class="n">Permission</span> <span class="n">denied</span>
 </code></pre></div>
+
+
 <p>Можно попробовать установить, используя <code>sudo</code>, и это сработает, но это
 считается <a href="https://ru.stackoverflow.com/q/651860/340643">очень плохой практикой</a>,
 и я настоятельно рекомендую так не делать по нескольким причинам:</p>
@@ -422,6 +466,8 @@ $ which python
 <div class="highlight"><pre><span></span><code>$ python -m site --user-base
 /Users/and-semakin/.local
 </code></pre></div>
+
+
 <p>К получившемуся пути нужно в конце добавить <code>/bin</code> для Linux и MacOS,
 либо <code>\Scripts</code> для Windows, так что
 в моём случае (MacOS) в <code>$PATH</code> нужно добавить вот такой путь:

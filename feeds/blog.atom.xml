@@ -1,52 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Питонические атаки - blog</title><link href="https://semakin.dev/" rel="alternate"></link><link href="https://semakin.dev/feeds/blog.atom.xml" rel="self"></link><id>https://semakin.dev/</id><updated>2020-05-24T11:45:37+05:00</updated><subtitle>Про разработку в целом и про Python в частности</subtitle><entry><title>Почему print("Hello") работает в Python 2</title><link href="https://semakin.dev/2020/05/python2_print/" rel="alternate"></link><published>2020-05-24T11:45:37+05:00</published><updated>2020-05-24T11:45:37+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-05-24:/2020/05/python2_print/</id><summary type="html">&lt;p&gt;Объяснение синтаксического трюка, который позволяет использовать print() как функцию в Python 2 и 3.&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Почему print("Hello") работает в Python 2&lt;/h1&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Питонические атаки - blog</title><link href="https://semakin.dev/" rel="alternate"></link><link href="https://semakin.dev/feeds/blog.atom.xml" rel="self"></link><id>https://semakin.dev/</id><updated>2020-05-24T11:55:59+05:00</updated><subtitle>Про разработку в целом и про Python в частности</subtitle><entry><title>Почему print("Hello") работает в Python 2</title><link href="https://semakin.dev/2020/05/python2_print/" rel="alternate"></link><published>2020-05-24T11:45:37+05:00</published><updated>2020-05-24T11:55:59+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-05-24:/2020/05/python2_print/</id><summary type="html">&lt;p&gt;Объяснение синтаксического трюка, который позволяет использовать print() как функцию в Python 2 и 3.&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Почему print("Hello") работает в Python 2&lt;/h1&gt;
 &lt;p&gt;Одним из самых заметных отличий Python 3 от Python 2 является разжалование
 &lt;code&gt;print&lt;/code&gt; из инструкции языка (statement) до обычной функции.&lt;/p&gt;
 &lt;p&gt;Python 3:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# простое использование&lt;/span&gt;
-&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Hello"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Hello&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="c1"&gt;# выводит: Hello&lt;/span&gt;
 
 &lt;span class="c1"&gt;# переданные аргументы по умолчанию объединяются через пробел&lt;/span&gt;
-&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Hello"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"world!"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Hello&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;world!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="c1"&gt;# выводит: Hello world!&lt;/span&gt;
 
 &lt;span class="c1"&gt;# объединяющий символ можно заменить на свой&lt;/span&gt;
-&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Pythonic"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"attacks!"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;sep&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"_"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Pythonic&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;attacks!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;sep&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;_&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="c1"&gt;# выводит: Pythonic_attacks!&lt;/span&gt;
 
 &lt;span class="c1"&gt;# можно заменить символ конца строки на пустую строку,&lt;/span&gt;
 &lt;span class="c1"&gt;# чтобы продолжить выводить что-нибудь в той же строке&lt;/span&gt;
-&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Hello "&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;end&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;""&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"world!"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Hello &amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;end&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;world!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="c1"&gt;# выводит: Hello world!&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Python 2:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# простое использование&lt;/span&gt;
-&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"Hello"&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Hello&amp;quot;&lt;/span&gt;
 &lt;span class="c1"&gt;# выводит: Hello&lt;/span&gt;
 
 &lt;span class="c1"&gt;# перечисленные аргументы объединяются через пробел&lt;/span&gt;
-&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"Hello"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"world!"&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Hello&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;world!&amp;quot;&lt;/span&gt;
 &lt;span class="c1"&gt;# выводит: Hello world!&lt;/span&gt;
 
 &lt;span class="c1"&gt;# если нужен не пробел, а другой символ для объединения,&lt;/span&gt;
 &lt;span class="c1"&gt;# то остаётся делать только вот так:&lt;/span&gt;
-&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"_"&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="s2"&gt;"Hello"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"world!"&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;_&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Hello&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;world!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
 &lt;span class="c1"&gt;# выводит: Hello_world!&lt;/span&gt;
 
 &lt;span class="c1"&gt;# можно при помощи запятой в конце избежать вывода \n (символа конца строки)&lt;/span&gt;
 &lt;span class="c1"&gt;# и продолжить печатать что-нибудь на той же строке:&lt;/span&gt;
-&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"Hello"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"world!"&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Hello&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;world!&amp;quot;&lt;/span&gt;
 &lt;span class="c1"&gt;# выводит: Hello world!&lt;/span&gt;
 
 &lt;span class="c1"&gt;# если сделать специальный импорт из “будущего”, то&lt;/span&gt;
-&lt;span class="c1"&gt;# в Python 2.7 `print` начинает работать как функция:&lt;/span&gt;
+&lt;span class="c1"&gt;# в Python 2.6+ `print` начинает работать как функция:&lt;/span&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;__future__&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;print_function&lt;/span&gt;
-&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Hello"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"world!"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Hello&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;world!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="c1"&gt;# выводит: Hello world!&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Обычно инструкциями в Python являются только очень базовые вещи,
 такие как условия (&lt;code&gt;if&lt;/code&gt;), циклы (&lt;code&gt;for&lt;/code&gt;, &lt;code&gt;while&lt;/code&gt;),
 возврат из функций (&lt;code&gt;return&lt;/code&gt;) и т.д.&lt;/p&gt;
@@ -75,6 +79,8 @@
 начиная аж с 2.3:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;build_description&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="p"&gt;)[:&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Меня это удивило. Я даже
 &lt;a href="https://github.com/brandon-rhodes/logging_tree/pull/24"&gt;создал пулл-реквест&lt;/a&gt;,
 будучи уверен, что нашёл ошибку. После того, как автор возразил,
@@ -83,30 +89,34 @@
 И к ещё большему моему удивлению, это и правда работало на всех версиях Python
 2, до которых я смог дотянуться, включая 2.7, 2.6, 2.5, 2.4 и даже 2.3:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# как??&lt;/span&gt;
-&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Hello"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Hello&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="c1"&gt;# выводит: Hello&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Немного поразмыслив и почитав, я осознал, где тут собака зарыта.
 Хоть это и выглядит как вызов функции &lt;code&gt;print()&lt;/code&gt;, на самом деле это всё та же
 старая добрая инструкция &lt;code&gt;print&lt;/code&gt;. Давайте разложим всё по полочкам:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# сначала отодвинем скобки от print, чтобы было нагляднее, что это инструкция:&lt;/span&gt;
-&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Hello"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Hello&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="c1"&gt;# выводит: Hello&lt;/span&gt;
 
 &lt;span class="c1"&gt;# в Python можно засунуть в скобки любое выражение, но пока оно там одно,&lt;/span&gt;
 &lt;span class="c1"&gt;# то скобки не оказывают никакого влияния:&lt;/span&gt;
-&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Hello"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="c1"&gt;# получается просто строка: 'Hello'&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Hello&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;# получается просто строка: &amp;#39;Hello&amp;#39;&lt;/span&gt;
 
 &lt;span class="c1"&gt;# а если выражений несколько, или там есть запятая, то тогда уже&lt;/span&gt;
 &lt;span class="c1"&gt;# создаётся кортеж:&lt;/span&gt;
-&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Hello"&lt;/span&gt;&lt;span class="p"&gt;,)&lt;/span&gt;  &lt;span class="c1"&gt;# кортеж из одного элемента&lt;/span&gt;
-&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Hello"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"world"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;  &lt;span class="c1"&gt;# кортеж из двух элементов&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Hello&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,)&lt;/span&gt;  &lt;span class="c1"&gt;# кортеж из одного элемента&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Hello&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;world&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;  &lt;span class="c1"&gt;# кортеж из двух элементов&lt;/span&gt;
 
 &lt;span class="c1"&gt;# в нашем случае выражение только одно, поэтому скобки можно отбросить:&lt;/span&gt;
-&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"Hello"&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Hello&amp;quot;&lt;/span&gt;
 &lt;span class="c1"&gt;# выводит: Hello&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Как выяснилось, в Python 2 &lt;code&gt;print&lt;/code&gt; и правда можно так, что со стороны это будет
 выглядеть как вызов функции, но для очень ограниченного множества случаев,
 а именно — должен быть только один позиционный аргумент.
@@ -115,7 +125,7 @@
 &lt;p&gt;Разница становится очевидной, если попытаться узнать тип:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# у инструкций нельзя запросить тип, это синтаксически невозможно&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;"&amp;lt;stdin&amp;gt;"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;lt;stdin&amp;gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
     &lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
              &lt;span class="o"&gt;^&lt;/span&gt;
 &lt;span class="ne"&gt;SyntaxError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;invalid&lt;/span&gt; &lt;span class="n"&gt;syntax&lt;/span&gt;
@@ -123,12 +133,14 @@
 &lt;span class="c1"&gt;# а у функций можно&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;__future__&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;print_function&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nb"&gt;type&lt;/span&gt; &lt;span class="s1"&gt;'builtin_function_or_method'&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nb"&gt;type&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;builtin_function_or_method&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Трюки из той же серии:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# условие со скобками как в C:&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-&lt;span class="o"&gt;...&lt;/span&gt;     &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Equal!"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;...&lt;/span&gt;     &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Equal!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="o"&gt;...&lt;/span&gt;
 &lt;span class="n"&gt;Equal&lt;/span&gt;&lt;span class="err"&gt;!&lt;/span&gt;
 
@@ -139,6 +151,8 @@
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;func&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;span class="kc"&gt;True&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Это код синтаксически верен, но просто обычно так не пишут. И правильно.&lt;/p&gt;
 &lt;h1&gt;Заключение&lt;/h1&gt;
 &lt;p&gt;Python 2.7 недавно
@@ -158,7 +172,7 @@
 &lt;li&gt;&lt;a href="https://realpython.com/python-print/"&gt;Большой гайд про print на RealPython&lt;/a&gt;;&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://snarky.ca/why-print-became-a-function-in-python-3/"&gt;Брэтт Кэннон, "Why &lt;code&gt;print&lt;/code&gt; became a function in Python 3"&lt;/a&gt;.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;em&gt;Обложка: &lt;a href="http://web.archive.org/web/*/https://www.pexels.com/photo/vintage-letters-typo-vintage-typewriter-101710/"&gt;Photo by mali maeder from Pexels&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;</content><category term="blog"></category><category term="python"></category><category term="print"></category></entry><entry><title>Chocolatey — пакетный менеджер для Windows</title><link href="https://semakin.dev/2020/05/chocolatey/" rel="alternate"></link><published>2020-05-18T13:22:50+05:00</published><updated>2020-05-19T21:39:59+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-05-18:/2020/05/chocolatey/</id><summary type="html">&lt;p&gt;Самая важная программа для любителей окошек.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Как сказал один мудрец (и по совместительству просто мой друг):&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Обложка: &lt;a href="https://www.pexels.com/photo/vintage-letters-typo-vintage-typewriter-101710/"&gt;Photo by mali maeder from Pexels&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;</content><category term="blog"></category><category term="python"></category><category term="print"></category></entry><entry><title>Chocolatey — пакетный менеджер для Windows</title><link href="https://semakin.dev/2020/05/chocolatey/" rel="alternate"></link><published>2020-05-18T13:22:50+05:00</published><updated>2020-05-19T21:39:59+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-05-18:/2020/05/chocolatey/</id><summary type="html">&lt;p&gt;Самая важная программа для любителей окошек.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Как сказал один мудрец (и по совместительству просто мой друг):&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;“нет плохих или хороших операционных систем, есть подходящие и
 не подходящие для решения конкретных пользовательских задач”.&lt;/p&gt;
@@ -209,10 +223,12 @@ Chocolatey имеет намного больше общего с
 и выбираем пункт “Run as administrator” или, в русской локализации,
 “Запуск от имени администратора”.&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;&lt;img alt="Run as administrator" src="https://semakin.dev/static/cmd_run_as_administrator.jpg"/&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Run as administrator" src="https://semakin.dev/static/cmd_run_as_administrator.jpg"&gt;&lt;/p&gt;
 &lt;p&gt;В открывшееся окно терминала нужно вставить следующую команду:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;@&lt;span class="s2"&gt;"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe"&lt;/span&gt; -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command &lt;span class="s2"&gt;" [System.Net.ServicePointManager]::SecurityProtocol = 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))"&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; SET &lt;span class="s2"&gt;"PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;@&lt;span class="s2"&gt;&amp;quot;%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe&amp;quot;&lt;/span&gt; -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command &lt;span class="s2"&gt;&amp;quot; [System.Net.ServicePointManager]::SecurityProtocol = 3072; iex ((New-Object System.Net.WebClient).DownloadString(&amp;#39;https://chocolatey.org/install.ps1&amp;#39;))&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; SET &lt;span class="s2"&gt;&amp;quot;PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin&amp;quot;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;На всякий случай, если эта команда устареет и перестанет работать,
 или вы предпочитаете вставлять в администраторский терминал команды
 только из официальных источников (и правильно делаете), то документация
@@ -224,6 +240,8 @@ Chocolatey имеет намного больше общего с
 удобнее. Можно проверить установку:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;choco -?
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Если вы видите справку по команде, то установка прошла успешно.&lt;/p&gt;
 &lt;h2&gt;Установка программ&lt;/h2&gt;
 &lt;p&gt;Давайте установим через &lt;code&gt;choco&lt;/code&gt; первые программы.
@@ -241,26 +259,40 @@ Chocolatey имеет намного больше общего с
 &lt;p&gt;Допустим, что вам нужен браузер (удалите из команды ненужные названия):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;choco install -y googlechrome firefox
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Или текстовый редактор/IDE (удалите из команды ненужные названия):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;choco install -y notepadplusplus.install vscode
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Я являюсь заядлым пользователем PyCharm, который лучше всего устанавливать
 через &lt;a href="https://www.jetbrains.com/ru-ru/toolbox-app/"&gt;JetBrains Toolbox&lt;/a&gt;
 (как и любые другие IDE от JetBrains):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;choco install -y jetbrainstoolbox
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Инструменты для разработки:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;choco install -y git python3 microsoft-windows-terminal postman
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Мессенджеры и видео-конференции:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;choco install -y telegram.install slack zoom 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Игры:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;choco install -y steam epicgameslauncher
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Всякое прочее-разное полезное:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;choco install -y 7zip vlc paint.net teamviewer qbittorrent thunderbird putty.install
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;И для установки даже не пришлось кликать мышью по кнопкам!&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://chocolatey.org/docs/commands-uninstall"&gt;Тут&lt;/a&gt; можете почитать
 про удаление программ при помощи &lt;code&gt;choco&lt;/code&gt;.&lt;/p&gt;
@@ -269,6 +301,8 @@ Chocolatey имеет намного больше общего с
 до актуальных версий:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;choco upgrade all -y
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;По-моему, это очень круто и удобно!&lt;/p&gt;
 &lt;h1&gt;Заключение&lt;/h1&gt;
 &lt;p&gt;&lt;code&gt;choco&lt;/code&gt; — теперь для меня это просто маст-хэв на Windows.
@@ -338,7 +372,7 @@ Chocolatey имеет намного больше общего с
 его однообразным и более читаемым. А названо оно "lint" в честь вот такой
 штуки:&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;&lt;img alt="lint roller" src="https://semakin.dev/static/lint_roller.jpg"/&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="lint roller" src="https://semakin.dev/static/lint_roller.jpg"&gt;&lt;/p&gt;
 &lt;h2&gt;flake8&lt;/h2&gt;
 &lt;p&gt;&lt;code&gt;flake8&lt;/code&gt; — это утилита-комбайн, которая органично объединяет в себе несколько
 других анализаторов кода (&lt;code&gt;pycodestyle&lt;/code&gt;, &lt;code&gt;pyflakes&lt;/code&gt; и &lt;code&gt;mccabe&lt;/code&gt;), а также
@@ -351,18 +385,26 @@ Chocolatey имеет намного больше общего с
 через &lt;code&gt;pip&lt;/code&gt;. &lt;strong&gt;Внутри виртуального окружения&lt;/strong&gt; проекта выполните:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install flake8
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Если вы пользуетесь &lt;code&gt;pipenv&lt;/code&gt;, то &lt;code&gt;flake8&lt;/code&gt; нужно устанавливать
 как dev-зависимость (ведь для работы программы линтер не нужен,
 он нужен только для разработчика):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv install --dev flake8
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Аналогично с &lt;code&gt;poetry&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ poetry add --dev flake8
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Проверим установку:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ flake8 --version
 &lt;span class="m"&gt;3&lt;/span&gt;.8.1 &lt;span class="o"&gt;(&lt;/span&gt;mccabe: &lt;span class="m"&gt;0&lt;/span&gt;.6.1, pycodestyle: &lt;span class="m"&gt;2&lt;/span&gt;.6.0, pyflakes: &lt;span class="m"&gt;2&lt;/span&gt;.2.0&lt;span class="o"&gt;)&lt;/span&gt; CPython &lt;span class="m"&gt;3&lt;/span&gt;.8.2 on Linux
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;h3&gt;Использование&lt;/h3&gt;
 &lt;p&gt;Для работы &lt;code&gt;flake8&lt;/code&gt; нужно просто указать файл или директорию, которые
 нужно проверять, например:&lt;/p&gt;
@@ -375,9 +417,12 @@ $ flake8 src/
 &lt;span class="c1"&gt;# проверить текущую директорию рекурсивно&lt;/span&gt;
 $ flake8 .
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Давайте для демонстрации попытаемся написать программу с как можно большим
 количеством “плохих практик”:&lt;/p&gt;
 &lt;script src="https://gist.github.com/and-semakin/6080c25e106dedcecb0326aa4514b738.js?file=bad_code.py"&gt;&lt;/script&gt;
+
 &lt;p&gt;Возможно, вам не видно всего, но в этом коде точно есть следующие "запахи кода":&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;import *&lt;/code&gt; — импортирование всех имен из модуля, хотя используется
@@ -393,18 +438,18 @@ $ flake8 .
 &lt;/ul&gt;
 &lt;p&gt;Давайте посмотрим, что &lt;code&gt;flake8&lt;/code&gt; скажет по поводу этого файла:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ flake8 bad_code.py
-bad_code.py:1:1: F403 &lt;span class="s1"&gt;'from math import *'&lt;/span&gt; used&lt;span class="p"&gt;;&lt;/span&gt; unable to detect undefined names
-bad_code.py:2:1: F401 &lt;span class="s1"&gt;'itertools'&lt;/span&gt; imported but unused
+bad_code.py:1:1: F403 &lt;span class="s1"&gt;&amp;#39;from math import *&amp;#39;&lt;/span&gt; used&lt;span class="p"&gt;;&lt;/span&gt; unable to detect undefined names
+bad_code.py:2:1: F401 &lt;span class="s1"&gt;&amp;#39;itertools&amp;#39;&lt;/span&gt; imported but unused
 bad_code.py:4:1: E302 expected &lt;span class="m"&gt;2&lt;/span&gt; blank lines, found &lt;span class="m"&gt;1&lt;/span&gt;
 bad_code.py:4:4: E271 multiple spaces after keyword
-bad_code.py:4:25: E211 whitespace before &lt;span class="s1"&gt;'('&lt;/span&gt;
-bad_code.py:4:33: E202 whitespace before &lt;span class="s1"&gt;')'&lt;/span&gt;
+bad_code.py:4:25: E211 whitespace before &lt;span class="s1"&gt;&amp;#39;(&amp;#39;&lt;/span&gt;
+bad_code.py:4:33: E202 whitespace before &lt;span class="s1"&gt;&amp;#39;)&amp;#39;&lt;/span&gt;
 bad_code.py:5:1: W191 indentation contains tabs
 bad_code.py:5:8: E271 multiple spaces after keyword
-bad_code.py:5:10: F405 &lt;span class="s1"&gt;'sqrt'&lt;/span&gt; may be undefined, or defined from star imports: math
-bad_code.py:5:21: E202 whitespace before &lt;span class="s1"&gt;')'&lt;/span&gt;
+bad_code.py:5:10: F405 &lt;span class="s1"&gt;&amp;#39;sqrt&amp;#39;&lt;/span&gt; may be undefined, or defined from star imports: math
+bad_code.py:5:21: E202 whitespace before &lt;span class="s1"&gt;&amp;#39;)&amp;#39;&lt;/span&gt;
 bad_code.py:7:1: E302 expected &lt;span class="m"&gt;2&lt;/span&gt; blank lines, found &lt;span class="m"&gt;1&lt;/span&gt;
-bad_code.py:7:23: E741 ambiguous variable name &lt;span class="s1"&gt;'l'&lt;/span&gt;
+bad_code.py:7:23: E741 ambiguous variable name &lt;span class="s1"&gt;&amp;#39;l&amp;#39;&lt;/span&gt;
 bad_code.py:8:1: E101 indentation contains mixed spaces and tabs
 bad_code.py:9:1: E101 indentation contains mixed spaces and tabs
 bad_code.py:11:1: E305 expected &lt;span class="m"&gt;2&lt;/span&gt; blank lines after class or &lt;span class="k"&gt;function&lt;/span&gt; definition, found &lt;span class="m"&gt;1&lt;/span&gt;
@@ -416,9 +461,11 @@ bad_code.py:14:67: W291 trailing whitespace
 bad_code.py:15:1: E101 indentation contains mixed spaces and tabs
 bad_code.py:15:14: W291 trailing whitespace
 bad_code.py:16:1: E101 indentation contains mixed spaces and tabs
-bad_code.py:16:5: E722 &lt;span class="k"&gt;do&lt;/span&gt; not use bare &lt;span class="s1"&gt;'except'&lt;/span&gt;
+bad_code.py:16:5: E722 &lt;span class="k"&gt;do&lt;/span&gt; not use bare &lt;span class="s1"&gt;&amp;#39;except&amp;#39;&lt;/span&gt;
 bad_code.py:17:1: E101 indentation contains mixed spaces and tabs
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Как видите, &lt;code&gt;flake8&lt;/code&gt; нашёл кучу ошибок. Для каждой ошибки указана строка
 и номер символа в строке (не всегда точный), где произошла ошибка.
 Также у каждой категории ошибок есть свой код: &lt;code&gt;E101&lt;/code&gt;, &lt;code&gt;W291&lt;/code&gt; и т.д.
@@ -438,28 +485,32 @@ bad_code.py:17:1: E101 indentation contains mixed spaces and tabs
 не буду писать примеры для &lt;code&gt;pipenv&lt;/code&gt; и &lt;code&gt;poetry&lt;/code&gt; — сами сможете обобщить):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install flake8-bugbear pep8-naming
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Давайте убедимся, что плагины действительно установились
 и &lt;code&gt;flake8&lt;/code&gt; может их найти:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ flake8 --version
 &lt;span class="m"&gt;3&lt;/span&gt;.8.1 &lt;span class="o"&gt;(&lt;/span&gt;flake8-bugbear: &lt;span class="m"&gt;20&lt;/span&gt;.1.4, mccabe: &lt;span class="m"&gt;0&lt;/span&gt;.6.1, naming: &lt;span class="m"&gt;0&lt;/span&gt;.10.0, pycodestyle: &lt;span class="m"&gt;2&lt;/span&gt;.6.0, pyflakes: &lt;span class="m"&gt;2&lt;/span&gt;.2.0&lt;span class="o"&gt;)&lt;/span&gt; CPython &lt;span class="m"&gt;3&lt;/span&gt;.8.2 on Linux
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Если вы видите в списке в скобках названия ваших плагинов, то всё хорошо.&lt;/p&gt;
 &lt;p&gt;Теперь снова проверим наш файл:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ flake8 bad_code.py
-bad_code.py:1:1: F403 &lt;span class="s1"&gt;'from math import *'&lt;/span&gt; used&lt;span class="p"&gt;;&lt;/span&gt; unable to detect undefined names
-bad_code.py:2:1: F401 &lt;span class="s1"&gt;'itertools'&lt;/span&gt; imported but unused
+bad_code.py:1:1: F403 &lt;span class="s1"&gt;&amp;#39;from math import *&amp;#39;&lt;/span&gt; used&lt;span class="p"&gt;;&lt;/span&gt; unable to detect undefined names
+bad_code.py:2:1: F401 &lt;span class="s1"&gt;&amp;#39;itertools&amp;#39;&lt;/span&gt; imported but unused
 bad_code.py:4:1: E302 expected &lt;span class="m"&gt;2&lt;/span&gt; blank lines, found &lt;span class="m"&gt;1&lt;/span&gt;
 bad_code.py:4:4: E271 multiple spaces after keyword
-bad_code.py:4:6: N802 &lt;span class="k"&gt;function&lt;/span&gt; name &lt;span class="s1"&gt;'CalculateSquareRoot'&lt;/span&gt; should be lowercase
-bad_code.py:4:25: E211 whitespace before &lt;span class="s1"&gt;'('&lt;/span&gt;
-bad_code.py:4:28: N803 argument name &lt;span class="s1"&gt;'Number'&lt;/span&gt; should be lowercase
-bad_code.py:4:33: E202 whitespace before &lt;span class="s1"&gt;')'&lt;/span&gt;
+bad_code.py:4:6: N802 &lt;span class="k"&gt;function&lt;/span&gt; name &lt;span class="s1"&gt;&amp;#39;CalculateSquareRoot&amp;#39;&lt;/span&gt; should be lowercase
+bad_code.py:4:25: E211 whitespace before &lt;span class="s1"&gt;&amp;#39;(&amp;#39;&lt;/span&gt;
+bad_code.py:4:28: N803 argument name &lt;span class="s1"&gt;&amp;#39;Number&amp;#39;&lt;/span&gt; should be lowercase
+bad_code.py:4:33: E202 whitespace before &lt;span class="s1"&gt;&amp;#39;)&amp;#39;&lt;/span&gt;
 bad_code.py:5:1: W191 indentation contains tabs
 bad_code.py:5:8: E271 multiple spaces after keyword
-bad_code.py:5:10: F405 &lt;span class="s1"&gt;'sqrt'&lt;/span&gt; may be undefined, or defined from star imports: math
-bad_code.py:5:21: E202 whitespace before &lt;span class="s1"&gt;')'&lt;/span&gt;
+bad_code.py:5:10: F405 &lt;span class="s1"&gt;&amp;#39;sqrt&amp;#39;&lt;/span&gt; may be undefined, or defined from star imports: math
+bad_code.py:5:21: E202 whitespace before &lt;span class="s1"&gt;&amp;#39;)&amp;#39;&lt;/span&gt;
 bad_code.py:7:1: E302 expected &lt;span class="m"&gt;2&lt;/span&gt; blank lines, found &lt;span class="m"&gt;1&lt;/span&gt;
-bad_code.py:7:23: E741 ambiguous variable name &lt;span class="s1"&gt;'l'&lt;/span&gt;
+bad_code.py:7:23: E741 ambiguous variable name &lt;span class="s1"&gt;&amp;#39;l&amp;#39;&lt;/span&gt;
 bad_code.py:7:25: B006 Do not use mutable data structures &lt;span class="k"&gt;for&lt;/span&gt; argument defaults.  They are created during &lt;span class="k"&gt;function&lt;/span&gt; definition time. All calls to the &lt;span class="k"&gt;function&lt;/span&gt; reuse this one instance of that data structure, persisting changes between them.
 bad_code.py:8:1: E101 indentation contains mixed spaces and tabs
 bad_code.py:9:1: E101 indentation contains mixed spaces and tabs
@@ -472,15 +523,18 @@ bad_code.py:14:67: W291 trailing whitespace
 bad_code.py:15:1: E101 indentation contains mixed spaces and tabs
 bad_code.py:15:14: W291 trailing whitespace
 bad_code.py:16:1: E101 indentation contains mixed spaces and tabs
-bad_code.py:16:5: E722 &lt;span class="k"&gt;do&lt;/span&gt; not use bare &lt;span class="s1"&gt;'except'&lt;/span&gt;
-bad_code.py:16:5: B001 Do not use bare &lt;span class="sb"&gt;`&lt;/span&gt;except:&lt;span class="sb"&gt;`&lt;/span&gt;, it also catches unexpected events like memory errors, interrupts, system exit, and so on.  Prefer &lt;span class="sb"&gt;`&lt;/span&gt;except Exception:&lt;span class="sb"&gt;`&lt;/span&gt;.  If you&lt;span class="s1"&gt;'re sure what you'&lt;/span&gt;re doing, be explicit and write &lt;span class="sb"&gt;`&lt;/span&gt;except BaseException:&lt;span class="sb"&gt;`&lt;/span&gt;.
+bad_code.py:16:5: E722 &lt;span class="k"&gt;do&lt;/span&gt; not use bare &lt;span class="s1"&gt;&amp;#39;except&amp;#39;&lt;/span&gt;
+bad_code.py:16:5: B001 Do not use bare &lt;span class="sb"&gt;`&lt;/span&gt;except:&lt;span class="sb"&gt;`&lt;/span&gt;, it also catches unexpected events like memory errors, interrupts, system exit, and so on.  Prefer &lt;span class="sb"&gt;`&lt;/span&gt;except Exception:&lt;span class="sb"&gt;`&lt;/span&gt;.  If you&lt;span class="s1"&gt;&amp;#39;re sure what you&amp;#39;&lt;/span&gt;re doing, be explicit and write &lt;span class="sb"&gt;`&lt;/span&gt;except BaseException:&lt;span class="sb"&gt;`&lt;/span&gt;.
 bad_code.py:17:1: E101 indentation contains mixed spaces and tabs
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;В выводе появились новые категории ошибок (&lt;code&gt;N802&lt;/code&gt;, &lt;code&gt;B006&lt;/code&gt;)
 — они как раз добавлены плагинами. На этот раз, как мне кажется,
 найдены все ошибки. К сожалению, &lt;code&gt;flake8&lt;/code&gt; не умеет сам чинить
 найденные ошибки, поэтому давайте сделаем это вручную:&lt;/p&gt;
 &lt;script src="https://gist.github.com/and-semakin/6080c25e106dedcecb0326aa4514b738.js?file=not_so_bad_code.py"&gt;&lt;/script&gt;
+
 &lt;p&gt;Обратите внимание на строки 8 и 10, там содержится комментарии &lt;code&gt;# noqa&lt;/code&gt;.
 При помощи этих комментариев можно заставить &lt;code&gt;flake8&lt;/code&gt; игнорировать ошибки.
 Это бывает полезно, когда по какой-то причине код должен остаться именно
@@ -516,7 +570,7 @@ bad_code.py:17:1: E101 indentation contains mixed spaces and tabs
 &lt;span class="na"&gt;exclude&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&lt;/span&gt;
 &lt;span class="s"&gt;    # No need to traverse our git directory&lt;/span&gt;
 &lt;span class="s"&gt;    .git,&lt;/span&gt;
-&lt;span class="s"&gt;    # There's no value in checking cache directories&lt;/span&gt;
+&lt;span class="s"&gt;    # There&amp;#39;s no value in checking cache directories&lt;/span&gt;
 &lt;span class="s"&gt;    __pycache__,&lt;/span&gt;
 &lt;span class="s"&gt;    # The conf file is mostly autogenerated, ignore it&lt;/span&gt;
 &lt;span class="s"&gt;    docs/source/conf.py,&lt;/span&gt;
@@ -524,10 +578,12 @@ bad_code.py:17:1: E101 indentation contains mixed spaces and tabs
 &lt;span class="s"&gt;    old,&lt;/span&gt;
 &lt;span class="s"&gt;    # This contains our built documentation&lt;/span&gt;
 &lt;span class="s"&gt;    build,&lt;/span&gt;
-&lt;span class="s"&gt;    # This contains builds of flake8 that we don't want to check&lt;/span&gt;
+&lt;span class="s"&gt;    # This contains builds of flake8 that we don&amp;#39;t want to check&lt;/span&gt;
 &lt;span class="s"&gt;    dist&lt;/span&gt;
 &lt;span class="na"&gt;max-complexity&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;10&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;В конфигурации можно перечислить игнорируемые правила и директории,
 в которые &lt;code&gt;flake8&lt;/code&gt; заглядывать не будет, а также максимальную
 &lt;a href="https://ru.wikipedia.org/wiki/%D0%A6%D0%B8%D0%BA%D0%BB%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B0%D1%8F_%D1%81%D0%BB%D0%BE%D0%B6%D0%BD%D0%BE%D1%81%D1%82%D1%8C"&gt;цикломатическую сложность&lt;/a&gt;
@@ -557,16 +613,24 @@ bad_code.py:17:1: E101 indentation contains mixed spaces and tabs
 Выполнить внутри виртуального окружения проекта:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install pylint
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Для &lt;code&gt;pipenv&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv install --dev pylint
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Для &lt;code&gt;poetry&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ poetry add --dev pylint
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;h3&gt;Использование&lt;/h3&gt;
 &lt;p&gt;&lt;code&gt;pylint&lt;/code&gt; можно натравить на определённый файл:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pylint file.py
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;С директориями у &lt;code&gt;pylint&lt;/code&gt; дела обстоят чуть сложнее. Все директории он
 обрабатывает как питоновские модули, поэтому если в директории нет хотя бы
 пустого файла &lt;code&gt;__init__.py&lt;/code&gt;, то работать с ней &lt;code&gt;pylint&lt;/code&gt; не сможет. Имейте
@@ -586,18 +650,18 @@ bad_code.py:5:21: C0326: No space allowed before bracket
     &lt;span class="k"&gt;return&lt;/span&gt;  sqrt&lt;span class="o"&gt;(&lt;/span&gt;Number &lt;span class="o"&gt;)&lt;/span&gt;
                      ^ &lt;span class="o"&gt;(&lt;/span&gt;bad-whitespace&lt;span class="o"&gt;)&lt;/span&gt;
 bad_code.py:13:19: C0326: Exactly one space required around assignment
-        &lt;span class="nv"&gt;your_number&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;float&lt;span class="o"&gt;(&lt;/span&gt;input&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'Enter your number: '&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
+        &lt;span class="nv"&gt;your_number&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;float&lt;span class="o"&gt;(&lt;/span&gt;input&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Enter your number: &amp;#39;&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
                    ^ &lt;span class="o"&gt;(&lt;/span&gt;bad-whitespace&lt;span class="o"&gt;)&lt;/span&gt;
 bad_code.py:14:66: C0303: Trailing whitespace &lt;span class="o"&gt;(&lt;/span&gt;trailing-whitespace&lt;span class="o"&gt;)&lt;/span&gt;
 bad_code.py:15:13: C0303: Trailing whitespace &lt;span class="o"&gt;(&lt;/span&gt;trailing-whitespace&lt;span class="o"&gt;)&lt;/span&gt;
-bad_code.py:1:0: W0622: Redefining built-in &lt;span class="s1"&gt;'pow'&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;redefined-builtin&lt;span class="o"&gt;)&lt;/span&gt;
+bad_code.py:1:0: W0622: Redefining built-in &lt;span class="s1"&gt;&amp;#39;pow&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;redefined-builtin&lt;span class="o"&gt;)&lt;/span&gt;
 bad_code.py:1:0: C0114: Missing module docstring &lt;span class="o"&gt;(&lt;/span&gt;missing-module-docstring&lt;span class="o"&gt;)&lt;/span&gt;
 bad_code.py:1:0: W0401: Wildcard import math &lt;span class="o"&gt;(&lt;/span&gt;wildcard-import&lt;span class="o"&gt;)&lt;/span&gt;
-bad_code.py:4:0: C0103: Function name &lt;span class="s2"&gt;"CalculateSquareRoot"&lt;/span&gt; doesn&lt;span class="s1"&gt;'t conform to snake_case naming style (invalid-name)&lt;/span&gt;
-&lt;span class="s1"&gt;bad_code.py:4:0: C0103: Argument name "Number" doesn'&lt;/span&gt;t conform to snake_case naming style &lt;span class="o"&gt;(&lt;/span&gt;invalid-name&lt;span class="o"&gt;)&lt;/span&gt;
+bad_code.py:4:0: C0103: Function name &lt;span class="s2"&gt;&amp;quot;CalculateSquareRoot&amp;quot;&lt;/span&gt; doesn&lt;span class="s1"&gt;&amp;#39;t conform to snake_case naming style (invalid-name)&lt;/span&gt;
+&lt;span class="s1"&gt;bad_code.py:4:0: C0103: Argument name &amp;quot;Number&amp;quot; doesn&amp;#39;&lt;/span&gt;t conform to snake_case naming style &lt;span class="o"&gt;(&lt;/span&gt;invalid-name&lt;span class="o"&gt;)&lt;/span&gt;
 bad_code.py:4:0: C0116: Missing &lt;span class="k"&gt;function&lt;/span&gt; or method docstring &lt;span class="o"&gt;(&lt;/span&gt;missing-function-docstring&lt;span class="o"&gt;)&lt;/span&gt;
 bad_code.py:7:0: W0102: Dangerous default value &lt;span class="o"&gt;[]&lt;/span&gt; as argument &lt;span class="o"&gt;(&lt;/span&gt;dangerous-default-value&lt;span class="o"&gt;)&lt;/span&gt;
-bad_code.py:7:0: C0103: Argument name &lt;span class="s2"&gt;"l"&lt;/span&gt; doesn&lt;span class="err"&gt;'&lt;/span&gt;t conform to snake_case naming style &lt;span class="o"&gt;(&lt;/span&gt;invalid-name&lt;span class="o"&gt;)&lt;/span&gt;
+bad_code.py:7:0: C0103: Argument name &lt;span class="s2"&gt;&amp;quot;l&amp;quot;&lt;/span&gt; doesn&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;t conform to snake_case naming style &lt;span class="o"&gt;(&lt;/span&gt;invalid-name&lt;span class="o"&gt;)&lt;/span&gt;
 bad_code.py:7:0: C0116: Missing &lt;span class="k"&gt;function&lt;/span&gt; or method docstring &lt;span class="o"&gt;(&lt;/span&gt;missing-function-docstring&lt;span class="o"&gt;)&lt;/span&gt;
 bad_code.py:16:4: W0702: No exception type&lt;span class="o"&gt;(&lt;/span&gt;s&lt;span class="o"&gt;)&lt;/span&gt; specified &lt;span class="o"&gt;(&lt;/span&gt;bare-except&lt;span class="o"&gt;)&lt;/span&gt;
 bad_code.py:1:0: W0614: Unused import acos from wildcard import &lt;span class="o"&gt;(&lt;/span&gt;unused-wildcard-import&lt;span class="o"&gt;)&lt;/span&gt;
@@ -609,6 +673,8 @@ bad_code.py:2:0: W0611: Unused import itertools &lt;span class="o"&gt;(&lt;/span
 -------------------------------------
 Your code has been rated at -41.43/10
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Я немного сократил вывод. Как видите, даже без плагинов &lt;code&gt;pylint&lt;/code&gt; нашёл
 все ожидаемые ошибки, и даже больше — например, он даже предлагает написать
 документацию.&lt;/p&gt;
@@ -617,36 +683,48 @@ Your code has been rated at -41.43/10
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pylint --help-msg&lt;span class="o"&gt;=&lt;/span&gt;missing-docstring
 $ pylint --help-msg&lt;span class="o"&gt;=&lt;/span&gt;R0902
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Вот какие ошибки &lt;code&gt;pylint&lt;/code&gt; находит для файла, который с точки зрения &lt;code&gt;flake8&lt;/code&gt;
 не содержит никаких ошибок:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pylint not_so_bad_code.py 
 ************* Module not_so_bad_code
 not_so_bad_code.py:1:0: C0114: Missing module docstring &lt;span class="o"&gt;(&lt;/span&gt;missing-module-docstring&lt;span class="o"&gt;)&lt;/span&gt;
 not_so_bad_code.py:4:0: C0116: Missing &lt;span class="k"&gt;function&lt;/span&gt; or method docstring &lt;span class="o"&gt;(&lt;/span&gt;missing-function-docstring&lt;span class="o"&gt;)&lt;/span&gt;
-not_so_bad_code.py:8:0: C0103: Argument name &lt;span class="s2"&gt;"l"&lt;/span&gt; doesn&lt;span class="err"&gt;'&lt;/span&gt;t conform to snake_case naming style &lt;span class="o"&gt;(&lt;/span&gt;invalid-name&lt;span class="o"&gt;)&lt;/span&gt;
+not_so_bad_code.py:8:0: C0103: Argument name &lt;span class="s2"&gt;&amp;quot;l&amp;quot;&lt;/span&gt; doesn&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;t conform to snake_case naming style &lt;span class="o"&gt;(&lt;/span&gt;invalid-name&lt;span class="o"&gt;)&lt;/span&gt;
 not_so_bad_code.py:8:0: C0116: Missing &lt;span class="k"&gt;function&lt;/span&gt; or method docstring &lt;span class="o"&gt;(&lt;/span&gt;missing-function-docstring&lt;span class="o"&gt;)&lt;/span&gt;
 not_so_bad_code.py:20:11: W0703: Catching too general exception Exception &lt;span class="o"&gt;(&lt;/span&gt;broad-except&lt;span class="o"&gt;)&lt;/span&gt;
 -----------------------------------
 Your code has been rated at &lt;span class="m"&gt;6&lt;/span&gt;.67/10
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;А вот так в &lt;code&gt;pylint&lt;/code&gt; можно игнорировать отдельную ошибку на строке прямо в файлах
 с кодом:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;append_item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;l&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;None&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;  &lt;span class="c1"&gt;# pylint: disable=C0103&lt;/span&gt;
    &lt;span class="o"&gt;...&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Ещё &lt;code&gt;pylint&lt;/code&gt; умеет игнорировать ошибки в блоках кода:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
     &lt;span class="c1"&gt;# Disable all the no-member violations in this function&lt;/span&gt;
     &lt;span class="c1"&gt;# pylint: disable=no-member&lt;/span&gt;
     &lt;span class="o"&gt;...&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;И для файлов целиком. Вот так можно отключить все ошибки из категорий
 Warning, Convention и Refactor:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# pylint: disable=W,C,R&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;А можно не проверять файл вообще:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# pylint: skip-file&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Подробнее о правилах управления сообщениями
 &lt;a href="http://pylint.pycqa.org/en/latest/user_guide/message-control.html"&gt;смотрите в документации&lt;/a&gt;.
 Для более сложной настройки правил, придётся по-настоящему сконфигурировать
@@ -656,6 +734,8 @@ Warning, Convention и Refactor:&lt;/p&gt;
 дефолтный файл конфигурации, нужно выполнить следующую команду:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pylint --generate-rcfile &amp;gt; .pylintrc
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Созданный файл содержит все поддерживаемые &lt;code&gt;pylint&lt;/code&gt; опции с довольно
 подробными комментариями, так что углубляться я не буду.&lt;/p&gt;
 &lt;h3&gt;Плагины&lt;/h3&gt;
@@ -663,12 +743,18 @@ Warning, Convention и Refactor:&lt;/p&gt;
 &lt;a href="https://pypi.org/project/pylint-django/"&gt;&lt;code&gt;pylint-django&lt;/code&gt;&lt;/a&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install pylint-django
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Теперь запускать &lt;code&gt;pylint&lt;/code&gt; нужно вот так:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pylint --load-plugins pylint_django &lt;span class="o"&gt;[&lt;/span&gt;..other options..&lt;span class="o"&gt;]&lt;/span&gt; &amp;lt;path_to_your_sources&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;либо в &lt;code&gt;.pylintrc&lt;/code&gt; нужно исправить директиву &lt;code&gt;load-plugins&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;load-plugins=pylint_django
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;h2&gt;Интеграция линтера в проект&lt;/h2&gt;
 &lt;p&gt;Интегрировать линтер в проект можно на трёх уровнях.
 Я рекомендую по возможности использовать все три, но обязательным
@@ -690,7 +776,7 @@ Warning, Convention и Refactor:&lt;/p&gt;
 какие-нибудь проверки перед коммитом, заново скачивать зависимости проекта
 при переключении веток, высылать сообщение в рабочий чат
 после пуша в удалённый репозиторий и вообще что угодно.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="я запушель" src="https://semakin.dev/static/i_have_pushed_meme.jpg"/&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="я запушель" src="https://semakin.dev/static/i_have_pushed_meme.jpg"&gt;&lt;/p&gt;
 &lt;p&gt;Нас интересует возможность запускать линтер перед коммитом так,
 чтобы если линтер найдёт какие-нибудь проблемы, операция коммита прерывалась.
 Git-хуки можно настроить, написав несложный shell-скрипт,
@@ -779,7 +865,7 @@ Git-хуки можно настроить, написав несложный sh
 (она будет очень толстой). Потенциально это может замедлить работу шелла вообще.
 Но все эти проблемы остались в прошлом
 — встречайте &lt;code&gt;asdf&lt;/code&gt;, универсальный менеджер версий!&lt;/p&gt;
-&lt;p&gt;&lt;img alt="asdf meme" src="https://semakin.dev/static/asdf_meme.jpg"/&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="asdf meme" src="https://semakin.dev/static/asdf_meme.jpg"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;asdf&lt;/code&gt;, так же как и &lt;code&gt;pyenv&lt;/code&gt;, написан на чистом &lt;code&gt;bash&lt;/code&gt;.
 Это означает, что инструмент отлично работает под Linux и MacOS, но,
 к сожалению, никак не работает на Windows (ну, разве что в
@@ -821,9 +907,11 @@ Git-хуки можно настроить, написав несложный sh
 &lt;p&gt;После установки перезапустите ваш шелл и проверьте установку:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf
 ...
-&lt;span class="s2"&gt;"Late but latest"&lt;/span&gt;
+&lt;span class="s2"&gt;&amp;quot;Late but latest&amp;quot;&lt;/span&gt;
 -- Rajinikanth
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Если вы видите этот девиз &lt;code&gt;asdf&lt;/code&gt; после справки по командам,
 то установка удалась, можно продолжать.
 Девиз в моём вольном переводе означает что-то типа
@@ -838,6 +926,8 @@ Git-хуки можно настроить, написав несложный sh
 Давайте запросим список доступных к установке плагинов:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf plugin list all
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;У меня вывелось аж 194 штуки.
 Список плагинов можно посмотреть и на сайте,
 &lt;a href="https://asdf-vm.com/#/plugins-all"&gt;вот здесь&lt;/a&gt;.&lt;/p&gt;
@@ -870,42 +960,49 @@ Git-хуки можно настроить, написав несложный sh
 &lt;p&gt;Установка интересующего плагина выполняется следующим образом:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf plugin add &amp;lt;имя плагина&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Рассмотрим работу с теми плагинами, с которыми мне доводилось работать.&lt;/p&gt;
 &lt;h2&gt;Плагин для Python&lt;/h2&gt;
 &lt;p&gt;Установим плагин для Python:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf plugin add python
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;&lt;code&gt;asdf&lt;/code&gt; имеет очень логично организованный интерфейс командной строки.
 Запомните одно правило: если хотите просмотреть только установленные
 плагины или версии плагина, то делайте &lt;code&gt;list&lt;/code&gt;,
 а если вообще все, то &lt;code&gt;list all&lt;/code&gt;.&lt;/p&gt;
 &lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;&lt;/th&gt;
-&lt;th style="text-align:center"&gt;плагин&lt;/th&gt;
-&lt;th style="text-align:center"&gt;версия&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td style="text-align:center"&gt;все&lt;/td&gt;
-&lt;td&gt;&lt;pre&gt;asdf plugin list all&lt;/pre&gt;&lt;/td&gt;
-&lt;td&gt;&lt;pre&gt;asdf list all python&lt;/pre&gt;&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style="text-align:center"&gt;установленные&lt;/td&gt;
-&lt;td&gt;&lt;pre&gt;asdf plugin list&lt;/pre&gt;&lt;/td&gt;
-&lt;td&gt;&lt;pre&gt;asdf list python&lt;/pre&gt;&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;
+            &lt;th&gt;&lt;/th&gt;
+            &lt;th style="text-align:center"&gt;плагин&lt;/th&gt;
+            &lt;th style="text-align:center"&gt;версия&lt;/th&gt;
+        &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        &lt;tr&gt;
+            &lt;td style="text-align:center"&gt;все&lt;/td&gt;
+            &lt;td&gt;&lt;pre&gt;asdf plugin list all&lt;/pre&gt;&lt;/td&gt;
+            &lt;td&gt;&lt;pre&gt;asdf list all python&lt;/pre&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td style="text-align:center"&gt;установленные&lt;/td&gt;
+            &lt;td&gt;&lt;pre&gt;asdf plugin list&lt;/pre&gt;&lt;/td&gt;
+            &lt;td&gt;&lt;pre&gt;asdf list python&lt;/pre&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+    &lt;/tbody&gt;
 &lt;/table&gt;
+
 &lt;p&gt;Выше мы уже смотрели список всех плагинов (через &lt;code&gt;list all&lt;/code&gt;), а теперь
 давайте просмотрим список &lt;em&gt;установленных&lt;/em&gt; плагинов. Там должен быть &lt;code&gt;python&lt;/code&gt;,
 мы ведь его только что установили:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf plugin list
 python
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Отлично, плагин установлен! Давайте попросим &lt;code&gt;asdf&lt;/code&gt; показать
 список доступных версий (хотим вообще все, поэтому &lt;code&gt;list all&lt;/code&gt;)
 для плагина &lt;code&gt;python&lt;/code&gt;:&lt;/p&gt;
@@ -939,6 +1036,8 @@ python
 &lt;span class="m"&gt;3&lt;/span&gt;.9-dev
 …
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Список я подсократил, но поверьте — он длинный.
 Там есть как все версии эталонного интерпретатора CPython,
 начиная с 2.1.3, так и альтернативные реализации Python
@@ -956,11 +1055,15 @@ python
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf install python &lt;span class="m"&gt;3&lt;/span&gt;.7.7
 $ asdf install python &lt;span class="m"&gt;3&lt;/span&gt;.8.2
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Давайте запросим список &lt;em&gt;установленных&lt;/em&gt; версий (&lt;code&gt;list&lt;/code&gt;):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf list python
   &lt;span class="m"&gt;3&lt;/span&gt;.7.7
   &lt;span class="m"&gt;3&lt;/span&gt;.8.2
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Давайте назначим глобальной ту версию Python, которую собираемся
 использовать чаще всего. Она будет использоваться по умолчанию, когда
 не найдена никакая локальная версия. Здесь всё работает так же, как и в
@@ -970,10 +1073,14 @@ $ asdf install python &lt;span class="m"&gt;3&lt;/span&gt;.8.2
 $ python -V
 Python &lt;span class="m"&gt;3&lt;/span&gt;.8.2
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Если вам интересно, как работает &lt;code&gt;asdf&lt;/code&gt;, то:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ which python
 /home/br0ke/.asdf/shims/python
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Опять же, он использует тот же принцип, что и &lt;code&gt;pyenv&lt;/code&gt;
 — создает небольшие исполняемые файлы (shims) для всех команд,
 которыми собирается управлять.
@@ -985,16 +1092,22 @@ Python &lt;span class="m"&gt;3&lt;/span&gt;.8.2
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ mkdir my_project
 $ &lt;span class="nb"&gt;cd&lt;/span&gt; my_project
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Установим локальную версию:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf &lt;span class="nb"&gt;local&lt;/span&gt; python &lt;span class="m"&gt;3&lt;/span&gt;.7.7
 $ python -V
 Python &lt;span class="m"&gt;3&lt;/span&gt;.7.7
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;В этой директории &lt;code&gt;asdf&lt;/code&gt; создал специальный файл &lt;code&gt;.tool-versions&lt;/code&gt;
 (аналог &lt;code&gt;.python-version&lt;/code&gt; из &lt;code&gt;pyenv&lt;/code&gt;):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ cat .tool-versions
 python &lt;span class="m"&gt;3&lt;/span&gt;.7.7
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Этот файл содержит версии всех утилит, которые мы настроили для директории,
 т.е. потенциально тут может быть не только Python.
 Как правило, этот файл не нужно добавлять в систему контроля версий (git),
@@ -1008,12 +1121,16 @@ python &lt;span class="m"&gt;3&lt;/span&gt;.7.7
 содержимым:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;legacy_version_file = yes
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;При выходе из директории локально настроенная версия перестанет действовать
 и версия вернётся на глобальную:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ &lt;span class="nb"&gt;cd&lt;/span&gt; ..
 $ python -V
 Python &lt;span class="m"&gt;3&lt;/span&gt;.8.2
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;По-моему, это очень удобно.
 В целом &lt;code&gt;asdf&lt;/code&gt; работает так же как &lt;code&gt;pyenv&lt;/code&gt; и многие другие менеджеры версий
 — в конце концов, они вдохновлены одной идеей.
@@ -1021,19 +1138,25 @@ Python &lt;span class="m"&gt;3&lt;/span&gt;.8.2
 &lt;p&gt;Допустим, что нужда прижала вас установить IPython:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install ipython
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Чтобы IPython можно было запускать, нужно попросить &lt;code&gt;asdf&lt;/code&gt; пересоздать шимы:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf reshim
 $ ipython
 Python &lt;span class="m"&gt;3&lt;/span&gt;.8.2 &lt;span class="o"&gt;(&lt;/span&gt;default, May &lt;span class="m"&gt;10&lt;/span&gt; &lt;span class="m"&gt;2020&lt;/span&gt;, &lt;span class="m"&gt;22&lt;/span&gt;:17:35&lt;span class="o"&gt;)&lt;/span&gt; 
-Type &lt;span class="s1"&gt;'copyright'&lt;/span&gt;, &lt;span class="s1"&gt;'credits'&lt;/span&gt; or &lt;span class="s1"&gt;'license'&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; more information
-IPython &lt;span class="m"&gt;7&lt;/span&gt;.14.0 -- An enhanced Interactive Python. Type &lt;span class="s1"&gt;'?'&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; help.
+Type &lt;span class="s1"&gt;&amp;#39;copyright&amp;#39;&lt;/span&gt;, &lt;span class="s1"&gt;&amp;#39;credits&amp;#39;&lt;/span&gt; or &lt;span class="s1"&gt;&amp;#39;license&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; more information
+IPython &lt;span class="m"&gt;7&lt;/span&gt;.14.0 -- An enhanced Interactive Python. Type &lt;span class="s1"&gt;&amp;#39;?&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; help.
 
-In &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;: print&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"asdf is awesome!"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+In &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;: print&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;asdf is awesome!&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;h2&gt;Плагин для Node.js&lt;/h2&gt;
 &lt;p&gt;Установим плагин для Node.js:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf plugin add nodejs
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Запросим список доступных версий:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf list all nodejs
 …
@@ -1059,6 +1182,8 @@ In &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;s
 &lt;span class="m"&gt;14&lt;/span&gt;.1.0
 &lt;span class="m"&gt;14&lt;/span&gt;.2.0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Все инструменты устанавливаются по-разному, и плагины это учитывают. Например,
 Python собирался из исходников, а Node.js устанавливается простым
 скачиванием бинарника, так что никакие зависимости для сборки не нужны.&lt;/p&gt;
@@ -1069,28 +1194,38 @@ Python собирался из исходников, а Node.js устанавл
 утилита установлена &lt;code&gt;gpg&lt;/code&gt;):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Теперь установим последнюю на данный момент версию Node.js:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf install nodejs &lt;span class="m"&gt;14&lt;/span&gt;.2.0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Назначим её глобальной и проверим работу:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf global nodejs &lt;span class="m"&gt;14&lt;/span&gt;.2.0
 $ node
 Welcome to Node.js v14.2.0.
-Type &lt;span class="s2"&gt;".help"&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; more information.
-&amp;gt; console.log&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"asdf is super awesome!"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+Type &lt;span class="s2"&gt;&amp;quot;.help&amp;quot;&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; more information.
+&amp;gt; console.log&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;asdf is super awesome!&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
 asdf is super awesome!
 undefined
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Давайте вернемся в директорию из предыдущего примера и
 добавим там ещё и локальную версию Node.js:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ &lt;span class="nb"&gt;cd&lt;/span&gt; my_project
 $ asdf &lt;span class="nb"&gt;local&lt;/span&gt; nodejs &lt;span class="m"&gt;14&lt;/span&gt;.2.0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Теперь в &lt;code&gt;.tool-versions&lt;/code&gt; лежит следующее содержимое:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ cat .tool-versions 
 python &lt;span class="m"&gt;3&lt;/span&gt;.7.7
 nodejs &lt;span class="m"&gt;14&lt;/span&gt;.2.0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;h1&gt;Заключение&lt;/h1&gt;
 &lt;p&gt;&lt;code&gt;asdf&lt;/code&gt; незаменим, если вы программируете более чем на одном языке.
 Крайне рекомендую присмотреться к нему, даже если сейчас вы
@@ -1165,6 +1300,8 @@ Windows могут использовать &lt;code&gt;pyenv&lt;/code&gt; вн�
 который скачает &lt;code&gt;pyenv&lt;/code&gt; и его сотоварищей:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ curl https://pyenv.run &lt;span class="p"&gt;|&lt;/span&gt; bash
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Скрипт не требует прав суперпользователя (без &lt;code&gt;sudo&lt;/code&gt;), потому что
 всё устанавливается в домашнюю директорию пользователя. Туда же
 будут устанавливаться и интерпретаторы. Если страшно запускать
@@ -1176,24 +1313,28 @@ Windows могут использовать &lt;code&gt;pyenv&lt;/code&gt; вн�
 &lt;p&gt;Предыдущая команда перед завершением должна была напечатать инструкции
 по настройке шелла. Допустим, в случае с &lt;code&gt;bash&lt;/code&gt; она выводит
 следующее:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;WARNING&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;seems&lt;/span&gt; &lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="n"&gt;still&lt;/span&gt; &lt;span class="n"&gt;have&lt;/span&gt; &lt;span class="n"&gt;not&lt;/span&gt; &lt;span class="n"&gt;added&lt;/span&gt; &lt;span class="s1"&gt;'pyenv'&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;load&lt;/span&gt; &lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;WARNING&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;seems&lt;/span&gt; &lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="n"&gt;still&lt;/span&gt; &lt;span class="n"&gt;have&lt;/span&gt; &lt;span class="n"&gt;not&lt;/span&gt; &lt;span class="n"&gt;added&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;pyenv&amp;#39;&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;load&lt;/span&gt; &lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
 
 &lt;span class="err"&gt;#&lt;/span&gt; &lt;span class="n"&gt;Load&lt;/span&gt; &lt;span class="n"&gt;pyenv&lt;/span&gt; &lt;span class="n"&gt;automatically&lt;/span&gt; &lt;span class="n"&gt;by&lt;/span&gt; &lt;span class="n"&gt;adding&lt;/span&gt;
 &lt;span class="err"&gt;#&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;following&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="o"&gt;~/.&lt;/span&gt;&lt;span class="n"&gt;bashrc&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
 
-&lt;span class="n"&gt;export&lt;/span&gt; &lt;span class="n"&gt;PATH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"~/.pyenv/bin:$PATH"&lt;/span&gt;
-&lt;span class="nf"&gt;eval&lt;/span&gt; &lt;span class="s2"&gt;"$(pyenv init -)"&lt;/span&gt;
-&lt;span class="nf"&gt;eval&lt;/span&gt; &lt;span class="s2"&gt;"$(pyenv virtualenv-init -)"&lt;/span&gt;
+&lt;span class="n"&gt;export&lt;/span&gt; &lt;span class="n"&gt;PATH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;~/.pyenv/bin:$PATH&amp;quot;&lt;/span&gt;
+&lt;span class="nf"&gt;eval&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;$(pyenv init -)&amp;quot;&lt;/span&gt;
+&lt;span class="nf"&gt;eval&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;$(pyenv virtualenv-init -)&amp;quot;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;В случае с &lt;code&gt;zsh&lt;/code&gt; нужно будет добавить те же самые строки в &lt;code&gt;~/.zshrc&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;В случае с &lt;code&gt;fish&lt;/code&gt; в связи с особенностями самого шелла инструкции отличаются:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;#&lt;/span&gt; &lt;span class="k"&gt;Load&lt;/span&gt; &lt;span class="n"&gt;pyenv&lt;/span&gt; &lt;span class="n"&gt;automatically&lt;/span&gt; &lt;span class="k"&gt;by&lt;/span&gt; &lt;span class="n"&gt;adding&lt;/span&gt;
 &lt;span class="o"&gt;#&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;following&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="o"&gt;~/&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;config&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;fish&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;config&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fish&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
 
-&lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="n"&gt;PATH&lt;/span&gt; &lt;span class="ss"&gt;"~/.pyenv/bin"&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;PATH&lt;/span&gt;
+&lt;span class="k"&gt;set&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="n"&gt;PATH&lt;/span&gt; &lt;span class="ss"&gt;&amp;quot;~/.pyenv/bin&amp;quot;&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;PATH&lt;/span&gt;
 &lt;span class="n"&gt;status&lt;/span&gt; &lt;span class="c1"&gt;--is-interactive; and . (pyenv init -|psub)&lt;/span&gt;
 &lt;span class="n"&gt;status&lt;/span&gt; &lt;span class="c1"&gt;--is-interactive; and . (pyenv virtualenv-init -|psub)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Кстати, горячо рекомендую попробовать &lt;a href="https://fishshell.com/"&gt;&lt;code&gt;fish&lt;/code&gt;&lt;/a&gt;, очень удобный шелл.&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
@@ -1210,6 +1351,8 @@ Windows могут использовать &lt;code&gt;pyenv&lt;/code&gt; вн�
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pyenv --version
 pyenv &lt;span class="m"&gt;1&lt;/span&gt;.2.18
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;h2&gt;Как это работает&lt;/h2&gt;
@@ -1297,6 +1440,8 @@ pyenv &lt;span class="m"&gt;1&lt;/span&gt;.2.18
 &lt;span class="m"&gt;3&lt;/span&gt;.9-dev
 ...
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Список довольно длинный, поэтому я его подсократил. Обычно вас будут
 интересовать такие версии, как &lt;code&gt;3.8.2&lt;/code&gt; или &lt;code&gt;3.7.7&lt;/code&gt; — это версии самой
 распространённой реализации интерпретатора CPython. Но если
@@ -1309,32 +1454,44 @@ Python (&lt;code&gt;pypy3.6-7.3.0&lt;/code&gt;, &lt;code&gt;stackless-3.7.5&lt;/
 Downloading Python-3.8.2.tar.xz...
 Installing Python-3.8.2...
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Через пару минут ожидания ваш новоиспечённый Python будет готов.&lt;/p&gt;
 &lt;p&gt;Можно сразу же назначить эту версию глобальной:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pyenv global &lt;span class="m"&gt;3&lt;/span&gt;.8.2
 $ python -V
 Python &lt;span class="m"&gt;3&lt;/span&gt;.8.2
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Давайте в целях демонстрации установим ещё парочку интерпретаторов:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pyenv install &lt;span class="m"&gt;2&lt;/span&gt;.7.18
 $ pyenv install &lt;span class="m"&gt;3&lt;/span&gt;.9.0a6
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Получим список установленных версий интерпретатора:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pyenv versions
   &lt;span class="m"&gt;2&lt;/span&gt;.7.18
 * &lt;span class="m"&gt;3&lt;/span&gt;.8.2 &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;set&lt;/span&gt; by /home/br0ke/.pyenv/version&lt;span class="o"&gt;)&lt;/span&gt;
   &lt;span class="m"&gt;3&lt;/span&gt;.9.0a6
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Кстати, если нужно, то можно делать активными сразу несколько
 версий одновременно:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pyenv global &lt;span class="m"&gt;3&lt;/span&gt;.8.2 &lt;span class="m"&gt;2&lt;/span&gt;.7.18
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Теперь вывод версий покажет следующее:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pyenv versions
 * &lt;span class="m"&gt;2&lt;/span&gt;.7.18 &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;set&lt;/span&gt; by /home/br0ke/.pyenv/version&lt;span class="o"&gt;)&lt;/span&gt;
 * &lt;span class="m"&gt;3&lt;/span&gt;.8.2 &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;set&lt;/span&gt; by /home/br0ke/.pyenv/version&lt;span class="o"&gt;)&lt;/span&gt;
   &lt;span class="m"&gt;3&lt;/span&gt;.9.0a6
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;А работать это будет вот таким образом:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ python -V
 Python &lt;span class="m"&gt;3&lt;/span&gt;.8.2
@@ -1343,6 +1500,8 @@ Python &lt;span class="m"&gt;3&lt;/span&gt;.8.2
 $ python2 -V
 Python &lt;span class="m"&gt;2&lt;/span&gt;.7.18
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Грубо говоря, та версия, которая указана первой (3.8.2),
 имеет приоритет и занимает все нужные ей имена. Следующие версии (2.7.18)
 могут занять любые оставшиеся свободные имена (в данном случае, это только имя
@@ -1353,20 +1512,28 @@ Python &lt;span class="m"&gt;2&lt;/span&gt;.7.18
 &lt;span class="m"&gt;3&lt;/span&gt;.8.2
 &lt;span class="m"&gt;2&lt;/span&gt;.7.18
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;h3&gt;Локальная версия&lt;/h3&gt;
 &lt;p&gt;Давайте создадим директорию и войдём в неё:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ mkdir my_project
 $ &lt;span class="nb"&gt;cd&lt;/span&gt; my_project
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Представим, что в этой директории мы будем разрабатывать некий
 проект, на котором мы хотим опробовать фишки нового Python 3.9.
 Сообщим об этом &lt;code&gt;pyenv&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pyenv &lt;span class="nb"&gt;local&lt;/span&gt; &lt;span class="m"&gt;3&lt;/span&gt;.9.0a
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;В директории появился файл &lt;code&gt;.python-version&lt;/code&gt; со следующим содержимым:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ cat .python-version
 &lt;span class="m"&gt;3&lt;/span&gt;.9.0a6
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;На данный момент список версий показывает следующее (удобно использовать
 эту команду, чтобы понять какую версию и почему &lt;code&gt;pyenv&lt;/code&gt; активирует):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pyenv versions
@@ -1374,15 +1541,21 @@ $ &lt;span class="nb"&gt;cd&lt;/span&gt; my_project
   &lt;span class="m"&gt;3&lt;/span&gt;.8.2
 * &lt;span class="m"&gt;3&lt;/span&gt;.9.0a6 &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;set&lt;/span&gt; by /home/br0ke/my_project/.python-version&lt;span class="o"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Изменения немедленно вступили в силу:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ python -V
 Python &lt;span class="m"&gt;3&lt;/span&gt;.9.0a6
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Но эта конфигурация никак не влияет на работу &lt;code&gt;pyenv&lt;/code&gt; вне директории проекта:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ &lt;span class="nb"&gt;cd&lt;/span&gt; ..
 $ python -V
 &lt;span class="m"&gt;3&lt;/span&gt;.8.2
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Как и в случае с глобальной конфигурацией, можно локально активировать
 сразу несколько версий интерпретатора.&lt;/p&gt;
 &lt;h3&gt;Установим IPython&lt;/h3&gt;
@@ -1393,19 +1566,25 @@ $ python -V
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ &lt;span class="nb"&gt;cd&lt;/span&gt; my_project
 $ pip install ipython
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Запустим:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ ipython
 Python &lt;span class="m"&gt;3&lt;/span&gt;.9.0a6 &lt;span class="o"&gt;(&lt;/span&gt;default, May  &lt;span class="m"&gt;3&lt;/span&gt; &lt;span class="m"&gt;2020&lt;/span&gt;, &lt;span class="m"&gt;16&lt;/span&gt;:58:20&lt;span class="o"&gt;)&lt;/span&gt;
-Type &lt;span class="s1"&gt;'copyright'&lt;/span&gt;, &lt;span class="s1"&gt;'credits'&lt;/span&gt; or &lt;span class="s1"&gt;'license'&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; more information
-IPython &lt;span class="m"&gt;7&lt;/span&gt;.14.0 -- An enhanced Interactive Python. Type &lt;span class="s1"&gt;'?'&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; help.
+Type &lt;span class="s1"&gt;&amp;#39;copyright&amp;#39;&lt;/span&gt;, &lt;span class="s1"&gt;&amp;#39;credits&amp;#39;&lt;/span&gt; or &lt;span class="s1"&gt;&amp;#39;license&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; more information
+IPython &lt;span class="m"&gt;7&lt;/span&gt;.14.0 -- An enhanced Interactive Python. Type &lt;span class="s1"&gt;&amp;#39;?&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; help.
 
 In &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;:
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Программа сразу доступна, благодаря тому, что &lt;code&gt;pyenv&lt;/code&gt; очень умный и
 создал новый файл-прослойку (shim) автоматически:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ which ipython
 /home/br0ke/.pyenv/shims/ipython
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Вне директории с проектом &lt;code&gt;ipython&lt;/code&gt; будет недоступен, ведь он же установлен
 в локальный интерпретатор &lt;code&gt;3.9.0a6&lt;/code&gt;, а снаружи активирован другой
 интерпретатор — можете проверить самостоятельно.&lt;/p&gt;
@@ -1415,17 +1594,23 @@ In &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;s
 $ ipython
 No such file or directory
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Не беда! Можно попросить &lt;code&gt;pyenv&lt;/code&gt; пересоздать их все заново:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pyenv rehash
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;И всё работает снова:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ ipython
 Python &lt;span class="m"&gt;3&lt;/span&gt;.9.0a6 &lt;span class="o"&gt;(&lt;/span&gt;default, May  &lt;span class="m"&gt;3&lt;/span&gt; &lt;span class="m"&gt;2020&lt;/span&gt;, &lt;span class="m"&gt;16&lt;/span&gt;:58:20&lt;span class="o"&gt;)&lt;/span&gt;
-Type &lt;span class="s1"&gt;'copyright'&lt;/span&gt;, &lt;span class="s1"&gt;'credits'&lt;/span&gt; or &lt;span class="s1"&gt;'license'&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; more information
-IPython &lt;span class="m"&gt;7&lt;/span&gt;.14.0 -- An enhanced Interactive Python. Type &lt;span class="s1"&gt;'?'&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; help.
+Type &lt;span class="s1"&gt;&amp;#39;copyright&amp;#39;&lt;/span&gt;, &lt;span class="s1"&gt;&amp;#39;credits&amp;#39;&lt;/span&gt; or &lt;span class="s1"&gt;&amp;#39;license&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; more information
+IPython &lt;span class="m"&gt;7&lt;/span&gt;.14.0 -- An enhanced Interactive Python. Type &lt;span class="s1"&gt;&amp;#39;?&amp;#39;&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; help.
 
 In &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;:
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Можно вообще добавить команду &lt;code&gt;pyenv rehash&lt;/code&gt; в свой &lt;code&gt;~/.bashrc&lt;/code&gt; (или аналог),
 чтобы при запуске шелла гарантированно иметь рабочие файлы-прослойки (shims).&lt;/p&gt;
 &lt;h2&gt;Заключение&lt;/h2&gt;
@@ -1500,24 +1685,34 @@ In &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;s
 &lt;p&gt;Например, на MacOS &lt;code&gt;pipenv&lt;/code&gt; можно установить через &lt;code&gt;brew&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ brew install pipenv
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;А на Fedora Linux вот так:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sudo dnf install pipenv
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;На Ubuntu можно установить &lt;code&gt;pipenv&lt;/code&gt; из &lt;a href="https://launchpad.net/~pypa/+archive/ubuntu/ppa"&gt;специального PPA&lt;/a&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sudo apt install software-properties-common python-software-properties
 $ sudo add-apt-repository ppa:pypa/ppa
 $ sudo apt update
 $ sudo apt install pipenv
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Во всех остальных случаях, в частности на Windows, самый простой способ — это установка
 в домашнюю директорию пользователя
 (опять же, см. &lt;a href="https://semakin.dev/2020/04/python_virtualenv/"&gt;пост про виртуальные окружения&lt;/a&gt;):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install --user pipenv
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Теперь проверим установку:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv --version
 pipenv, version &lt;span class="m"&gt;2018&lt;/span&gt;.11.26
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Если вы получили похожий вывод, значит, всё в порядке.&lt;/p&gt;
 &lt;p&gt;При возникновении проблем с установкой, обратитесь к
 &lt;a href="https://pipenv.pypa.io/en/latest/install/"&gt;официальной документации&lt;/a&gt;.
@@ -1552,9 +1747,13 @@ pipenv, version &lt;span class="m"&gt;2018&lt;/span&gt;.11.26
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ mkdir pipenv_demo
 $ &lt;span class="nb"&gt;cd&lt;/span&gt; pipenv_demo
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Создать новый проект, использующий конкретную версию Python можно вот такой командой:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv --python &lt;span class="m"&gt;3&lt;/span&gt;.8
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Если же вам не нужно указывать версию так конкретно, то есть шорткаты:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# Создает проект с Python 3, версию выберет автоматически.&lt;/span&gt;
 $ pipenv --three
@@ -1563,13 +1762,15 @@ $ pipenv --three
 &lt;span class="c1"&gt;# В 2020 году эта опция противопоказана.&lt;/span&gt;
 $ pipenv --two
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;После выполнения одной из этих команд, &lt;code&gt;pipenv&lt;/code&gt; создал файл &lt;code&gt;Pipfile&lt;/code&gt; и
 виртуальное окружение где-то в заранее определенной директории
 (по умолчанию вне директории проекта).&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ cat Pipfile
 &lt;span class="o"&gt;[[&lt;/span&gt;source&lt;span class="o"&gt;]]&lt;/span&gt;
-&lt;span class="nv"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"pypi"&lt;/span&gt;
-&lt;span class="nv"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"https://pypi.org/simple"&lt;/span&gt;
+&lt;span class="nv"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;pypi&amp;quot;&lt;/span&gt;
+&lt;span class="nv"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;https://pypi.org/simple&amp;quot;&lt;/span&gt;
 &lt;span class="nv"&gt;verify_ssl&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;true&lt;/span&gt;
 
 &lt;span class="o"&gt;[&lt;/span&gt;dev-packages&lt;span class="o"&gt;]&lt;/span&gt;
@@ -1577,8 +1778,10 @@ $ pipenv --two
 &lt;span class="o"&gt;[&lt;/span&gt;packages&lt;span class="o"&gt;]&lt;/span&gt;
 
 &lt;span class="o"&gt;[&lt;/span&gt;requires&lt;span class="o"&gt;]&lt;/span&gt;
-&lt;span class="nv"&gt;python_version&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"3.8"&lt;/span&gt;
+&lt;span class="nv"&gt;python_version&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;3.8&amp;quot;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Это минимальный образец &lt;code&gt;Pipfile&lt;/code&gt;. В секции &lt;code&gt;[[source]]&lt;/code&gt; перечисляются
 индексы пакетов — сейчас тут только PyPI, но может быть и ваш
 собственный индекс пакетов. В секциях &lt;code&gt;[packages]&lt;/code&gt; и &lt;code&gt;[dev-packages]&lt;/code&gt;
@@ -1595,21 +1798,27 @@ $ pipenv --two
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv --py
 /Users/and-semakin/.local/share/virtualenvs/pipenv_demo-1dgGUSFy/bin/python
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;h3&gt;Управление зависимостями через &lt;code&gt;pipenv&lt;/code&gt;&lt;/h3&gt;
 &lt;p&gt;Теперь давайте установим в проект первую зависимость. Делается
 это при помощи команды &lt;code&gt;pipenv install&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv install requests
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Давайте посмотрим, что поменялось в &lt;code&gt;Pipfile&lt;/code&gt; (здесь и дальше я
 буду сокращать вывод команд или содержимое файлов при помощи &lt;code&gt;...&lt;/code&gt;):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ cat Pipfile
 ...
 
 &lt;span class="o"&gt;[&lt;/span&gt;packages&lt;span class="o"&gt;]&lt;/span&gt;
-&lt;span class="nv"&gt;requests&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"*"&lt;/span&gt;
+&lt;span class="nv"&gt;requests&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;*&amp;quot;&lt;/span&gt;
 
 ...
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;В секцию &lt;code&gt;[packages]&lt;/code&gt; добавилась зависимость &lt;code&gt;requests&lt;/code&gt; с версией &lt;code&gt;*&lt;/code&gt;
 (версия не фиксирована).&lt;/p&gt;
 &lt;p&gt;А теперь давайте установим зависимость, которая нужна для разработки,
@@ -1621,10 +1830,12 @@ $ cat Pipfile
 ...
 
 &lt;span class="o"&gt;[&lt;/span&gt;dev-packages&lt;span class="o"&gt;]&lt;/span&gt;
-&lt;span class="nv"&gt;flake8&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"*"&lt;/span&gt;
+&lt;span class="nv"&gt;flake8&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;*&amp;quot;&lt;/span&gt;
 
 ...
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Теперь можно увидеть всё дерево зависимостей проекта при помощи команды
 &lt;code&gt;pipenv graph&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv graph
@@ -1639,6 +1850,8 @@ $ cat Pipfile
   - idna &lt;span class="o"&gt;[&lt;/span&gt;required: &amp;gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;.5,&amp;lt;&lt;span class="m"&gt;3&lt;/span&gt;, installed: &lt;span class="m"&gt;2&lt;/span&gt;.9&lt;span class="o"&gt;]&lt;/span&gt;
   - urllib3 &lt;span class="o"&gt;[&lt;/span&gt;required: &amp;gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;.21.1,&amp;lt;&lt;span class="m"&gt;1&lt;/span&gt;.26,!&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;.25.1,!&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;.25.0, installed: &lt;span class="m"&gt;1&lt;/span&gt;.25.9&lt;span class="o"&gt;]&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Это бывает полезно, чтобы узнать, что от чего зависит, или почему в вашем
 виртуальном окружении есть определённый пакет.&lt;/p&gt;
 &lt;p&gt;Также, пока мы устанавливали пакеты, &lt;code&gt;pipenv&lt;/code&gt; создал &lt;code&gt;Pipfile.lock&lt;/code&gt;,
@@ -1650,25 +1863,35 @@ $ cat Pipfile
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv uninstall --help
 $ pipenv update --help
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;h3&gt;Управление виртуальными окружениями&lt;/h3&gt;
 &lt;p&gt;Давайте удалим созданное виртуальное окружение:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv --rm
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;И представим себя в роли другого разработчика, который только присоединился
 к вашему проекту. Чтобы создать виртуальное окружение и установить
 в него зависимости нужно выполнить следующую команду:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv sync --dev
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Эта команда на основе &lt;code&gt;Pipfile.lock&lt;/code&gt; воссоздаст точно то же самое виртуальное
 окружение, что и у других разработчиков проекта.&lt;/p&gt;
 &lt;p&gt;Если же вам не нужны dev-зависимости (например, вы разворачиваете ваш
 проект на продакшн), то можно не передавать флаг &lt;code&gt;--dev&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv sync
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Чтобы "войти" внутрь виртуального окружения, нужно выполнить:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv shell
 &lt;span class="o"&gt;(&lt;/span&gt;pipenv_demo&lt;span class="o"&gt;)&lt;/span&gt; $
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;В этом режиме будут доступны все установленные пакеты, а имена &lt;code&gt;python&lt;/code&gt; и &lt;code&gt;pip&lt;/code&gt;
 будут указывать на соответствующие программы внутри виртуального окружения.&lt;/p&gt;
 &lt;p&gt;Есть и другой способ запускать что-то внутри виртуального окружения без
@@ -1682,6 +1905,8 @@ $ pipenv run python script.py
 &lt;span class="c1"&gt;# а так можно получить список пакетов внутри виртуального окружения&lt;/span&gt;
 $ pipenv run pip freeze
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;h3&gt;Переменные окружения&lt;/h3&gt;
 &lt;p&gt;Согласно идеологии 12-факторных приложений, конфигурацию принято хранить
 отдельно от кода, а &lt;a href="https://12factor.net/ru/config"&gt;лучше всего конфигурацию вообще
@@ -1695,6 +1920,8 @@ $ pipenv run pip freeze
 &lt;p&gt;Давайте создадим файл &lt;code&gt;.env&lt;/code&gt; и запишем туда какое-нибудь значение:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;SECRET_VALUE=hello pipenv!
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;&lt;strong&gt;ВАЖНО:&lt;/strong&gt; файл &lt;code&gt;.env&lt;/code&gt; может содержать пароли для подключения к СУБД
 или токены для доступа к внешним сервисам. Такие данные &lt;strong&gt;никогда&lt;/strong&gt; не должны
 попадать в git.&lt;/p&gt;
@@ -1702,12 +1929,16 @@ $ pipenv run pip freeze
 переменную окружения:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt;
 
-&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Secret value:"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;environ&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"SECRET_VALUE"&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Secret value:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;environ&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;SECRET_VALUE&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Попробуем запустить его без использования &lt;code&gt;pipenv&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ python script.py
 Secret value: None
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Скрипт вместо секретного значения вывел &lt;code&gt;None&lt;/code&gt;, потому что переменная
 окружения так и осталась просто лежать в файле, и никак не повлияла на
 работу скрипта. А теперь запустим этот же скрипт через &lt;code&gt;pipenv&lt;/code&gt;:&lt;/p&gt;
@@ -1715,6 +1946,8 @@ Secret value: None
 Loading .env environment variables…
 Secret value: hello pipenv!
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;&lt;code&gt;pipenv&lt;/code&gt; увидел файл &lt;code&gt;.env&lt;/code&gt; и автоматически загрузил переменные из него.
 Скрипт вывел то значение, которое мы и ожидали увидеть. Команда
 &lt;code&gt;pipenv shell&lt;/code&gt; тоже подгружает переменные окружения из файла.&lt;/p&gt;
@@ -1733,14 +1966,20 @@ Secret value: hello pipenv!
 но примера ради будем передавать всё через командную строку):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ flake8 --exclude&lt;span class="o"&gt;=&lt;/span&gt;tests --ignore&lt;span class="o"&gt;=&lt;/span&gt;E121 .
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Отредактируем &lt;code&gt;Pipfile&lt;/code&gt;, создав там секцию &lt;code&gt;[scripts]&lt;/code&gt; со следующим
 содержимым:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;[scripts]&lt;/span&gt;
-&lt;span class="n"&gt;lint&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"flake8 --exclude=tests --ignore=E121 ."&lt;/span&gt;
+&lt;span class="n"&gt;lint&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;flake8 --exclude=tests --ignore=E121 .&amp;quot;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Теперь тот же самый скрипт можно запустить при помощи команды:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv run lint
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;В качестве бонуса &lt;code&gt;pipenv&lt;/code&gt; автоматически подгрузит переменные окружения,
 так что таким же образом можно выполнять и скрипты, которые зависят от
 конфигурации проекта (миграции БД, очистки кэшей, удаление временных файлов,
@@ -1765,6 +2004,8 @@ Secret value: hello pipenv!
 приходится удалять его полностью и создавать заново:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv --rm &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; pipenv sync --dev
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;h3&gt;Пререлизные зависимости&lt;/h3&gt;
 &lt;p&gt;По умолчанию &lt;code&gt;pipenv&lt;/code&gt; игнорирует нестабильные альфа- и бета-версии пакетов,
 и устанавливает только стабильные. Может случиться так, что вам нужно
@@ -1777,6 +2018,8 @@ ERROR: ERROR: Could not find a version that matches black
 Skipped pre-versions: &lt;span class="m"&gt;18&lt;/span&gt;.3a0, &lt;span class="m"&gt;18&lt;/span&gt;.3a0, &lt;span class="m"&gt;18&lt;/span&gt;.3a1, &lt;span class="m"&gt;18&lt;/span&gt;.3a1, &lt;span class="m"&gt;18&lt;/span&gt;.3a2, &lt;span class="m"&gt;18&lt;/span&gt;.3a2, &lt;span class="m"&gt;18&lt;/span&gt;.3a3, &lt;span class="m"&gt;18&lt;/span&gt;.3a3, &lt;span class="m"&gt;18&lt;/span&gt;.3a4, &lt;span class="m"&gt;18&lt;/span&gt;.3a4, &lt;span class="m"&gt;18&lt;/span&gt;.4a0, &lt;span class="m"&gt;18&lt;/span&gt;.4a0, &lt;span class="m"&gt;18&lt;/span&gt;.4a1, &lt;span class="m"&gt;18&lt;/span&gt;.4a1, &lt;span class="m"&gt;18&lt;/span&gt;.4a2, &lt;span class="m"&gt;18&lt;/span&gt;.4a2, &lt;span class="m"&gt;18&lt;/span&gt;.4a3, &lt;span class="m"&gt;18&lt;/span&gt;.4a3, &lt;span class="m"&gt;18&lt;/span&gt;.4a4, &lt;span class="m"&gt;18&lt;/span&gt;.4a4, &lt;span class="m"&gt;18&lt;/span&gt;.5b0, &lt;span class="m"&gt;18&lt;/span&gt;.5b0, &lt;span class="m"&gt;18&lt;/span&gt;.5b1, &lt;span class="m"&gt;18&lt;/span&gt;.5b1, &lt;span class="m"&gt;18&lt;/span&gt;.6b0, &lt;span class="m"&gt;18&lt;/span&gt;.6b0, &lt;span class="m"&gt;18&lt;/span&gt;.6b1, &lt;span class="m"&gt;18&lt;/span&gt;.6b1, &lt;span class="m"&gt;18&lt;/span&gt;.6b2, &lt;span class="m"&gt;18&lt;/span&gt;.6b2, &lt;span class="m"&gt;18&lt;/span&gt;.6b3, &lt;span class="m"&gt;18&lt;/span&gt;.6b3, &lt;span class="m"&gt;18&lt;/span&gt;.6b4, &lt;span class="m"&gt;18&lt;/span&gt;.6b4, &lt;span class="m"&gt;18&lt;/span&gt;.9b0, &lt;span class="m"&gt;18&lt;/span&gt;.9b0, &lt;span class="m"&gt;19&lt;/span&gt;.3b0, &lt;span class="m"&gt;19&lt;/span&gt;.3b0, &lt;span class="m"&gt;19&lt;/span&gt;.10b0, &lt;span class="m"&gt;19&lt;/span&gt;.10b0
 There are incompatible versions in the resolved dependencies.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Команда завершилась ошибкой, но &lt;code&gt;pipenv&lt;/code&gt; предлагает воспользоваться опцией
 &lt;code&gt;--pre&lt;/code&gt;, чтобы установить пререлизную зависимость. &lt;strong&gt;Избегайте искушения
 сделать так.&lt;/strong&gt;&lt;/p&gt;
@@ -1785,12 +2028,16 @@ There are incompatible versions in the resolved dependencies.
 ...
 ✔ Installation Succeeded
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;На первый взгляд, всё хорошо. Но давайте заглянем в &lt;code&gt;Pipfile&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ cat Pipfile
 ...
 &lt;span class="o"&gt;[&lt;/span&gt;pipenv&lt;span class="o"&gt;]&lt;/span&gt;
 &lt;span class="nv"&gt;allow_prereleases&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;true&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Там появилась директива &lt;code&gt;allow_prereleases = true&lt;/code&gt;, которая глобально меняет
 поведение &lt;code&gt;pipenv&lt;/code&gt; и разрешает ему устанавливать пререлизные версии
 вообще любых зависимостей, а не только той, которую вы хотели установить.
@@ -1802,6 +2049,8 @@ There are incompatible versions in the resolved dependencies.
 конкретную версию:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv install --dev &lt;span class="nv"&gt;black&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="m"&gt;19&lt;/span&gt;.10b0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Если же вы уже попались в эту ловушку &lt;code&gt;pipenv&lt;/code&gt;, то просто отредактируйте
 &lt;code&gt;Pipfile&lt;/code&gt; и либо удалите оттуда директиву &lt;code&gt;allow_prereleases&lt;/code&gt; вообще,
 либо поменяйте значение на &lt;code&gt;false&lt;/code&gt;. После этого можно спать спокойно.&lt;/p&gt;
@@ -1815,6 +2064,8 @@ There are incompatible versions in the resolved dependencies.
 ...
 json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes: line &lt;span class="m"&gt;3&lt;/span&gt; column &lt;span class="m"&gt;8&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;char &lt;span class="m"&gt;24&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;План выхода из такой ситуации следующий:
 1. Не пытайтесь осознанно решать конфликты в &lt;code&gt;Pipfile.lock&lt;/code&gt; вручную, всё равно
 не сможете; &lt;code&gt;pipenv&lt;/code&gt; сам создал этот файл, вот пусть сам и разбирается.
@@ -1823,6 +2074,8 @@ json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes:
 3. Пересоздайте &lt;code&gt;Pipfile.lock&lt;/code&gt; заново:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv lock --keep-outdated
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Флаг &lt;code&gt;--keep-outdated&lt;/code&gt; позволяет избежать лишних обновлений версий — вы
 ведь просто хотите разрешить конфликты, а не обновить все пакеты, верно?
 Тем не менее, &lt;code&gt;pipenv&lt;/code&gt; может вас проигнорировать, и всё равно обновить
@@ -1849,7 +2102,7 @@ json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes:
     &lt;span class="n"&gt;use_dot_env_file&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
     &lt;span class="n"&gt;use_scripts&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
     &lt;span class="n"&gt;know_pitfalls&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"PROFIT!!!!!"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;PROFIT!!!!!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
 
 &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;work_on_application&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
@@ -1857,9 +2110,11 @@ json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes:
 &lt;span class="k"&gt;elif&lt;/span&gt; &lt;span class="n"&gt;work_on_library&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;use_poetry&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
-    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"wtf"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;wtf&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
     &lt;span class="n"&gt;use_pip&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;h2&gt;Дополнительное чтение&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="https://github.com/pypa/pipenv"&gt;Исходный код &lt;code&gt;pipenv&lt;/code&gt;&lt;/a&gt;;&lt;/li&gt;
@@ -1889,14 +2144,17 @@ json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes:
 который спрашивает у пользователя название города и
 выводит текущую температуру и общее состояние погоды:&lt;/p&gt;
 &lt;script src="https://gist.github.com/and-semakin/1e999af221df36afbeec5909a413081a.js?file=weather.py"&gt;&lt;/script&gt;
+
 &lt;p&gt;Скрипт получился настолько хорош, что вы хотите поделиться
 им со всеми своими друзьями. К сожалению, друзья при попытке
 запустить вашу программу получают следующую ошибку:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;Traceback&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;most&lt;/span&gt; &lt;span class="n"&gt;recent&lt;/span&gt; &lt;span class="n"&gt;call&lt;/span&gt; &lt;span class="n"&gt;last&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;"weather.py"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;module&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;weather.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;module&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
     &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pyowm&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;OWM&lt;/span&gt;
-&lt;span class="n"&gt;ModuleNotFoundError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;No&lt;/span&gt; &lt;span class="n"&gt;module&lt;/span&gt; &lt;span class="n"&gt;named&lt;/span&gt; &lt;span class="s1"&gt;'pyowm'&lt;/span&gt;
+&lt;span class="n"&gt;ModuleNotFoundError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;No&lt;/span&gt; &lt;span class="n"&gt;module&lt;/span&gt; &lt;span class="n"&gt;named&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;pyowm&amp;#39;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Кажется, что скинуть только код недостаточно.&lt;/p&gt;
 &lt;p&gt;Или, допустим, что вы сами через полгода-год попытаетесь
 запустить эту же программу. За это время вы успели пару
@@ -1941,22 +2199,30 @@ json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes:
 с погодой):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;pyowm
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Если бы было несколько зависимостей, то файл выглядел бы так:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;numpy
 requests
 pytest
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Можно указать конкретную версию зависимости. Если версия не указана, то
 считается, что нужна последняя доступная:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;numpy  # нужна последняя версия
 requests==2.23.0  # нужна конкретная версия
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Можно указывать диапазоны и другие более сложные &lt;a href="https://www.python.org/dev/peps/pep-0440/#version-specifiers"&gt;"спецификаторы версий"&lt;/a&gt;.
 В целом, в &lt;code&gt;requirements.txt&lt;/code&gt; можно писать любые "запросы", которые понимает команда
 &lt;code&gt;pip install&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;requests&amp;gt;=2.20.0,&amp;lt;2.23.0  # подойдет любая версия между 2.20.0 и 2.23.0
 numpy!=1.0  # подойдет любая версия, кроме 1.0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;h2&gt;Как пользоваться&lt;/h2&gt;
 &lt;p&gt;Команда &lt;code&gt;pip install&lt;/code&gt; умеет читать такие файлы, если передать специальный флаг:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install --help
@@ -1965,17 +2231,23 @@ Install Options:
   -r, --requirement &amp;lt;file&amp;gt;    Install from the given requirements file. This option can be used multiple times.
 ...
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Таким образом, если &lt;code&gt;requirements.txt&lt;/code&gt; будет иметь вот такое содержимое:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;pytest
 flake8
 black
 isort
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;То следующие две команды будут иметь одинаковое действие:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install -r requirements.txt
 
 $ pip install pytest flake8 black isort
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Преимущества использования &lt;code&gt;requirements.txt&lt;/code&gt;:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
@@ -2015,6 +2287,8 @@ $ pip install pytest flake8 black isort
 &lt;span class="nv"&gt;requests&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;.23.0
 &lt;span class="nv"&gt;urllib3&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;.25.9
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Команда &lt;code&gt;pip freeze&lt;/code&gt; выводит все установленные в интерпретатор сторонние пакеты.
 Заметьте, что в список попали не только прямые зависимости (&lt;code&gt;pyowm&lt;/code&gt;), но
 и подзависимости — это даже лучше, потому что вы сможете более
@@ -2024,6 +2298,8 @@ $ pip install pytest flake8 black isort
 (работает и на Windows), и получить валидный файл &lt;code&gt;requirements.txt&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;(&lt;/span&gt;env&lt;span class="o"&gt;)&lt;/span&gt; $ pip freeze &amp;gt; requirements.txt
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Обратите внимание, что &lt;code&gt;pip freeze&lt;/code&gt; выведет список пакетов в том окружении,
 в котором он запущен. Не забудьте активировать виртуальное окружение перед
 запуском этой команды, иначе получите список пакетов, установленных в глобальный
@@ -2123,6 +2399,8 @@ $ pip install pytest flake8 black isort
 &lt;p&gt;Каждый начинающий программист знает, как установить библиотеку. Набираем&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install requests
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;и понеслась! Множество библиотек в своих инструкциях по установке именно так
 и предлагают их устанавливать. Это и правда работает, это и правда так просто,
 &lt;em&gt;но есть нюансы&lt;/em&gt;. В этом месте закопаны очень популярные грабли, по которым
@@ -2148,16 +2426,18 @@ $ pip install pytest flake8 black isort
 именно происходит установка? Это можно узнать, выполнив следующую команду:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ python -m site
 sys.path &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;
-    &lt;span class="s1"&gt;'/Users/and-semakin'&lt;/span&gt;,
-    &lt;span class="s1"&gt;'/Users/and-semakin/.asdf/installs/python/3.8.2/lib/python38.zip'&lt;/span&gt;,
-    &lt;span class="s1"&gt;'/Users/and-semakin/.asdf/installs/python/3.8.2/lib/python3.8'&lt;/span&gt;,
-    &lt;span class="s1"&gt;'/Users/and-semakin/.asdf/installs/python/3.8.2/lib/python3.8/lib-dynload'&lt;/span&gt;,
-    &lt;span class="s1"&gt;'/Users/and-semakin/env/lib/python3.8/site-packages'&lt;/span&gt;,
+    &lt;span class="s1"&gt;&amp;#39;/Users/and-semakin&amp;#39;&lt;/span&gt;,
+    &lt;span class="s1"&gt;&amp;#39;/Users/and-semakin/.asdf/installs/python/3.8.2/lib/python38.zip&amp;#39;&lt;/span&gt;,
+    &lt;span class="s1"&gt;&amp;#39;/Users/and-semakin/.asdf/installs/python/3.8.2/lib/python3.8&amp;#39;&lt;/span&gt;,
+    &lt;span class="s1"&gt;&amp;#39;/Users/and-semakin/.asdf/installs/python/3.8.2/lib/python3.8/lib-dynload&amp;#39;&lt;/span&gt;,
+    &lt;span class="s1"&gt;&amp;#39;/Users/and-semakin/env/lib/python3.8/site-packages&amp;#39;&lt;/span&gt;,
 &lt;span class="o"&gt;]&lt;/span&gt;
-USER_BASE: &lt;span class="s1"&gt;'/Users/and-semakin/.local'&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;exists&lt;span class="o"&gt;)&lt;/span&gt;
-USER_SITE: &lt;span class="s1"&gt;'/Users/and-semakin/.local/lib/python3.8/site-packages'&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;doesn&lt;span class="err"&gt;'&lt;/span&gt;t exist&lt;span class="o"&gt;)&lt;/span&gt;
+USER_BASE: &lt;span class="s1"&gt;&amp;#39;/Users/and-semakin/.local&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;exists&lt;span class="o"&gt;)&lt;/span&gt;
+USER_SITE: &lt;span class="s1"&gt;&amp;#39;/Users/and-semakin/.local/lib/python3.8/site-packages&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;doesn&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;t exist&lt;span class="o"&gt;)&lt;/span&gt;
 ENABLE_USER_SITE: False
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;В списке &lt;code&gt;sys.path&lt;/code&gt; можно увидеть директорию &lt;code&gt;site-packages&lt;/code&gt; — именно туда
 и будет установлена библиотека. Давайте в этом убедимся.&lt;/p&gt;
 &lt;p&gt;До установки пакета:&lt;/p&gt;
@@ -2171,9 +2451,13 @@ drwxr-xr-x   &lt;span class="m"&gt;7&lt;/span&gt; and-semakin  awesome   &lt;spa
 drwxr-xr-x  &lt;span class="m"&gt;42&lt;/span&gt; and-semakin  awesome  &lt;span class="m"&gt;1344&lt;/span&gt; Apr &lt;span class="m"&gt;18&lt;/span&gt; &lt;span class="m"&gt;17&lt;/span&gt;:39 setuptools
 drwxr-xr-x  &lt;span class="m"&gt;11&lt;/span&gt; and-semakin  awesome   &lt;span class="m"&gt;352&lt;/span&gt; Apr &lt;span class="m"&gt;18&lt;/span&gt; &lt;span class="m"&gt;17&lt;/span&gt;:39 setuptools-41.2.0.dist-info
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Установим пакет:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install requests
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;После установки пакета:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ ls -l /Users/and-semakin/env/lib/python3.8/site-packages
 total &lt;span class="m"&gt;8&lt;/span&gt;
@@ -2195,6 +2479,8 @@ drwxr-xr-x  &lt;span class="m"&gt;11&lt;/span&gt; and-semakin  awesome   &lt;spa
 drwxr-xr-x  &lt;span class="m"&gt;16&lt;/span&gt; and-semakin  awesome   &lt;span class="m"&gt;512&lt;/span&gt; Apr &lt;span class="m"&gt;18&lt;/span&gt; &lt;span class="m"&gt;17&lt;/span&gt;:41 urllib3
 drwxr-xr-x   &lt;span class="m"&gt;8&lt;/span&gt; and-semakin  awesome   &lt;span class="m"&gt;256&lt;/span&gt; Apr &lt;span class="m"&gt;18&lt;/span&gt; &lt;span class="m"&gt;17&lt;/span&gt;:41 urllib3-1.25.9.dist-info
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Как видим, в директорию &lt;code&gt;site-packages&lt;/code&gt; добавилась библиотека &lt;code&gt;requests&lt;/code&gt; вместе
 со всеми своими зависимостями.&lt;/p&gt;
 &lt;p&gt;Важные мысли, которые я пытаюсь донести:&lt;/p&gt;
@@ -2217,10 +2503,14 @@ drwxr-xr-x   &lt;span class="m"&gt;8&lt;/span&gt; and-semakin  awesome   &lt;spa
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# requirements.txt
 requests==2.23.0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Проект Б:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# requirements.txt
 requests==1.2.3
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Вы просто не сможете работать над такими проектами одновременно. Установка
 зависимостей одного проекта сломает другой, и наоборот. При переключении между
 проектами придётся каждый раз устанавливать зависимости нужного проекта, что
@@ -2252,6 +2542,8 @@ requests==1.2.3
 очень просто:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ python -m venv &amp;lt;путь к виртуальному окружению&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Например, допустим, что мы работаем над проектом &lt;code&gt;blog_source&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# заходим в директорию с проектом&lt;/span&gt;
 $ &lt;span class="nb"&gt;cd&lt;/span&gt; src/blog_source
@@ -2259,6 +2551,8 @@ $ &lt;span class="nb"&gt;cd&lt;/span&gt; src/blog_source
 &lt;span class="c1"&gt;# создаем виртуальное окружение прямо рядом с кодом в директории env&lt;/span&gt;
 $ python -m venv env
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Создавать виртуальное окружения рядом с кодом — это распространённая практика,
 так проще ничего не перепутать, но вообще виртуальное окружение может быть
 где угодно, и директория тоже может называться как угодно. Обратите внимание,
@@ -2270,10 +2564,14 @@ $ python -m venv env
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ python -V
 Python &lt;span class="m"&gt;3&lt;/span&gt;.8.2
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;то в виртуальном окружении будет та же самая версия:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ env/bin/python -V
 Python &lt;span class="m"&gt;3&lt;/span&gt;.8.2
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;h3&gt;Активируем окружение&lt;/h3&gt;
 &lt;p&gt;Посмотрим, что внутри директории &lt;code&gt;env&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ ls -l env/
@@ -2297,6 +2595,8 @@ total &lt;span class="m"&gt;88&lt;/span&gt;
 lrwxr-xr-x  &lt;span class="m"&gt;1&lt;/span&gt; and-semakin  awesome    &lt;span class="m"&gt;59&lt;/span&gt; Apr &lt;span class="m"&gt;18&lt;/span&gt; &lt;span class="m"&gt;18&lt;/span&gt;:55 python -&amp;gt; /Users/and-semakin/.asdf/installs/python/3.8.2/bin/python
 lrwxr-xr-x  &lt;span class="m"&gt;1&lt;/span&gt; and-semakin  awesome     &lt;span class="m"&gt;6&lt;/span&gt; Apr &lt;span class="m"&gt;18&lt;/span&gt; &lt;span class="m"&gt;18&lt;/span&gt;:55 python3 -&amp;gt; python
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Обратите внимание, что в директории &lt;code&gt;bin&lt;/code&gt; есть некий файл &lt;code&gt;activate&lt;/code&gt; в
 нескольких вариантах для разных шеллов. Это и есть "точка входа" в виртуальное
 окружение. Просто создать виртуальное окружение мало, нужно его активировать.
@@ -2307,11 +2607,15 @@ lrwxr-xr-x  &lt;span class="m"&gt;1&lt;/span&gt; and-semakin  awesome     &lt;sp
 $ which pip
 /Users/and-semakin/.asdf/shims/pip
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Это мой обычный Python, вне виртуального окружения, назовём его глобальным.
 Теперь активируем виртуальное окружение:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ &lt;span class="nb"&gt;source&lt;/span&gt; env/bin/activate
 &lt;span class="o"&gt;(&lt;/span&gt;env&lt;span class="o"&gt;)&lt;/span&gt; $
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Для Windows процесс активации будет отличаться (допустим, что виртуальное окружение
 создано в &lt;code&gt;C:\src\blog_source&lt;/code&gt;):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# cmd&lt;/span&gt;
@@ -2320,6 +2624,8 @@ C:&lt;span class="se"&gt;\s&lt;/span&gt;rc&lt;span class="se"&gt;\b&lt;/span&gt;
 &lt;span class="c1"&gt;# либо в PowerShell&lt;/span&gt;
 PS C:&lt;span class="se"&gt;\s&lt;/span&gt;rc&lt;span class="se"&gt;\b&lt;/span&gt;log_source&lt;span class="se"&gt;\&amp;gt;&lt;/span&gt; env&lt;span class="se"&gt;\S&lt;/span&gt;cripts&lt;span class="se"&gt;\A&lt;/span&gt;ctivate.ps1
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Обратите внимание, что приветствие шелла изменилось (добавилось &lt;code&gt;(env)&lt;/code&gt;), чтобы
 показать, что мы "внутри" виртуального окружения под названием &lt;code&gt;env&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;Теперь проверим еще раз, какие &lt;code&gt;python&lt;/code&gt; и &lt;code&gt;pip&lt;/code&gt; используются:&lt;/p&gt;
@@ -2328,15 +2634,21 @@ PS C:&lt;span class="se"&gt;\s&lt;/span&gt;rc&lt;span class="se"&gt;\b&lt;/span&
 &lt;span class="o"&gt;(&lt;/span&gt;env&lt;span class="o"&gt;)&lt;/span&gt; $ which pip
 /Users/and-semakin/src/blog_source/env/bin/pip
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Посмотрите на пути — мы внутри виртуального окружения! Теперь можно смело
 устанавливать любые пакеты, и это никак не повлияет на глобальный Python или
 на другие виртуальные окружения:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;(&lt;/span&gt;env&lt;span class="o"&gt;)&lt;/span&gt; $ pip install requests flask whatever-you-need
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Можно запускать любые файлы, и они будут иметь доступ к установленным пакетам:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;(&lt;/span&gt;env&lt;span class="o"&gt;)&lt;/span&gt; $ python make_money.py
 Done! You are rich!
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;IDE тоже нужно настроить, указав путь к &lt;code&gt;bin/python&lt;/code&gt; внутри виртуального
 окружения, тогда редактор сможет лучше вам помогать.&lt;/p&gt;
 &lt;p&gt;По завершению работы с виртуальным окружением можно просто набрать &lt;code&gt;deactivate&lt;/code&gt;,
@@ -2345,6 +2657,8 @@ Done! You are rich!
 $ which python
 /Users/and-semakin/.asdf/shims/python
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;И мы видим, что команда &lt;code&gt;python&lt;/code&gt; снова вызывает глобальный интерпретатор.
 При этом виртуальное окружение осталось в своей директории, оно просто не
 активно. В следующий раз, когда будет нужно поработать с виртуальным
@@ -2353,6 +2667,8 @@ $ which python
 нужным:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ rm -r env/
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;В идеале, у вас должна быть возможность в любой момент удалить и пересоздать
 виртуальное окружение заново, для этого храните список зависимостей проекта и
 содержите его в актуальном состоянии (например, в &lt;code&gt;requirements.txt&lt;/code&gt;).
@@ -2376,10 +2692,14 @@ $ which python
 &lt;a href="https://pypi.org/project/howdoi/"&gt;&lt;code&gt;howdoi&lt;/code&gt;&lt;/a&gt;. Руки набирают в терминал:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install poetry
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Установка начинается, прогресс-бары заполняются, но в итоге всё завершается
 чем-то типа такого:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;error&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;could&lt;/span&gt; &lt;span class="n"&gt;not&lt;/span&gt; &lt;span class="n"&gt;create&lt;/span&gt; &lt;span class="s1"&gt;'/lib/python2.7/site-packages/poetry'&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Permission&lt;/span&gt; &lt;span class="n"&gt;denied&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;error&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;could&lt;/span&gt; &lt;span class="n"&gt;not&lt;/span&gt; &lt;span class="n"&gt;create&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;/lib/python2.7/site-packages/poetry&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Permission&lt;/span&gt; &lt;span class="n"&gt;denied&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;Можно попробовать установить, используя &lt;code&gt;sudo&lt;/code&gt;, и это сработает, но это
 считается &lt;a href="https://ru.stackoverflow.com/q/651860/340643"&gt;очень плохой практикой&lt;/a&gt;,
 и я настоятельно рекомендую так не делать по нескольким причинам:&lt;/p&gt;
@@ -2418,6 +2738,8 @@ $ which python
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ python -m site --user-base
 /Users/and-semakin/.local
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;К получившемуся пути нужно в конце добавить &lt;code&gt;/bin&lt;/code&gt; для Linux и MacOS,
 либо &lt;code&gt;\Scripts&lt;/code&gt; для Windows, так что
 в моём случае (MacOS) в &lt;code&gt;$PATH&lt;/code&gt; нужно добавить вот такой путь:
