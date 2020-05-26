@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Питонические атаки</title><link href="https://semakin.dev/" rel="alternate"></link><link href="https://semakin.dev/feeds/all.atom.xml" rel="self"></link><id>https://semakin.dev/</id><updated>2020-05-26T13:54:45+05:00</updated><subtitle>Про разработку в целом и про Python в частности</subtitle><entry><title>Форматируем код при помощи black</title><link href="https://semakin.dev/2020/05/black/" rel="alternate"></link><published>2020-05-26T13:54:45+05:00</published><updated>2020-05-26T13:54:45+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-05-26:/2020/05/black/</id><summary type="html">&lt;p&gt;Автоматическое форматирование кода избавляет от бесконечных споров про пробелы, запятые и скобки, экономя нервы и часы код-ревью.&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Почему полезно форматировать код&lt;/h1&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Питонические атаки</title><link href="https://semakin.dev/" rel="alternate"></link><link href="https://semakin.dev/feeds/all.atom.xml" rel="self"></link><id>https://semakin.dev/</id><updated>2020-05-26T21:54:31+05:00</updated><subtitle>Про разработку в целом и про Python в частности</subtitle><entry><title>Форматируем код при помощи black</title><link href="https://semakin.dev/2020/05/black/" rel="alternate"></link><published>2020-05-26T13:54:45+05:00</published><updated>2020-05-26T21:54:31+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-05-26:/2020/05/black/</id><summary type="html">&lt;p&gt;Автоматическое форматирование кода избавляет от бесконечных споров про пробелы, запятые и скобки, экономя нервы и часы код-ревью.&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Почему полезно форматировать код&lt;/h1&gt;
 &lt;p&gt;В сообществе Python ещё лет 20 назад осознали ценность форматирования кода, когда
 на свет появился &lt;a href="https://www.python.org/dev/peps/pep-0008/"&gt;PEP8&lt;/a&gt; —
 документ, который призван сделать весь код, написанный на Python,
@@ -200,11 +200,101 @@ All &lt;span class="k"&gt;done&lt;/span&gt;! ✨ 🍰 ✨
 Чтобы не возникало конфликтов, рекомендуется выключить некоторые
 проверки &lt;code&gt;flake8&lt;/code&gt;, по примеру того, как это сделано
 &lt;a href="https://github.com/psf/black/blob/master/.flake8"&gt;в репозитории &lt;code&gt;black&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;h2&gt;Что меня бесит в стиле &lt;code&gt;black&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;Есть некоторые моменты, с которыми я категорически несогласен.
+Думаю, рассказать про них тоже нужно.&lt;/p&gt;
+&lt;p&gt;Рассмотрим пример исходного кода:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Hello, &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;user_name&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="s2"&gt;&amp;quot;What a wonderful day!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="s2"&gt;&amp;quot;I don&amp;#39;t know you. Are you new here?&amp;quot;&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;user_name&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Andrey&amp;quot;&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Nice to meet you again!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="s2"&gt;&amp;quot;Today is&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="n"&gt;datetime&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;datetime&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;now&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;isoformat&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Я специально сделал побольше аргументов в функцию &lt;code&gt;print()&lt;/code&gt;,
+чтобы вызов функции стал достаточно длинным, чтобы &lt;code&gt;black&lt;/code&gt;
+разнёс его на несколько строк. Обратите внимание на
+тернарный оператор. Теперь отформатируем и посмотрим
+на результат:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+    &lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Hello, &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;user_name&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;What a wonderful day!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;I don&amp;#39;t know you. Are you new here?&amp;quot;&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;user_name&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Andrey&amp;quot;&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Nice to meet you again!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;Today is&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="n"&gt;datetime&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;datetime&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;now&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;isoformat&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt;
+&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Тернарный оператор затерялся среди других аргументов функции, его
+теперь очень трудно заметить. Чтобы исправить, давайте возьмём тернарный
+оператор в скобки и ещё раз отформатируем:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+    &lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Hello, &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;user_name&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;What a wonderful day!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="p"&gt;(&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;I don&amp;#39;t know you. Are you new here?&amp;quot;&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;user_name&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Andrey&amp;quot;&lt;/span&gt;
+        &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Nice to meet you again!&amp;quot;&lt;/span&gt;
+    &lt;span class="p"&gt;),&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;Today is&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="n"&gt;datetime&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;datetime&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;now&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;isoformat&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt;
+&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Теперь намного понятнее, не правда ли? Такое может произойти не только
+с тернарными операторами, но и с длинными арифметическими выражениями,
+и с длинными строками, которые разбиты на несколько частей:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+     &lt;span class="c1"&gt;# Обратите внимание, что между следующими &amp;quot;строками&amp;quot; нет&lt;/span&gt;
+     &lt;span class="c1"&gt;# запятой, так что фактически это один строковый литерал.&lt;/span&gt;
+     &lt;span class="c1"&gt;# Хороший приём для объединения длинных строк внутри скобок.&lt;/span&gt;
+     &lt;span class="s2"&gt;&amp;quot;Lorem ipsum dolor sit amet, consectetur adipiscing elit. &amp;quot;&lt;/span&gt;
+     &lt;span class="s2"&gt;&amp;quot;Sed dolor massa, mollis a commodo in, molestie in risus.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Эта функция имеет два аргумента — булевый и строковый. Отформатируем:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+    &lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;Lorem ipsum dolor sit amet, consectetur adipiscing elit. &amp;quot;&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;Sed dolor massa, mollis a commodo in, molestie in risus.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;code&gt;black&lt;/code&gt; опять не помог сделать код читаемее. Выглядит так, будто функция
+имеет три аргумента, хотя на самом деле их только два. Нужно хорошо
+присмотреться, чтобы заметить отсутствие запятой.
+Поставим скобки вручную и отформатируем ещё раз:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+    &lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="p"&gt;(&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;Lorem ipsum dolor sit amet, consectetur adipiscing elit. &amp;quot;&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;Sed dolor massa, mollis a commodo in, molestie in risus.&amp;quot;&lt;/span&gt;
+    &lt;span class="p"&gt;),&lt;/span&gt;
+&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Стало в сто раз лучше. Теперь всё очевидно.&lt;/p&gt;
+&lt;p&gt;Надеюсь, что когда-нибудь эту &lt;a href="https://github.com/psf/black/issues/620"&gt;шероховатость&lt;/a&gt;
+починят, а до тех пор я просто вручную ставлю скобки вокруг
+вот такого некрасивого кода. Такое случается не так уж часто.
+В целом, даже почти не больно.&lt;/p&gt;
 &lt;h1&gt;Заключение&lt;/h1&gt;
 &lt;p&gt;Консистентное форматирование кода — это невероятно важно,
 потому что упрощает восприятие кода другими людьми
 (или самим же автором кода, но через полгода). Автоматическое форматирование
-кода не требует вообще никаких усилий со стороны автора.&lt;/p&gt;
+кода (почти) не требует вообще никаких усилий со стороны автора.&lt;/p&gt;
+&lt;p&gt;Хоть &lt;code&gt;black&lt;/code&gt; и имеет свои недостатки, он всё равно явно окупает
+усилия, затраченные на ручную расстановку скобок, потому что случается
+это довольно редко. Как и любой инструмент, &lt;code&gt;black&lt;/code&gt; дорабатывается,
+и будем верить, что все проблемы рано или поздно исправят.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;black&lt;/code&gt;, наряду с &lt;code&gt;flake8&lt;/code&gt; и &lt;code&gt;pytest&lt;/code&gt;, попал в мой набор незаменимых
 инструментов, которые я пытаюсь использовать во всех своих проектах.
 И вам рекомендую.&lt;/p&gt;

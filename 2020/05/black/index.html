@@ -95,7 +95,7 @@
                         
                             <span class="meta">
                                 <i class="fa fa-clock-o" aria-hidden="true"></i>
-                                5 минут
+                                7 минут
                             </span>
                     </div>
                 </div>
@@ -313,11 +313,101 @@ All <span class="k">done</span>! ✨ 🍰 ✨
 Чтобы не возникало конфликтов, рекомендуется выключить некоторые
 проверки <code>flake8</code>, по примеру того, как это сделано
 <a href="https://github.com/psf/black/blob/master/.flake8">в репозитории <code>black</code></a>.</p>
+<h2>Что меня бесит в стиле <code>black</code></h2>
+<p>Есть некоторые моменты, с которыми я категорически несогласен.
+Думаю, рассказать про них тоже нужно.</p>
+<p>Рассмотрим пример исходного кода:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello, </span><span class="si">{</span><span class="n">user_name</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;What a wonderful day!&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;I don&#39;t know you. Are you new here?&quot;</span> <span class="k">if</span> <span class="n">user_name</span> <span class="o">!=</span> <span class="s2">&quot;Andrey&quot;</span> <span class="k">else</span> <span class="s2">&quot;Nice to meet you again!&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;Today is&quot;</span><span class="p">,</span>
+      <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">())</span>
+</code></pre></div>
+
+
+<p>Я специально сделал побольше аргументов в функцию <code>print()</code>,
+чтобы вызов функции стал достаточно длинным, чтобы <code>black</code>
+разнёс его на несколько строк. Обратите внимание на
+тернарный оператор. Теперь отформатируем и посмотрим
+на результат:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;Hello, </span><span class="si">{</span><span class="n">user_name</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;What a wonderful day!&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;I don&#39;t know you. Are you new here?&quot;</span>
+    <span class="k">if</span> <span class="n">user_name</span> <span class="o">!=</span> <span class="s2">&quot;Andrey&quot;</span>
+    <span class="k">else</span> <span class="s2">&quot;Nice to meet you again!&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Today is&quot;</span><span class="p">,</span>
+    <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+<span class="p">)</span>
+</code></pre></div>
+
+
+<p>Тернарный оператор затерялся среди других аргументов функции, его
+теперь очень трудно заметить. Чтобы исправить, давайте возьмём тернарный
+оператор в скобки и ещё раз отформатируем:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;Hello, </span><span class="si">{</span><span class="n">user_name</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;What a wonderful day!&quot;</span><span class="p">,</span>
+    <span class="p">(</span>
+        <span class="s2">&quot;I don&#39;t know you. Are you new here?&quot;</span>
+        <span class="k">if</span> <span class="n">user_name</span> <span class="o">!=</span> <span class="s2">&quot;Andrey&quot;</span>
+        <span class="k">else</span> <span class="s2">&quot;Nice to meet you again!&quot;</span>
+    <span class="p">),</span>
+    <span class="s2">&quot;Today is&quot;</span><span class="p">,</span>
+    <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+<span class="p">)</span>
+</code></pre></div>
+
+
+<p>Теперь намного понятнее, не правда ли? Такое может произойти не только
+с тернарными операторами, но и с длинными арифметическими выражениями,
+и с длинными строками, которые разбиты на несколько частей:</p>
+<div class="highlight"><pre><span></span><code><span class="n">func</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span>
+     <span class="c1"># Обратите внимание, что между следующими &quot;строками&quot; нет</span>
+     <span class="c1"># запятой, так что фактически это один строковый литерал.</span>
+     <span class="c1"># Хороший приём для объединения длинных строк внутри скобок.</span>
+     <span class="s2">&quot;Lorem ipsum dolor sit amet, consectetur adipiscing elit. &quot;</span>
+     <span class="s2">&quot;Sed dolor massa, mollis a commodo in, molestie in risus.&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+
+<p>Эта функция имеет два аргумента — булевый и строковый. Отформатируем:</p>
+<div class="highlight"><pre><span></span><code><span class="n">func</span><span class="p">(</span>
+    <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">&quot;Lorem ipsum dolor sit amet, consectetur adipiscing elit. &quot;</span>
+    <span class="s2">&quot;Sed dolor massa, mollis a commodo in, molestie in risus.&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+
+
+<p><code>black</code> опять не помог сделать код читаемее. Выглядит так, будто функция
+имеет три аргумента, хотя на самом деле их только два. Нужно хорошо
+присмотреться, чтобы заметить отсутствие запятой.
+Поставим скобки вручную и отформатируем ещё раз:</p>
+<div class="highlight"><pre><span></span><code><span class="n">func</span><span class="p">(</span>
+    <span class="kc">True</span><span class="p">,</span>
+    <span class="p">(</span>
+        <span class="s2">&quot;Lorem ipsum dolor sit amet, consectetur adipiscing elit. &quot;</span>
+        <span class="s2">&quot;Sed dolor massa, mollis a commodo in, molestie in risus.&quot;</span>
+    <span class="p">),</span>
+<span class="p">)</span>
+</code></pre></div>
+
+
+<p>Стало в сто раз лучше. Теперь всё очевидно.</p>
+<p>Надеюсь, что когда-нибудь эту <a href="https://github.com/psf/black/issues/620">шероховатость</a>
+починят, а до тех пор я просто вручную ставлю скобки вокруг
+вот такого некрасивого кода. Такое случается не так уж часто.
+В целом, даже почти не больно.</p>
 <h1>Заключение</h1>
 <p>Консистентное форматирование кода — это невероятно важно,
 потому что упрощает восприятие кода другими людьми
 (или самим же автором кода, но через полгода). Автоматическое форматирование
-кода не требует вообще никаких усилий со стороны автора.</p>
+кода (почти) не требует вообще никаких усилий со стороны автора.</p>
+<p>Хоть <code>black</code> и имеет свои недостатки, он всё равно явно окупает
+усилия, затраченные на ручную расстановку скобок, потому что случается
+это довольно редко. Как и любой инструмент, <code>black</code> дорабатывается,
+и будем верить, что все проблемы рано или поздно исправят.</p>
 <p><code>black</code>, наряду с <code>flake8</code> и <code>pytest</code>, попал в мой набор незаменимых
 инструментов, которые я пытаюсь использовать во всех своих проектах.
 И вам рекомендую.</p>
