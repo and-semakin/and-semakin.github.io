@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Питонические атаки - blog</title><link href="https://semakin.dev/" rel="alternate"></link><link href="https://semakin.dev/feeds/blog.atom.xml" rel="self"></link><id>https://semakin.dev/</id><updated>2020-05-26T21:54:31+05:00</updated><subtitle>Про разработку в целом и про Python в частности</subtitle><entry><title>Форматируем код при помощи black</title><link href="https://semakin.dev/2020/05/black/" rel="alternate"></link><published>2020-05-26T13:54:45+05:00</published><updated>2020-05-26T21:54:31+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-05-26:/2020/05/black/</id><summary type="html">&lt;p&gt;Автоматическое форматирование кода избавляет от бесконечных споров про пробелы, запятые и скобки, экономя нервы и часы код-ревью.&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Почему полезно форматировать код&lt;/h1&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Питонические атаки - blog</title><link href="https://semakin.dev/" rel="alternate"></link><link href="https://semakin.dev/feeds/blog.atom.xml" rel="self"></link><id>https://semakin.dev/</id><updated>2020-05-30T20:36:53+05:00</updated><subtitle>Про разработку в целом и про Python в частности</subtitle><entry><title>Форматируем код при помощи black</title><link href="https://semakin.dev/2020/05/black/" rel="alternate"></link><published>2020-05-26T13:54:45+05:00</published><updated>2020-05-26T21:54:31+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-05-26:/2020/05/black/</id><summary type="html">&lt;p&gt;Автоматическое форматирование кода избавляет от бесконечных споров про пробелы, запятые и скобки, экономя нервы и часы код-ревью.&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Почему полезно форматировать код&lt;/h1&gt;
 &lt;p&gt;В сообществе Python ещё лет 20 назад осознали ценность форматирования кода, когда
 на свет появился &lt;a href="https://www.python.org/dev/peps/pep-0008/"&gt;PEP8&lt;/a&gt; —
 документ, который призван сделать весь код, написанный на Python,
@@ -1941,7 +1941,7 @@ In &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;s
 &lt;li&gt;&lt;a href="https://realpython.com/intro-to-pyenv/"&gt;Туториал на RealPython&lt;/a&gt;;&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://asdf-vm.com/#/"&gt;Альтернатива: универсальный менеджер версий &lt;code&gt;asdf&lt;/code&gt;&lt;/a&gt;.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;em&gt;Обложка: &lt;a href="https://www.needpix.com/photo/download/1191596/snakes-black-snakes-animal-reptile-free-pictures-free-photos-free-images-royalty-free-free-illustrations"&gt;Schwoaze, Snakes Black Snakes Animal Free Photo&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;</content><category term="blog"></category><category term="python"></category><category term="pyenv"></category></entry><entry><title>pipenv — как pip, только удобнее</title><link href="https://semakin.dev/2020/04/pipenv/" rel="alternate"></link><published>2020-04-29T13:56:47+05:00</published><updated>2020-04-29T13:56:47+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-04-29:/2020/04/pipenv/</id><summary type="html">&lt;p&gt;Как пользоваться и в каких случаях стоит обратить внимание на этот инструмент.&lt;/p&gt;</summary><content type="html">&lt;h1&gt;pipenv&lt;/h1&gt;
+&lt;p&gt;&lt;em&gt;Обложка: &lt;a href="https://www.needpix.com/photo/download/1191596/snakes-black-snakes-animal-reptile-free-pictures-free-photos-free-images-royalty-free-free-illustrations"&gt;Schwoaze, Snakes Black Snakes Animal Free Photo&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;</content><category term="blog"></category><category term="python"></category><category term="pyenv"></category></entry><entry><title>pipenv — как pip, только удобнее</title><link href="https://semakin.dev/2020/04/pipenv/" rel="alternate"></link><published>2020-04-29T13:56:47+05:00</published><updated>2020-05-30T20:36:53+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-04-29:/2020/04/pipenv/</id><summary type="html">&lt;p&gt;Как пользоваться и в каких случаях стоит обратить внимание на этот инструмент.&lt;/p&gt;</summary><content type="html">&lt;h1&gt;pipenv&lt;/h1&gt;
 &lt;p&gt;&lt;code&gt;pipenv&lt;/code&gt; — это замечательный проект, который призван упростить
 организацию рабочего процесса для Python-разработчиков. Он
 решает несколько наиболее актуальных для разработчика проблем
@@ -2405,6 +2405,14 @@ json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes:
 &lt;a href="https://github.com/pypa/pipenv/issues/3369"&gt;признаки жизни&lt;/a&gt;,
 и я очень надеюсь, что всё с ним будет хорошо. По-моему, это очень
 важный для экосистемы Python проект.&lt;/p&gt;
+&lt;p&gt;Обновление от 30 мая 2020: &lt;code&gt;pipenv&lt;/code&gt; наконец выпустил
+&lt;a href="https://pypi.org/project/pipenv/#history"&gt;долгожданный релиз &lt;code&gt;2020.5.28&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Обновляемся:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install --user --upgrade pipenv
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Проект будет жить!&lt;/p&gt;
 &lt;h2&gt;Заключение&lt;/h2&gt;
 &lt;p&gt;Вместо заключения оставлю вас поразмышлять над вот этой программой:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;use_pipenv&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
