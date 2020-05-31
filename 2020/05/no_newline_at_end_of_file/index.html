@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/png" href="/favicon_32.png" />
+
+
+        <title>Почему важно всегда ставить символ переноса строки в конце текстовых файлов?</title>
+
+        <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Питонические атаки Full Atom Feed" />
+        <!-- Bootstrap Core CSS -->
+        <link href="https://semakin.dev/theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="https://semakin.dev/theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="https://semakin.dev/theme/css/code_blocks/monokai.css" rel="stylesheet">
+
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+
+
+        <meta name="description" content="Так легко упустить эту маленькую, но важную деталь.">
+
+        <meta name="author" content="Андрей Семакин">
+
+        <meta name="tags" content="good practice">
+
+	                <meta property="og:locale" content="">
+		<meta property="og:site_name" content="Питонические атаки">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="https://semakin.dev/author/andrei-semakin.html">
+	<meta property="og:url" content="https://semakin.dev/2020/05/no_newline_at_end_of_file/">
+	<meta property="og:title" content="Почему важно всегда ставить символ переноса строки в конце текстовых файлов?">
+	<meta property="article:published_time" content="2020-05-31 19:30:24+05:00">
+            <meta property="og:description" content="Так легко упустить эту маленькую, но важную деталь.">
+
+            <meta property="og:image" content="https://semakin.dev/static/code.jpg">
+</head>
+
+<body class="article-no_newline_at_end_of_file">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="https://semakin.dev/">Питонические атаки</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                        <li><a href="/tags.html">Тэги</a></li>
+
+                            <li><a href="https://semakin.dev/pages/about/">Об авторе</a></li>
+                            <li><a href="https://semakin.dev/pages/subscribe/">Подписаться</a></li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('https://semakin.dev//static/code.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Почему важно всегда ставить символ переноса строки в конце текстовых файлов?</h1>
+                        <span class="meta">Опубликовано: 31 мая 2020, Вс,
+                            автор:
+                                <a href="https://semakin.dev/author/andrei-semakin.html">Андрей Семакин</a>
+                        </span>
+                            <span class="meta">Обновлено: 31 мая 2020, Вс</span>
+                        
+                            <span class="meta">
+                                <i class="fa fa-clock-o" aria-hidden="true"></i>
+                                5 минут
+                            </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Scroll progress bar -->
+    <div id="_progress"></div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <p>Иногда при просмотре диффов коммитов через <code>git log</code> или <code>git diff</code>
+можно заметить следующий вывод:</p>
+<div class="highlight"><pre><span></span><code>\ No newline at end of file
+</code></pre></div>
+
+
+<p>Или на GitHub в интерфейсе для просмотра диффов:</p>
+<p><img alt="GitHub &quot;now newline at end of file&quot; warning" src="https://semakin.dev/static/github_no_newline_at_end_of_file.jpg"></p>
+<p>Почему это так важно, что Git и GitHub предупреждают нас об этом?
+Давайте разберемся.</p>
+<h1>Что такое символ переноса строки?</h1>
+<p>Что может быть проще, чем текстовый файл? Просто текстовые данные — как
+хранятся на диске, так и отображаются. На самом деле
+<s>правительство нам врёт</s> всё немного сложнее.</p>
+<details>
+
+<summary>Оффтопик про управляющие символы ASCII</summary>
+
+<p>Не все символы, которые содержатся в текстовых файлах, имеют визуальное
+представление. Такие символы ещё называют "управляющими", и к ним относятся,
+например:</p>
+
+<ul>
+    <li>
+        нулевой символ (<code>x00</code>, <code>\0</code>) — часто используется для кодирования конца строки в памяти;
+        т.е. программа считывает символы из памяти по одному до тех пор, пока не встретит
+        нулевой символ, и тогда строка считается завершённой;
+    </li>
+    <li>
+        табуляция (<code>\x09</code>, <code>\t</code>) — используется для выравнивания данных по границе
+        столбца, так что это выглядит как таблица;
+    </li> 
+    <li>
+        перевод строки (<code>\x0a</code>, <code>\n</code>) — используется для разделения текстовых данных на отдельные строки;
+    </li>
+    <li>
+        возврат каретки (<code>\x0d</code>, <code>\r</code>) — переместить курсор в начало строки;
+    </li> 
+    <li>
+        возврат на один символ (<code>\x08</code>, <code>\b</code>) — переместить курсор на один символ назад;
+    </li>
+    <li>
+        звонок (<code>\x07</code>, <code>\a</code>) — если набрать этот символ в терминале, то будет бибикающий символ; именно так консольные программы, типа <code>vim</code>, бибикают на пользователей;
+    </li>
+    <li><a href="https://ru.wikipedia.org/wiki/ASCII#%D0%A3%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D1%8F%D1%8E%D1%89%D0%B8%D0%B5_%D1%81%D0%B8%D0%BC%D0%B2%D0%BE%D0%BB%D1%8B">и другие</a>.</li>
+</ul>
+
+<p>Многие эти символы пришли к нам из эпохи печатных машинок, поэтому у них
+такие странные названия. И действительно, в контексте печатной машинки или принтера
+такие операции, как перевод строки (сместить лист бумаги вверх так, чтобы печатающая
+головка попала на следующую строку),
+возврат каретки (переместить печатающую головку в крайнее левое положение) и
+возврат на один символ назад, обретают смысл. При помощи возврата на один символ
+назад создавались жирные символы (печатаешь символ, возвращаешься назад и
+печатаешь его ещё раз) и буквы с диакритическими знаками, такие как à или ã
+(печатаешь символ, возвращаешься назад и печатаешь апостроф или тильду).
+<b>Но зачем печатной машинке бибикалка?</b></p>
+
+<p>Сегодня многие из этих символов потеряли смысл, но некоторые
+до сих пор выполняют функцию, схожую с исходной.</p>
+
+<hr/>
+
+</details>
+
+<p>Текстовые редакторы отображают текстовые файлы
+в некоем адаптированном виде, преобразуя непечатаемые
+символы, например, переносы строк и табуляции преобразуются в настоящие
+отдельные строки или выравнивающие отступы.</p>
+<p>Для набора символа переноса строки достаточно нажать клавишу "Enter", но
+на разных платформах этот символ закодируется по-разному:</p>
+<ul>
+<li>в Unix-совместимых системах (включая современные версии macOS)
+используется один символ перевода строки (<code>LF</code>);</li>
+<li>в Windows используется сразу два символа — возврат каретки (<code>CR</code>) и перевод строки (<code>LF</code>);</li>
+<li>в очень старых версиях Mac OS (до 2001 года) использовался один символ <code>CR</code>.</li>
+</ul>
+<p>Как видите, Windows точнее всего эмулирует поведение печатной машинки.</p>
+<p>В языках программирования символ новой строки часто кодируют при помощи
+бэкслэш-последовательностей, таких как <code>\n</code> или <code>\r\n</code>. Нужно понимать разницу
+между такой последовательностью и настоящим символом переноса строки. Если
+в редакторе в файле <code>*.txt</code> просто набрать <code>\n</code> и сохранить, то вы получите
+ровно то, что написали.
+Символом переноса строки оно не станет. Нужно что-то, что заменит эти
+бэкслэш-последовательности на настоящие символы переноса строки (например,
+компилятор или интерпретатор языка программирования).  </p>
+<h1>Почему перенос строки в конце файла важен?</h1>
+<p>Согласно <a href="https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap03.html#tag_03_206">определению из стандарта POSIX</a>,
+который тоже пришёл к нам из эпохи печатных машинок:</p>
+<blockquote>
+<p>Строка — это последовательность из нуля или более символов, не являющихся
+символом новой строки, и терминирующего символа новой строки. </p>
+</blockquote>
+<p>Почему важен этот стандарт? Возможен миллиард способов реализовать одно и то же,
+и только благодаря стандартам, таким как POSIX, мы имеем сейчас огромное
+количество качественного ПО, которое не конфликтует друг с другом.</p>
+<p>Т.е. если вы не ставите символ переноса строки в конце строки, то формально
+по стандарту такая строка не является валидной. Множество утилит из Unix,
+которыми я пользуюсь каждый день, написано в согласии с этим стандартом,
+и они просто не могут правильно обрабатывать такие "сломанные" строки.</p>
+<p>Давайте, например, через Python создадим такой файл со сломанными строками:</p>
+<div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;broken.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;qwe</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;asd</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;zxc&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+
+<p>Сколько по-вашему в этом файле строк? Три? Давайте посмотрим, что об этом файле
+думает утилита <code>wc</code>, которая с флагом <code>-l</code> умеет считать количество строк в файле:</p>
+<div class="highlight"><pre><span></span><code>$ wc -l broken.txt 
+<span class="m">2</span> broken.txt
+</code></pre></div>
+
+
+<p>Упс! <code>wc</code> нашла только 2 строки!</p>
+<p>Давайте создадим еще один файл:</p>
+<div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;broken2.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;rty</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;fgh</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;vbn&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+
+<p>И попробуем теперь склеить два созданных файла при помощи утилиты <code>cat</code>:</p>
+<div class="highlight"><pre><span></span><code>$ cat broken.txt broken2.txt 
+qwe
+asd
+zxcrty
+fgh
+vbn
+</code></pre></div>
+
+
+<blockquote>
+<p>Название <code>cat</code> — это сокращение от "конкатенация", и никак не связано
+с котиками. А жаль.</p>
+</blockquote>
+<p>И опять какой-то странный результат! В большинстве случаев это не то, чего вы
+бы ожидали, но вполне возможны ситуации, когда вам нужен именно такой результат.
+Именно поэтому утилита <code>cat</code> не может самостоятельно вставлять отсутствующие
+символы переноса строки, иначе это сделало бы её поведение неконсистентным.</p>
+<p>Это только пара примеров, но многие другие утилиты, которые работают с текстом
+(например, <code>diff</code>, <code>grep</code>, <code>sed</code>), имеют такие же проблемы. Собственно говоря,
+это даже не проблемы, а их задокументированное поведение.</p>
+<h2>Ещё доводы:</h2>
+<ul>
+<li>при дозаписи содержимого в конец файла без переноса строки получится некрасивый
+дифф — будет изменена последняя строка (хотя на ней всего лишь добавился
+символ переноса);</li>
+<li>файл с переносом строки и без переноса строки — это два разных файла; для <code>diff</code>
+и <code>git diff</code> единственный способ отобразить разницу между ними —
+это напечатать сообщение об отсутствии символа переноса строки;</li>
+<li><a href="https://stackoverflow.com/a/729725/10650942">согласно стандарту языка C (до 2014 года), непустые файлы с исходным кодом
+должны заканчиваться символом переноса строки</a>.</li>
+</ul>
+<h1>Настраиваем редактор</h1>
+<p>Самый простой способ перестать думать о пустых строках <s>и начать жить</s> —
+это настроить свой текстовый редактор или IDE на автоматическое добавление
+символа переноса строки в конец файлов:</p>
+<ul>
+<li>PyCharm и другие IDE JetBrains:
+<code>Settings &gt; Editor &gt; General &gt; Ensure an empty line at the end of a file on Save</code>;</li>
+<li>VS Code: <code>"files.insertFinalNewline": true</code>.</li>
+</ul>
+<p>Для других редакторов смотрите настройку <a href="https://thoughtbot.com/blog/no-newline-at-end-of-file#following-the-rules-in-your-editor">здесь</a>.</p>
+<p>Кстати, если вы пользуетесь <a href="https://semakin.dev/2020/05/black/">форматтером <code>black</code></a>,
+то у меня хорошие новости —
+он всегда добавляет перенос строки в конец всех файлов <code>*.py</code>.</p>
+<h1>Заключение</h1>
+<p>Возможно, такая маленькая деталь, как перенос строки в конце файла и не кажется
+очень важной, а тема вообще кажется спорной, но боюсь, что у нас нет другого
+выбора, кроме как принять это
+правило за данность и просто выработать привычку (или настроить инструментарий)
+всегда ставить символ новой строки в любых текстовых файлах, даже если этого не
+требуется явно.
+Это считается распространённой хорошей практикой, и
+как минимум убережёт вас и ваших коллег от всяких неожиданных эффектов при
+работе с утилитами Unix.</p>
+<p>В текстовом редакторе это выглядит как лишняя пустая строка в конце файла:</p>
+<p><img alt="Пример того, как это должно выглядеть в текстовом редакторе" src="https://semakin.dev/static/newline_editor_example.jpg"></p>
+<h1>Дополнительное чтение</h1>
+<ul>
+<li><a href="https://stackoverflow.com/questions/5813311/no-newline-at-end-of-file/5813359#5813359">StackOverflow: No newline at end of file</a>;</li>
+<li><a href="https://stackoverflow.com/questions/729692/why-should-text-files-end-with-a-newline/729795#729795">StackOverflow: Why should text files end with a newline?</a>;</li>
+<li><a href="https://thoughtbot.com/blog/no-newline-at-end-of-file">thoughtbot — No Newline at End of File</a>.</li>
+</ul>
+    </article>
+
+        <div class="tags">
+            <p>тэги: <a href="https://semakin.dev/tag/good-practice.html">good practice</a></p>
+        </div>
+
+    <hr>
+
+
+        <script
+            src="https://utteranc.es/client.js"
+            repo="and-semakin/and-semakin.github.io"
+            issue-term="pathname"
+            label="comments"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+        </script>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="/feeds/all.atom.xml">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://t.me/pythonic_attacks">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-telegram fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">        &copy; 2020 Андрей Семакин
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="https://semakin.dev/theme/js/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="https://semakin.dev/theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="https://semakin.dev/theme/js/clean-blog.min.js"></script>
+
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript" >
+   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+   m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+   ym(62079343, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true
+   });
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/62079343" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+</body>
+
+</html>
