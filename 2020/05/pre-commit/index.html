@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/png" href="/favicon_32.png" />
+
+
+        <title>Запуск Git-хуков при помощи pre-commit</title>
+
+        <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Питонические атаки Full Atom Feed" />
+        <!-- Bootstrap Core CSS -->
+        <link href="https://semakin.dev/theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="https://semakin.dev/theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="https://semakin.dev/theme/css/code_blocks/monokai.css" rel="stylesheet">
+
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+
+
+        <meta name="description" content="Git-хуки позволяют автоматизировать запуск различных проверок (линтеры, форматтеры, тесты) при работе с системой контроля версий.">
+
+        <meta name="author" content="Андрей Семакин">
+
+        <meta name="tags" content="python">
+        <meta name="tags" content="pre-commit">
+        <meta name="tags" content="git">
+
+	                <meta property="og:locale" content="">
+		<meta property="og:site_name" content="Питонические атаки">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="https://semakin.dev/author/andrei-semakin.html">
+	<meta property="og:url" content="https://semakin.dev/2020/05/pre-commit/">
+	<meta property="og:title" content="Запуск Git-хуков при помощи pre-commit">
+	<meta property="article:published_time" content="2020-05-31 15:54:18+05:00">
+            <meta property="og:description" content="Git-хуки позволяют автоматизировать запуск различных проверок (линтеры, форматтеры, тесты) при работе с системой контроля версий.">
+
+            <meta property="og:image" content="https://semakin.dev/static/hook.jpg">
+</head>
+
+<body class="article-pre-commit">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="https://semakin.dev/">Питонические атаки</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                        <li><a href="/tags.html">Тэги</a></li>
+
+                            <li><a href="https://semakin.dev/pages/about/">Об авторе</a></li>
+                            <li><a href="https://semakin.dev/pages/subscribe/">Подписаться</a></li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('https://semakin.dev//static/hook.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Запуск Git-хуков при помощи pre-commit</h1>
+                        <span class="meta">Опубликовано: 31 мая 2020, Вс,
+                            автор:
+                                <a href="https://semakin.dev/author/andrei-semakin.html">Андрей Семакин</a>
+                        </span>
+                            <span class="meta">Обновлено: 31 мая 2020, Вс</span>
+                        
+                            <span class="meta">
+                                <i class="fa fa-clock-o" aria-hidden="true"></i>
+                                8 минут
+                            </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Scroll progress bar -->
+    <div id="_progress"></div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <h1>Git-хуки</h1>
+<p>Умение работать с системой контроля версий Git — базовый навык для выживания
+разработчика (на любом языке программирования) в современных реалиях.
+Система контроля версий — это этакая машина времени для вашего проекта:
+всегда можно вернуться на любое прошлое состояние проекта, понять
+когда, как, что и кем менялось.</p>
+<p><em>Интересный факт:</em> согласно
+<a href="https://trends.google.com/trends/explore?date=all&amp;q=%2Fm%2F05vqwg,%2Fm%2F012ct9,%2Fm%2F08441_,%2Fm%2F08w6d6,%2Fm%2F09d6g&amp;hl=en-US&amp;tz=&amp;tz=">Google Trends</a>,
+во всём мире Git фактически вытеснил другие системы контроля версий.
+Только в Китае почему-то до сих пор популярен Subversion (46% рынка).
+К чему бы это?</p>
+<p>Git имеет крайне полезную фичу — возможность исполнять произвольный код
+на многих этапах работы через так называемые хуки.
+Вот примеры доступных хуков:</p>
+<ul>
+<li><code>pre-commit</code> — выполняется перед созданием коммита;</li>
+<li><code>commit-msg</code> — выполняется после добавления сообщения коммита;</li>
+<li><code>post-checkout</code> — выполняется после переключения ветки;</li>
+<li><code>pre-push</code> — выполняется перед загрузкой локальной истории на удалённый сервер.</li>
+</ul>
+<p>Полный список хуков можно посмотреть
+<a href="https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks">в документации</a>.</p>
+<p>Как это работает? Рассмотрим, например, схему работы хука <code>pre-commit</code>:</p>
+<ol>
+<li>пользователь пишет в терминале <code>git commit -v</code>;</li>
+<li><code>git</code> пытается выполнить хук <code>pre-commit</code> локально, на машине разработчика;</li>
+<li>если хук завершается ошибкой, то операция коммита прерывается;</li>
+<li>если хук выполнился без ошибок, то операция коммита продолжается,
+открывается текстовый редактор для ввода сообщения.</li>
+</ol>
+<p>Фишка в том, что хуки могут прерывать операции, за которые они отвечают,
+если что-то идёт не так. Это идеальное место, чтобы запускать какие-нибудь
+проверки качества кода, например, линтеры, форматтеры или тесты
+(если они работают быстро, конечно), или проверять сообщение коммита на
+соответствие конвенциям или на грамматические ошибки.</p>
+<h1>Пишем Git-хук на <code>bash</code></h1>
+<p>Давайте для понимания напишем простой скрипт, который будет использоваться в
+качестве хука.</p>
+<p>В этом примере я использую Linux.
+Если вы пользуетесь Windows, то большинство описанный вещей будут работать
+без изменений через Git Bash, который устанавливается вместе с Git for Windows.
+Возможно, вам только придётся поменять путь до вашего <code>bash</code> в
+<a href="https://ru.wikipedia.org/wiki/%D0%A8%D0%B5%D0%B1%D0%B0%D0%BD%D0%B3_(Unix)">шебанге</a>,
+как описано <a href="https://www.tygertec.com/git-hooks-practical-uses-windows/">в конце этой статьи</a>.
+Если же вы соберётесь писать в хуках что-то сложное и требующее интеграции с ОС,
+то, возможно, стоит вместо <code>bash</code> использовать PowerShell. </p>
+<p>Создадим пустой репозиторий:</p>
+<div class="highlight"><pre><span></span><code>$ git init git_hooks_example
+$ <span class="nb">cd</span> git_hooks_example/
+</code></pre></div>
+
+
+<p>Git уже заботливо создал для нас шаблоны для написания хуков,
+которые лежат в специальной служебной директории:</p>
+<div class="highlight"><pre><span></span><code>$ ls -l .git/hooks/
+total <span class="m">56</span>
+-rwxr-xr-x. <span class="m">1</span> br0ke br0ke  <span class="m">482</span> May <span class="m">30</span> <span class="m">21</span>:36 applypatch-msg.sample*
+-rwxr-xr-x. <span class="m">1</span> br0ke br0ke  <span class="m">900</span> May <span class="m">30</span> <span class="m">21</span>:36 commit-msg.sample*
+-rwxr-xr-x. <span class="m">1</span> br0ke br0ke <span class="m">4655</span> May <span class="m">30</span> <span class="m">21</span>:36 fsmonitor-watchman.sample*
+-rwxr-xr-x. <span class="m">1</span> br0ke br0ke  <span class="m">193</span> May <span class="m">30</span> <span class="m">21</span>:36 post-update.sample*
+-rwxr-xr-x. <span class="m">1</span> br0ke br0ke  <span class="m">428</span> May <span class="m">30</span> <span class="m">21</span>:36 pre-applypatch.sample*
+-rwxr-xr-x. <span class="m">1</span> br0ke br0ke <span class="m">1647</span> May <span class="m">30</span> <span class="m">21</span>:36 pre-commit.sample*
+-rwxr-xr-x. <span class="m">1</span> br0ke br0ke  <span class="m">420</span> May <span class="m">30</span> <span class="m">21</span>:36 pre-merge-commit.sample*
+-rwxr-xr-x. <span class="m">1</span> br0ke br0ke <span class="m">1496</span> May <span class="m">30</span> <span class="m">21</span>:36 prepare-commit-msg.sample*
+-rwxr-xr-x. <span class="m">1</span> br0ke br0ke <span class="m">1352</span> May <span class="m">30</span> <span class="m">21</span>:36 pre-push.sample*
+-rwxr-xr-x. <span class="m">1</span> br0ke br0ke <span class="m">4902</span> May <span class="m">30</span> <span class="m">21</span>:36 pre-rebase.sample*
+-rwxr-xr-x. <span class="m">1</span> br0ke br0ke  <span class="m">548</span> May <span class="m">30</span> <span class="m">21</span>:36 pre-receive.sample*
+-rwxr-xr-x. <span class="m">1</span> br0ke br0ke <span class="m">3639</span> May <span class="m">30</span> <span class="m">21</span>:36 update.sample*
+</code></pre></div>
+
+
+<p>Можно, например, просто переименовать файл <code>pre-commit.sample</code> в <code>pre-commit</code>,
+и этот хук вступит в силу. В моём случае там на <code>bash</code> реализована
+проверка имён файлов, которая не допустит добавление файлов с именами,
+содержащими не-ASCII символы.</p>
+<p>Давайте не будем этого делать, а взамен напишем простой скрипт,
+который будет запускать все нужные нам <a href="https://semakin.dev/2020/05/python_linters/">линтеры</a>
+и <a href="https://semakin.dev/2020/05/black/">форматтеры</a>:</p>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/usr/bin/env bash</span>
+
+<span class="c1"># Получаем список файлов, которые пользователь пытается закоммитить,</span>
+<span class="c1"># и выбираем из них те, которые заканчиваются на `.py`.</span>
+<span class="c1"># Взято отсюда: https://stackoverflow.com/a/3068990/10650942.</span>
+<span class="nv">CHANGED_PYTHON_FILES</span><span class="o">=</span><span class="k">$(</span>git diff --cached --name-only --diff-filter<span class="o">=</span>ACMR <span class="p">|</span> grep <span class="s2">&quot;.py\$&quot;</span><span class="k">)</span>
+
+<span class="k">if</span> <span class="o">[</span> -z <span class="s2">&quot;</span><span class="nv">$CHANGED_PYTHON_FILES</span><span class="s2">&quot;</span> <span class="o">]</span>
+<span class="k">then</span>
+   <span class="nb">echo</span> <span class="s2">&quot;No Python files found. No reason to run checks.&quot;</span>
+   <span class="nb">exit</span> <span class="m">0</span>
+<span class="k">fi</span>
+
+<span class="c1"># Включаем режим, в котором любая ошибка сразу же завершит весь скрипт ошибкой.</span>
+<span class="nb">set</span> -e
+
+<span class="c1"># Запускаем проверки.</span>
+<span class="c1"># Если хотя бы одна завершится ошибкой, то операция будет прервана.</span>
+flake8 <span class="nv">$CHANGED_PYTHON_FILES</span>
+black --check <span class="nv">$CHANGED_PYTHON_FILES</span>
+
+<span class="nb">echo</span> <span class="s2">&quot;All checks successfully passed.&quot;</span>
+</code></pre></div>
+
+
+<p>Этот файл должен быть сохранён по пути <code>.git/hooks/pre-commit</code>.
+Файл нужно сделать исполняемым, иначе Git не сможет его запустить:</p>
+<div class="highlight"><pre><span></span><code>$ chmod a+x .git/hooks/pre-commit
+</code></pre></div>
+
+
+<p>Теперь давайте создадим какой-нибудь файл, который точно не пройдет этих
+проверок. Обратите внимание на лишние пробелы рядом со скобками,
+которые не понравятся <code>flake8</code>, и на одинарные кавычки, которые
+не понравятся <code>black</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span> <span class="s1">&#39;Hello world!&#39;</span> <span class="p">)</span>
+</code></pre></div>
+
+
+<p>Попытаемся его закоммитить:</p>
+<div class="highlight"><pre><span></span><code>$ git add example.py
+$ git commit -v
+example.py:1:7: E201 whitespace after <span class="s1">&#39;(&#39;</span>
+example.py:1:22: E202 whitespace before <span class="s1">&#39;)&#39;</span>
+</code></pre></div>
+
+
+<p>Наш умный хук выполнился и запустил <code>flake8</code>, который нашел ошибки.
+Давайте удалим лишние пробелы и попытаемся закоммитить ещё раз:</p>
+<div class="highlight"><pre><span></span><code>$ git add example.py
+$ git commit -v
+would reformat example.py
+Oh no! 💥 💔 💥
+<span class="m">1</span> file would be reformatted.
+</code></pre></div>
+
+
+<p>В этот раз <code>flake8</code> не нашёл ошибок, но операция всё равно завершилась
+ошибкой из-за <code>black</code>. Давайте отформатируем файл и наконец закоммитим его:</p>
+<div class="highlight"><pre><span></span><code>$ black .
+$ git add example.py
+$ git commit -v
+</code></pre></div>
+
+
+<p>На этот раз всё срабатывает успешно.</p>
+<p>Чтобы закоммитить, игнорируя хуки, можно было передать в
+команду флаг <code>--no-verify</code> или <code>-n</code>:</p>
+<div class="highlight"><pre><span></span><code>git commit -v -n
+</code></pre></div>
+
+
+<p>Как видите, писать git-хуки самостоятельно не так уж и сложно.
+Не обязательно использовать <code>bash</code>, хуки можно писать на чём угодно —
+любой исполняемый файл подойдет, хоть на интерпретируемом языке,
+хоть на компилируемом. Если бы нужно было писать какую-то более сложную логику,
+то я бы, например, предпочёл написать хук на Python.</p>
+<p>У такого ручного способа есть несколько недостатков:</p>
+<ul>
+<li>хук хранится в директории <code>.git</code>, которая является служебной для локальной
+копии репозитория и сама не сохраняется в систему контроля версий;
+это значит, что если вы захотите поделиться своим хуком с коллегами,
+то вы можете лишь каким-либо образом скинуть им исходный код,
+а им придётся самостоятельно класть его в правильное место и назначать права;</li>
+<li>первая команда, завершившаяся ошибкой, прерывает выполнение хука и
+последующие команды не выполняются; это можно исправить,
+но получится сильно сложнее;</li>
+<li>логика хука может быстро стать сложной;</li>
+<li>всё нужно имплементить самостоятельно;</li>
+<li>наш хук полагается на наличие команд <code>flake8</code> и <code>black</code>, так что они
+либо должны быть установлены глобально, либо перед коммитом нужно активировать
+виртуальное окружение проекта.</li>
+</ul>
+<h1>Используем готовый инструмент — <code>pre-commit</code></h1>
+<p>Как обычно, для всего уже есть решения. Представляю вашему вниманию
+<a href="https://pre-commit.com/"><code>pre-commit</code></a> — умный инструмент для управления
+Git-хуками.</p>
+<h2>Установка</h2>
+<p><code>pre-commit</code> написан на Python (ещё бы, иначе б я не был его фанатом 😁),
+поэтому установить его можно через <code>pip</code>. Он должен быть установлен глобально,
+а не в виртуальном окружении проекта, где вы собираетесь его использовать.
+Рекомендую использовать метод установки в домашнюю директорию пользователя
+(см. <a href="https://semakin.dev/2020/04/python_virtualenv/">заметку про виртуальные окружения</a>
+за подробностями):</p>
+<div class="highlight"><pre><span></span><code>$ pip install --user pre-commit
+</code></pre></div>
+
+
+<p>Проверим установку:</p>
+<div class="highlight"><pre><span></span><code>$ pre-commit --version
+pre-commit <span class="m">2</span>.4.0
+</code></pre></div>
+
+
+<h2>Настройка</h2>
+<p><code>pre-commit</code> спроектирован с прицелом на удобное использование сторонних
+переиспользуемых хуков, но может исполнять и вообще любые команды.
+<a href="https://pre-commit.com/hooks.html">Уже написаны сотни полезных хуков</a>
+для разных языков и задач, из которых, как из конструктора, можно собрать
+практически любой нужный вам вокрфлоу. Выбирайте те, которые вам понравятся.
+Для примера я возьму всё те же <code>flake8</code> и <code>black</code>, и ещё несколько других
+хуков сверху (а что, бесплатно же).</p>
+<p><code>pre-commit</code> конфигурируется на уровне репозитория при помощи
+<a href="https://ru.wikipedia.org/wiki/YAML">YAML-файла</a>.
+Файл должен называться <code>.pre-commit-config.yaml</code> и находиться в корне репозитория.
+Давайте сгенерируем базовый конфиг:</p>
+<div class="highlight"><pre><span></span><code>$ pre-commit sample-config &gt; .pre-commit-config.yaml
+</code></pre></div>
+
+
+<p>И допилим примерно до такого состояния:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># See https://pre-commit.com for more information</span>
+<span class="c1"># See https://pre-commit.com/hooks.html for more hooks</span>
+<span class="nt">repos</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">repo</span><span class="p">:</span> <span class="s">&#39;https://github.com/pre-commit/pre-commit-hooks&#39;</span>
+    <span class="nt">rev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">v2.4.0</span>
+    <span class="nt">hooks</span><span class="p">:</span>
+      <span class="c1"># проверяет наличие переноса строки в конце всех текстовых файлов</span>
+      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">end-of-file-fixer</span>
+      <span class="c1"># предупреждает о добавлении больших файлов в Git</span>
+      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-added-large-files</span>
+      <span class="c1"># предупреждает о сохранении файлов с UTF-8 BOM</span>
+      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-byte-order-marker</span>
+      <span class="c1"># предотвращает сохранение приватных ключей</span>
+      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">detect-private-key</span>
+      <span class="c1"># проверяет, что файлы, которые мы собираемся сохранять, как минимум валидный Python</span>
+      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">check-ast</span>
+  <span class="p p-Indicator">-</span> <span class="nt">repo</span><span class="p">:</span> <span class="s">&#39;https://gitlab.com/pycqa/flake8&#39;</span>
+    <span class="nt">rev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3.8.2</span>
+    <span class="nt">hooks</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">flake8</span>
+  <span class="p p-Indicator">-</span> <span class="nt">repo</span><span class="p">:</span> <span class="s">&#39;https://github.com/psf/black&#39;</span>
+    <span class="nt">rev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">19.10b0</span>
+    <span class="nt">hooks</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">black</span>
+</code></pre></div>
+
+
+<p>Теперь включим <code>pre-commit</code> в текущем репозитории.</p>
+<div class="highlight"><pre><span></span><code>$ pre-commit install
+</code></pre></div>
+
+
+<p>Рекомендую добавить эту команду в документацию для разработчиков. Это всё,
+что нужно будет сделать вашим коллегам, чтобы хуки заработали и у них тоже.</p>
+<p>Можно убедиться, что <code>pre-commit</code> заменил наш старый хук на свой:</p>
+<div class="highlight"><pre><span></span><code>$ cat .git/hooks/pre-commit
+<span class="c1">#!/usr/bin/env python3.8</span>
+<span class="c1"># File generated by pre-commit: https://pre-commit.com</span>
+...
+</code></pre></div>
+
+
+<p>При этом старый хук был переименован в <code>pre-commit.legacy</code>.
+Умный <code>pre-commit</code> будет запускать и его тоже, чтобы не сломать текущее поведение.
+Если это не желательно, то проще всего удалить этот старый файл:</p>
+<div class="highlight"><pre><span></span><code>$ rm .git/hooks/pre-commit.legacy
+</code></pre></div>
+
+
+<p>Проверим, что конфигурационный файл валиден, а заодно и что всё нынешнее
+содержимое репозитория удовлетворяет описанными правилам:</p>
+<div class="highlight"><pre><span></span><code>$ pre-commit run --all-files
+</code></pre></div>
+
+
+<p>При первом запуске <code>pre-commit</code> скачает и закэширует все файлы, необходимые
+для выполнения проверок. Для проверок, которые написаны на Python,
+будут созданы изолированные виртуальные окружения, так что они никак не
+будут зависеть от виртуального окружения проекта. Первый раз из-за скачивания
+зависимостей эта команда может выполняться секунд 30 (в зависимости от скорости
+интернета), но перезапустите её ещё раз и она завершится за секунду.</p>
+<p>Возможно, <code>pre-commit</code> найдёт проблемы или даже исправит некоторые файлы.</p>
+<p>Если проверка отработала без ошибок, то конфиг нужно добавить в Git:</p>
+<div class="highlight"><pre><span></span><code>$ git add .pre-commit-config.yaml
+$ git commit -m “Add pre-commit configuration”
+</code></pre></div>
+
+
+<h2>Плагины/зависимости для проверок</h2>
+<p>Из-за того, что для проверок, написанных на Python, создаются отдельные
+виртуальные окружения, может быть не совсем понятно, как устанавливать
+плагины для таких программ, как, например, <code>flake8</code>.
+Для <code>flake8</code> важно, чтобы все его плагины были установлены с ним в одно
+виртуальное окружение, иначе он просто не сможет их найти.
+Специально для этого у <code>pre-commit</code> предусмотрена настройка
+<code>additional_dependencies</code>, которая используется вот таким образом:</p>
+<div class="highlight"><pre><span></span><code>  <span class="p p-Indicator">-</span> <span class="nt">repo</span><span class="p">:</span> <span class="s">&#39;https://gitlab.com/pycqa/flake8&#39;</span>
+    <span class="nt">rev</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3.8.2</span>
+    <span class="nt">hooks</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">flake8</span>
+        <span class="nt">additional_dependencies</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">flake8-bugbear</span>
+</code></pre></div>
+
+
+<p>При следующем запуске <code>pre-commit</code> обнаружит новую зависимость и установит её
+в то же виртуальное окружение, что и <code>flake8</code>. Теперь перед коммитом будет
+выполняться не просто голый <code>flake8</code>, но ещё и с дополнительным плагином.
+Таких зависимостей может быть сколько угодно.</p>
+<h2>Использование</h2>
+<p>Теперь можно вообще забыть про существование <code>pre-commit</code> и просто пользоваться
+Git как обычно, а <code>pre-commit</code> будет выполнять все описанные проверки, изредка
+беспокоя вас прерванными операциями, если будут найдены какие-нибудь проблемы.
+Давайте снова попробуем закоммитить тот сломанный файл с пробелами и кавычками:</p>
+<div class="highlight"><pre><span></span><code>$ git add example.py
+$ git commit -v
+Fix End of Files..................................Passed
+Check <span class="k">for</span> added large files.......................Passed
+Check <span class="k">for</span> byte-order marker.......................Passed
+Detect Private Key................................Passed
+Check python ast..................................Passed
+flake8............................................Failed
+- hook id: flake8
+- <span class="nb">exit</span> code: <span class="m">1</span>
+example.py:1:7: E201 whitespace after <span class="s1">&#39;(&#39;</span>
+example.py:1:22: E202 whitespace before <span class="s1">&#39;)&#39;</span>
+black.............................................Failed
+- hook id: black
+- files were modified by this hook
+reformatted example.py
+All <span class="k">done</span>! ✨ 🍰 ✨
+<span class="m">1</span> file reformatted.
+</code></pre></div>
+
+
+<p>Ожидаемо, операция прервалась, но в этот раз мы получили все нужные
+сообщения об ошибках. Кроме того, файл даже был автоматически отформатирован
+при помощи <code>black</code>, так что ничего даже вручную делать не нужно.
+Просто ещё раз запускаем те же команды, и в этот раз проверки должны пройти.</p>
+<p>На YAML программировать намного приятнее, чем на <code>bash</code>! Да, честно говоря,
+практически на чём угодно писать приятнее, чем на <code>bash</code>.</p>
+<h1>Альтернативы <code>pre-commit</code></h1>
+<p>Мне проще всего использовать инструменты, написанные на знакомом мне языке,
+но вообще <code>pre-commit</code> далеко не уникальный инструмент и имеет множество
+альтернатив. Если вы пишете не на Python, то может быть вам будут ближе другие
+инструменты, хотя все они имеют примерно схожий функционал:</p>
+<ul>
+<li><a href="https://github.com/typicode/husky"><code>husky</code> на JS</a>;</li>
+<li><a href="https://github.com/Arkweid/lefthook"><code>lefthook</code> на Go</a>;</li>
+<li><a href="https://github.com/sds/overcommit"><code>overcommit</code> на Ruby</a>.</li>
+</ul>
+<p>Возможно, вы также найдете для себя что-то полезное на странице
+<a href="https://github.com/aitemr/awesome-git-hooks">“Awesome Git hooks”</a>.</p>
+<h1>Заключение</h1>
+<p>Я всегда стараюсь использовать Git-хуки для запуска всех быстрых проверок.
+Это не дает мне забывать о проверках, и позволяет быстрее получать обратную связь.</p>
+<p>Представьте ситуацию, когда сидишь и ждёшь результатов проверок от CI,
+которые могут быть достаточно долгими
+(на проекте, где я сейчас работаю, тесты выполняются 8-10 минут),
+видишь красный крестик, идёшь посмотреть, что же там сломалось,
+а там всё <em>почти</em> отлично — тесты прошли, но только <code>flake8</code> нашёл лишний пробел.
+Чинишь лишний пробел и снова ждёшь 10 минут, чтобы получить свою зелёную галочку.
+Дак вот хуки спасают от таких ситуаций, потому что все тривиальные проблемы
+обнаруживаются за несколько секунд локально на моей машине и
+никогда не попадают в историю Git.</p>
+<p>Настоятельно рекомендую пользоваться Git-хуками. Это позволит вам не тратить
+время на ерунду, и в итоге быть более эффективным и довольным разработчиком.</p>
+<p>Примеры из поста можно найти
+<a href="https://github.com/and-semakin/git_hooks_example">здесь</a>.</p>
+<blockquote>
+<p>Если понравилась статья, то
+<a href="https://semakin.dev/pages/subscribe/">подпишитесь на уведомления</a>
+о новых постах в блоге, чтобы ничего не пропустить!</p>
+</blockquote>
+<h1>Ссылки</h1>
+<ul>
+<li><a href="https://pre-commit.com/">документация <code>pre-commit</code></a>;</li>
+<li><a href="https://pre-commit.com/hooks.html">реестр хуков для <code>pre-commit</code></a>;</li>
+<li><a href="https://github.com/pre-commit/pre-commit">репозиторий <code>pre-commit</code> на GitHub</a>;</li>
+<li><a href="https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks">документация Git про хуки</a>.</li>
+</ul>
+    </article>
+
+        <div class="tags">
+            <p>тэги: <a href="https://semakin.dev/tag/python.html">python</a>, <a href="https://semakin.dev/tag/pre-commit.html">pre-commit</a>, <a href="https://semakin.dev/tag/git.html">git</a></p>
+        </div>
+
+    <hr>
+
+
+        <script
+            src="https://utteranc.es/client.js"
+            repo="and-semakin/and-semakin.github.io"
+            issue-term="pathname"
+            label="comments"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+        </script>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="/feeds/all.atom.xml">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://t.me/pythonic_attacks">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-telegram fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">        &copy; 2020 Андрей Семакин
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="https://semakin.dev/theme/js/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="https://semakin.dev/theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="https://semakin.dev/theme/js/clean-blog.min.js"></script>
+
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript" >
+   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+   m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+   ym(62079343, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true
+   });
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/62079343" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+</body>
+
+</html>

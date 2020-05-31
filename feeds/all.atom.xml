@@ -1,5 +1,374 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Питонические атаки</title><link href="https://semakin.dev/" rel="alternate"></link><link href="https://semakin.dev/feeds/all.atom.xml" rel="self"></link><id>https://semakin.dev/</id><updated>2020-05-30T20:36:53+05:00</updated><subtitle>Про разработку в целом и про Python в частности</subtitle><entry><title>Форматируем код при помощи black</title><link href="https://semakin.dev/2020/05/black/" rel="alternate"></link><published>2020-05-26T13:54:45+05:00</published><updated>2020-05-26T21:54:31+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-05-26:/2020/05/black/</id><summary type="html">&lt;p&gt;Автоматическое форматирование кода избавляет от бесконечных споров про пробелы, запятые и скобки, экономя нервы и часы код-ревью.&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Почему полезно форматировать код&lt;/h1&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Питонические атаки</title><link href="https://semakin.dev/" rel="alternate"></link><link href="https://semakin.dev/feeds/all.atom.xml" rel="self"></link><id>https://semakin.dev/</id><updated>2020-05-31T16:14:03+05:00</updated><subtitle>Про разработку в целом и про Python в частности</subtitle><entry><title>Запуск Git-хуков при помощи pre-commit</title><link href="https://semakin.dev/2020/05/pre-commit/" rel="alternate"></link><published>2020-05-31T15:54:18+05:00</published><updated>2020-05-31T16:14:03+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-05-31:/2020/05/pre-commit/</id><summary type="html">&lt;p&gt;Git-хуки позволяют автоматизировать запуск различных проверок (линтеры, форматтеры, тесты) при работе с системой контроля версий.&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Git-хуки&lt;/h1&gt;
+&lt;p&gt;Умение работать с системой контроля версий Git — базовый навык для выживания
+разработчика (на любом языке программирования) в современных реалиях.
+Система контроля версий — это этакая машина времени для вашего проекта:
+всегда можно вернуться на любое прошлое состояние проекта, понять
+когда, как, что и кем менялось.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Интересный факт:&lt;/em&gt; согласно
+&lt;a href="https://trends.google.com/trends/explore?date=all&amp;amp;q=%2Fm%2F05vqwg,%2Fm%2F012ct9,%2Fm%2F08441_,%2Fm%2F08w6d6,%2Fm%2F09d6g&amp;amp;hl=en-US&amp;amp;tz=&amp;amp;tz="&gt;Google Trends&lt;/a&gt;,
+во всём мире Git фактически вытеснил другие системы контроля версий.
+Только в Китае почему-то до сих пор популярен Subversion (46% рынка).
+К чему бы это?&lt;/p&gt;
+&lt;p&gt;Git имеет крайне полезную фичу — возможность исполнять произвольный код
+на многих этапах работы через так называемые хуки.
+Вот примеры доступных хуков:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;pre-commit&lt;/code&gt; — выполняется перед созданием коммита;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;commit-msg&lt;/code&gt; — выполняется после добавления сообщения коммита;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;post-checkout&lt;/code&gt; — выполняется после переключения ветки;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;pre-push&lt;/code&gt; — выполняется перед загрузкой локальной истории на удалённый сервер.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Полный список хуков можно посмотреть
+&lt;a href="https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks"&gt;в документации&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Как это работает? Рассмотрим, например, схему работы хука &lt;code&gt;pre-commit&lt;/code&gt;:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;пользователь пишет в терминале &lt;code&gt;git commit -v&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;git&lt;/code&gt; пытается выполнить хук &lt;code&gt;pre-commit&lt;/code&gt; локально, на машине разработчика;&lt;/li&gt;
+&lt;li&gt;если хук завершается ошибкой, то операция коммита прерывается;&lt;/li&gt;
+&lt;li&gt;если хук выполнился без ошибок, то операция коммита продолжается,
+открывается текстовый редактор для ввода сообщения.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Фишка в том, что хуки могут прерывать операции, за которые они отвечают,
+если что-то идёт не так. Это идеальное место, чтобы запускать какие-нибудь
+проверки качества кода, например, линтеры, форматтеры или тесты
+(если они работают быстро, конечно), или проверять сообщение коммита на
+соответствие конвенциям или на грамматические ошибки.&lt;/p&gt;
+&lt;h1&gt;Пишем Git-хук на &lt;code&gt;bash&lt;/code&gt;&lt;/h1&gt;
+&lt;p&gt;Давайте для понимания напишем простой скрипт, который будет использоваться в
+качестве хука.&lt;/p&gt;
+&lt;p&gt;В этом примере я использую Linux.
+Если вы пользуетесь Windows, то большинство описанный вещей будут работать
+без изменений через Git Bash, который устанавливается вместе с Git for Windows.
+Возможно, вам только придётся поменять путь до вашего &lt;code&gt;bash&lt;/code&gt; в
+&lt;a href="https://ru.wikipedia.org/wiki/%D0%A8%D0%B5%D0%B1%D0%B0%D0%BD%D0%B3_(Unix)"&gt;шебанге&lt;/a&gt;,
+как описано &lt;a href="https://www.tygertec.com/git-hooks-practical-uses-windows/"&gt;в конце этой статьи&lt;/a&gt;.
+Если же вы соберётесь писать в хуках что-то сложное и требующее интеграции с ОС,
+то, возможно, стоит вместо &lt;code&gt;bash&lt;/code&gt; использовать PowerShell. &lt;/p&gt;
+&lt;p&gt;Создадим пустой репозиторий:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ git init git_hooks_example
+$ &lt;span class="nb"&gt;cd&lt;/span&gt; git_hooks_example/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Git уже заботливо создал для нас шаблоны для написания хуков,
+которые лежат в специальной служебной директории:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ ls -l .git/hooks/
+total &lt;span class="m"&gt;56&lt;/span&gt;
+-rwxr-xr-x. &lt;span class="m"&gt;1&lt;/span&gt; br0ke br0ke  &lt;span class="m"&gt;482&lt;/span&gt; May &lt;span class="m"&gt;30&lt;/span&gt; &lt;span class="m"&gt;21&lt;/span&gt;:36 applypatch-msg.sample*
+-rwxr-xr-x. &lt;span class="m"&gt;1&lt;/span&gt; br0ke br0ke  &lt;span class="m"&gt;900&lt;/span&gt; May &lt;span class="m"&gt;30&lt;/span&gt; &lt;span class="m"&gt;21&lt;/span&gt;:36 commit-msg.sample*
+-rwxr-xr-x. &lt;span class="m"&gt;1&lt;/span&gt; br0ke br0ke &lt;span class="m"&gt;4655&lt;/span&gt; May &lt;span class="m"&gt;30&lt;/span&gt; &lt;span class="m"&gt;21&lt;/span&gt;:36 fsmonitor-watchman.sample*
+-rwxr-xr-x. &lt;span class="m"&gt;1&lt;/span&gt; br0ke br0ke  &lt;span class="m"&gt;193&lt;/span&gt; May &lt;span class="m"&gt;30&lt;/span&gt; &lt;span class="m"&gt;21&lt;/span&gt;:36 post-update.sample*
+-rwxr-xr-x. &lt;span class="m"&gt;1&lt;/span&gt; br0ke br0ke  &lt;span class="m"&gt;428&lt;/span&gt; May &lt;span class="m"&gt;30&lt;/span&gt; &lt;span class="m"&gt;21&lt;/span&gt;:36 pre-applypatch.sample*
+-rwxr-xr-x. &lt;span class="m"&gt;1&lt;/span&gt; br0ke br0ke &lt;span class="m"&gt;1647&lt;/span&gt; May &lt;span class="m"&gt;30&lt;/span&gt; &lt;span class="m"&gt;21&lt;/span&gt;:36 pre-commit.sample*
+-rwxr-xr-x. &lt;span class="m"&gt;1&lt;/span&gt; br0ke br0ke  &lt;span class="m"&gt;420&lt;/span&gt; May &lt;span class="m"&gt;30&lt;/span&gt; &lt;span class="m"&gt;21&lt;/span&gt;:36 pre-merge-commit.sample*
+-rwxr-xr-x. &lt;span class="m"&gt;1&lt;/span&gt; br0ke br0ke &lt;span class="m"&gt;1496&lt;/span&gt; May &lt;span class="m"&gt;30&lt;/span&gt; &lt;span class="m"&gt;21&lt;/span&gt;:36 prepare-commit-msg.sample*
+-rwxr-xr-x. &lt;span class="m"&gt;1&lt;/span&gt; br0ke br0ke &lt;span class="m"&gt;1352&lt;/span&gt; May &lt;span class="m"&gt;30&lt;/span&gt; &lt;span class="m"&gt;21&lt;/span&gt;:36 pre-push.sample*
+-rwxr-xr-x. &lt;span class="m"&gt;1&lt;/span&gt; br0ke br0ke &lt;span class="m"&gt;4902&lt;/span&gt; May &lt;span class="m"&gt;30&lt;/span&gt; &lt;span class="m"&gt;21&lt;/span&gt;:36 pre-rebase.sample*
+-rwxr-xr-x. &lt;span class="m"&gt;1&lt;/span&gt; br0ke br0ke  &lt;span class="m"&gt;548&lt;/span&gt; May &lt;span class="m"&gt;30&lt;/span&gt; &lt;span class="m"&gt;21&lt;/span&gt;:36 pre-receive.sample*
+-rwxr-xr-x. &lt;span class="m"&gt;1&lt;/span&gt; br0ke br0ke &lt;span class="m"&gt;3639&lt;/span&gt; May &lt;span class="m"&gt;30&lt;/span&gt; &lt;span class="m"&gt;21&lt;/span&gt;:36 update.sample*
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Можно, например, просто переименовать файл &lt;code&gt;pre-commit.sample&lt;/code&gt; в &lt;code&gt;pre-commit&lt;/code&gt;,
+и этот хук вступит в силу. В моём случае там на &lt;code&gt;bash&lt;/code&gt; реализована
+проверка имён файлов, которая не допустит добавление файлов с именами,
+содержащими не-ASCII символы.&lt;/p&gt;
+&lt;p&gt;Давайте не будем этого делать, а взамен напишем простой скрипт,
+который будет запускать все нужные нам &lt;a href="https://semakin.dev/2020/05/python_linters/"&gt;линтеры&lt;/a&gt;
+и &lt;a href="https://semakin.dev/2020/05/black/"&gt;форматтеры&lt;/a&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#!/usr/bin/env bash&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Получаем список файлов, которые пользователь пытается закоммитить,&lt;/span&gt;
+&lt;span class="c1"&gt;# и выбираем из них те, которые заканчиваются на `.py`.&lt;/span&gt;
+&lt;span class="c1"&gt;# Взято отсюда: https://stackoverflow.com/a/3068990/10650942.&lt;/span&gt;
+&lt;span class="nv"&gt;CHANGED_PYTHON_FILES&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;git diff --cached --name-only --diff-filter&lt;span class="o"&gt;=&lt;/span&gt;ACMR &lt;span class="p"&gt;|&lt;/span&gt; grep &lt;span class="s2"&gt;&amp;quot;.py\$&amp;quot;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -z &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$CHANGED_PYTHON_FILES&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="k"&gt;then&lt;/span&gt;
+   &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;No Python files found. No reason to run checks.&amp;quot;&lt;/span&gt;
+   &lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="m"&gt;0&lt;/span&gt;
+&lt;span class="k"&gt;fi&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Включаем режим, в котором любая ошибка сразу же завершит весь скрипт ошибкой.&lt;/span&gt;
+&lt;span class="nb"&gt;set&lt;/span&gt; -e
+
+&lt;span class="c1"&gt;# Запускаем проверки.&lt;/span&gt;
+&lt;span class="c1"&gt;# Если хотя бы одна завершится ошибкой, то операция будет прервана.&lt;/span&gt;
+flake8 &lt;span class="nv"&gt;$CHANGED_PYTHON_FILES&lt;/span&gt;
+black --check &lt;span class="nv"&gt;$CHANGED_PYTHON_FILES&lt;/span&gt;
+
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;All checks successfully passed.&amp;quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Этот файл должен быть сохранён по пути &lt;code&gt;.git/hooks/pre-commit&lt;/code&gt;.
+Файл нужно сделать исполняемым, иначе Git не сможет его запустить:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ chmod a+x .git/hooks/pre-commit
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Теперь давайте создадим какой-нибудь файл, который точно не пройдет этих
+проверок. Обратите внимание на лишние пробелы рядом со скобками,
+которые не понравятся &lt;code&gt;flake8&lt;/code&gt;, и на одинарные кавычки, которые
+не понравятся &lt;code&gt;black&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Hello world!&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Попытаемся его закоммитить:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ git add example.py
+$ git commit -v
+example.py:1:7: E201 whitespace after &lt;span class="s1"&gt;&amp;#39;(&amp;#39;&lt;/span&gt;
+example.py:1:22: E202 whitespace before &lt;span class="s1"&gt;&amp;#39;)&amp;#39;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Наш умный хук выполнился и запустил &lt;code&gt;flake8&lt;/code&gt;, который нашел ошибки.
+Давайте удалим лишние пробелы и попытаемся закоммитить ещё раз:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ git add example.py
+$ git commit -v
+would reformat example.py
+Oh no! 💥 💔 💥
+&lt;span class="m"&gt;1&lt;/span&gt; file would be reformatted.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;В этот раз &lt;code&gt;flake8&lt;/code&gt; не нашёл ошибок, но операция всё равно завершилась
+ошибкой из-за &lt;code&gt;black&lt;/code&gt;. Давайте отформатируем файл и наконец закоммитим его:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ black .
+$ git add example.py
+$ git commit -v
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;На этот раз всё срабатывает успешно.&lt;/p&gt;
+&lt;p&gt;Чтобы закоммитить, игнорируя хуки, можно было передать в
+команду флаг &lt;code&gt;--no-verify&lt;/code&gt; или &lt;code&gt;-n&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;git commit -v -n
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Как видите, писать git-хуки самостоятельно не так уж и сложно.
+Не обязательно использовать &lt;code&gt;bash&lt;/code&gt;, хуки можно писать на чём угодно —
+любой исполняемый файл подойдет, хоть на интерпретируемом языке,
+хоть на компилируемом. Если бы нужно было писать какую-то более сложную логику,
+то я бы, например, предпочёл написать хук на Python.&lt;/p&gt;
+&lt;p&gt;У такого ручного способа есть несколько недостатков:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;хук хранится в директории &lt;code&gt;.git&lt;/code&gt;, которая является служебной для локальной
+копии репозитория и сама не сохраняется в систему контроля версий;
+это значит, что если вы захотите поделиться своим хуком с коллегами,
+то вы можете лишь каким-либо образом скинуть им исходный код,
+а им придётся самостоятельно класть его в правильное место и назначать права;&lt;/li&gt;
+&lt;li&gt;первая команда, завершившаяся ошибкой, прерывает выполнение хука и
+последующие команды не выполняются; это можно исправить,
+но получится сильно сложнее;&lt;/li&gt;
+&lt;li&gt;логика хука может быстро стать сложной;&lt;/li&gt;
+&lt;li&gt;всё нужно имплементить самостоятельно;&lt;/li&gt;
+&lt;li&gt;наш хук полагается на наличие команд &lt;code&gt;flake8&lt;/code&gt; и &lt;code&gt;black&lt;/code&gt;, так что они
+либо должны быть установлены глобально, либо перед коммитом нужно активировать
+виртуальное окружение проекта.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;Используем готовый инструмент — &lt;code&gt;pre-commit&lt;/code&gt;&lt;/h1&gt;
+&lt;p&gt;Как обычно, для всего уже есть решения. Представляю вашему вниманию
+&lt;a href="https://pre-commit.com/"&gt;&lt;code&gt;pre-commit&lt;/code&gt;&lt;/a&gt; — умный инструмент для управления
+Git-хуками.&lt;/p&gt;
+&lt;h2&gt;Установка&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;pre-commit&lt;/code&gt; написан на Python (ещё бы, иначе б я не был его фанатом 😁),
+поэтому установить его можно через &lt;code&gt;pip&lt;/code&gt;. Он должен быть установлен глобально,
+а не в виртуальном окружении проекта, где вы собираетесь его использовать.
+Рекомендую использовать метод установки в домашнюю директорию пользователя
+(см. &lt;a href="https://semakin.dev/2020/04/python_virtualenv/"&gt;заметку про виртуальные окружения&lt;/a&gt;
+за подробностями):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install --user pre-commit
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Проверим установку:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pre-commit --version
+pre-commit &lt;span class="m"&gt;2&lt;/span&gt;.4.0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Настройка&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;pre-commit&lt;/code&gt; спроектирован с прицелом на удобное использование сторонних
+переиспользуемых хуков, но может исполнять и вообще любые команды.
+&lt;a href="https://pre-commit.com/hooks.html"&gt;Уже написаны сотни полезных хуков&lt;/a&gt;
+для разных языков и задач, из которых, как из конструктора, можно собрать
+практически любой нужный вам вокрфлоу. Выбирайте те, которые вам понравятся.
+Для примера я возьму всё те же &lt;code&gt;flake8&lt;/code&gt; и &lt;code&gt;black&lt;/code&gt;, и ещё несколько других
+хуков сверху (а что, бесплатно же).&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;pre-commit&lt;/code&gt; конфигурируется на уровне репозитория при помощи
+&lt;a href="https://ru.wikipedia.org/wiki/YAML"&gt;YAML-файла&lt;/a&gt;.
+Файл должен называться &lt;code&gt;.pre-commit-config.yaml&lt;/code&gt; и находиться в корне репозитория.
+Давайте сгенерируем базовый конфиг:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pre-commit sample-config &amp;gt; .pre-commit-config.yaml
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;И допилим примерно до такого состояния:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# See https://pre-commit.com for more information&lt;/span&gt;
+&lt;span class="c1"&gt;# See https://pre-commit.com/hooks.html for more hooks&lt;/span&gt;
+&lt;span class="nt"&gt;repos&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+  &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="nt"&gt;repo&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;https://github.com/pre-commit/pre-commit-hooks&amp;#39;&lt;/span&gt;
+    &lt;span class="nt"&gt;rev&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;v2.4.0&lt;/span&gt;
+    &lt;span class="nt"&gt;hooks&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+      &lt;span class="c1"&gt;# проверяет наличие переноса строки в конце всех текстовых файлов&lt;/span&gt;
+      &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="nt"&gt;id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;end-of-file-fixer&lt;/span&gt;
+      &lt;span class="c1"&gt;# предупреждает о добавлении больших файлов в Git&lt;/span&gt;
+      &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="nt"&gt;id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;check-added-large-files&lt;/span&gt;
+      &lt;span class="c1"&gt;# предупреждает о сохранении файлов с UTF-8 BOM&lt;/span&gt;
+      &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="nt"&gt;id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;check-byte-order-marker&lt;/span&gt;
+      &lt;span class="c1"&gt;# предотвращает сохранение приватных ключей&lt;/span&gt;
+      &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="nt"&gt;id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;detect-private-key&lt;/span&gt;
+      &lt;span class="c1"&gt;# проверяет, что файлы, которые мы собираемся сохранять, как минимум валидный Python&lt;/span&gt;
+      &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="nt"&gt;id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;check-ast&lt;/span&gt;
+  &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="nt"&gt;repo&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;https://gitlab.com/pycqa/flake8&amp;#39;&lt;/span&gt;
+    &lt;span class="nt"&gt;rev&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;3.8.2&lt;/span&gt;
+    &lt;span class="nt"&gt;hooks&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+      &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="nt"&gt;id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;flake8&lt;/span&gt;
+  &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="nt"&gt;repo&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;https://github.com/psf/black&amp;#39;&lt;/span&gt;
+    &lt;span class="nt"&gt;rev&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;19.10b0&lt;/span&gt;
+    &lt;span class="nt"&gt;hooks&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+      &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="nt"&gt;id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;black&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Теперь включим &lt;code&gt;pre-commit&lt;/code&gt; в текущем репозитории.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pre-commit install
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Рекомендую добавить эту команду в документацию для разработчиков. Это всё,
+что нужно будет сделать вашим коллегам, чтобы хуки заработали и у них тоже.&lt;/p&gt;
+&lt;p&gt;Можно убедиться, что &lt;code&gt;pre-commit&lt;/code&gt; заменил наш старый хук на свой:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ cat .git/hooks/pre-commit
+&lt;span class="c1"&gt;#!/usr/bin/env python3.8&lt;/span&gt;
+&lt;span class="c1"&gt;# File generated by pre-commit: https://pre-commit.com&lt;/span&gt;
+...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;При этом старый хук был переименован в &lt;code&gt;pre-commit.legacy&lt;/code&gt;.
+Умный &lt;code&gt;pre-commit&lt;/code&gt; будет запускать и его тоже, чтобы не сломать текущее поведение.
+Если это не желательно, то проще всего удалить этот старый файл:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ rm .git/hooks/pre-commit.legacy
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Проверим, что конфигурационный файл валиден, а заодно и что всё нынешнее
+содержимое репозитория удовлетворяет описанными правилам:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pre-commit run --all-files
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;При первом запуске &lt;code&gt;pre-commit&lt;/code&gt; скачает и закэширует все файлы, необходимые
+для выполнения проверок. Для проверок, которые написаны на Python,
+будут созданы изолированные виртуальные окружения, так что они никак не
+будут зависеть от виртуального окружения проекта. Первый раз из-за скачивания
+зависимостей эта команда может выполняться секунд 30 (в зависимости от скорости
+интернета), но перезапустите её ещё раз и она завершится за секунду.&lt;/p&gt;
+&lt;p&gt;Возможно, &lt;code&gt;pre-commit&lt;/code&gt; найдёт проблемы или даже исправит некоторые файлы.&lt;/p&gt;
+&lt;p&gt;Если проверка отработала без ошибок, то конфиг нужно добавить в Git:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ git add .pre-commit-config.yaml
+$ git commit -m “Add pre-commit configuration”
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Плагины/зависимости для проверок&lt;/h2&gt;
+&lt;p&gt;Из-за того, что для проверок, написанных на Python, создаются отдельные
+виртуальные окружения, может быть не совсем понятно, как устанавливать
+плагины для таких программ, как, например, &lt;code&gt;flake8&lt;/code&gt;.
+Для &lt;code&gt;flake8&lt;/code&gt; важно, чтобы все его плагины были установлены с ним в одно
+виртуальное окружение, иначе он просто не сможет их найти.
+Специально для этого у &lt;code&gt;pre-commit&lt;/code&gt; предусмотрена настройка
+&lt;code&gt;additional_dependencies&lt;/code&gt;, которая используется вот таким образом:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;  &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="nt"&gt;repo&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;https://gitlab.com/pycqa/flake8&amp;#39;&lt;/span&gt;
+    &lt;span class="nt"&gt;rev&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;3.8.2&lt;/span&gt;
+    &lt;span class="nt"&gt;hooks&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+      &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="nt"&gt;id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;flake8&lt;/span&gt;
+        &lt;span class="nt"&gt;additional_dependencies&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+          &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;flake8-bugbear&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;При следующем запуске &lt;code&gt;pre-commit&lt;/code&gt; обнаружит новую зависимость и установит её
+в то же виртуальное окружение, что и &lt;code&gt;flake8&lt;/code&gt;. Теперь перед коммитом будет
+выполняться не просто голый &lt;code&gt;flake8&lt;/code&gt;, но ещё и с дополнительным плагином.
+Таких зависимостей может быть сколько угодно.&lt;/p&gt;
+&lt;h2&gt;Использование&lt;/h2&gt;
+&lt;p&gt;Теперь можно вообще забыть про существование &lt;code&gt;pre-commit&lt;/code&gt; и просто пользоваться
+Git как обычно, а &lt;code&gt;pre-commit&lt;/code&gt; будет выполнять все описанные проверки, изредка
+беспокоя вас прерванными операциями, если будут найдены какие-нибудь проблемы.
+Давайте снова попробуем закоммитить тот сломанный файл с пробелами и кавычками:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ git add example.py
+$ git commit -v
+Fix End of Files..................................Passed
+Check &lt;span class="k"&gt;for&lt;/span&gt; added large files.......................Passed
+Check &lt;span class="k"&gt;for&lt;/span&gt; byte-order marker.......................Passed
+Detect Private Key................................Passed
+Check python ast..................................Passed
+flake8............................................Failed
+- hook id: flake8
+- &lt;span class="nb"&gt;exit&lt;/span&gt; code: &lt;span class="m"&gt;1&lt;/span&gt;
+example.py:1:7: E201 whitespace after &lt;span class="s1"&gt;&amp;#39;(&amp;#39;&lt;/span&gt;
+example.py:1:22: E202 whitespace before &lt;span class="s1"&gt;&amp;#39;)&amp;#39;&lt;/span&gt;
+black.............................................Failed
+- hook id: black
+- files were modified by this hook
+reformatted example.py
+All &lt;span class="k"&gt;done&lt;/span&gt;! ✨ 🍰 ✨
+&lt;span class="m"&gt;1&lt;/span&gt; file reformatted.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ожидаемо, операция прервалась, но в этот раз мы получили все нужные
+сообщения об ошибках. Кроме того, файл даже был автоматически отформатирован
+при помощи &lt;code&gt;black&lt;/code&gt;, так что ничего даже вручную делать не нужно.
+Просто ещё раз запускаем те же команды, и в этот раз проверки должны пройти.&lt;/p&gt;
+&lt;p&gt;На YAML программировать намного приятнее, чем на &lt;code&gt;bash&lt;/code&gt;! Да, честно говоря,
+практически на чём угодно писать приятнее, чем на &lt;code&gt;bash&lt;/code&gt;.&lt;/p&gt;
+&lt;h1&gt;Альтернативы &lt;code&gt;pre-commit&lt;/code&gt;&lt;/h1&gt;
+&lt;p&gt;Мне проще всего использовать инструменты, написанные на знакомом мне языке,
+но вообще &lt;code&gt;pre-commit&lt;/code&gt; далеко не уникальный инструмент и имеет множество
+альтернатив. Если вы пишете не на Python, то может быть вам будут ближе другие
+инструменты, хотя все они имеют примерно схожий функционал:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://github.com/typicode/husky"&gt;&lt;code&gt;husky&lt;/code&gt; на JS&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/Arkweid/lefthook"&gt;&lt;code&gt;lefthook&lt;/code&gt; на Go&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/sds/overcommit"&gt;&lt;code&gt;overcommit&lt;/code&gt; на Ruby&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Возможно, вы также найдете для себя что-то полезное на странице
+&lt;a href="https://github.com/aitemr/awesome-git-hooks"&gt;“Awesome Git hooks”&lt;/a&gt;.&lt;/p&gt;
+&lt;h1&gt;Заключение&lt;/h1&gt;
+&lt;p&gt;Я всегда стараюсь использовать Git-хуки для запуска всех быстрых проверок.
+Это не дает мне забывать о проверках, и позволяет быстрее получать обратную связь.&lt;/p&gt;
+&lt;p&gt;Представьте ситуацию, когда сидишь и ждёшь результатов проверок от CI,
+которые могут быть достаточно долгими
+(на проекте, где я сейчас работаю, тесты выполняются 8-10 минут),
+видишь красный крестик, идёшь посмотреть, что же там сломалось,
+а там всё &lt;em&gt;почти&lt;/em&gt; отлично — тесты прошли, но только &lt;code&gt;flake8&lt;/code&gt; нашёл лишний пробел.
+Чинишь лишний пробел и снова ждёшь 10 минут, чтобы получить свою зелёную галочку.
+Дак вот хуки спасают от таких ситуаций, потому что все тривиальные проблемы
+обнаруживаются за несколько секунд локально на моей машине и
+никогда не попадают в историю Git.&lt;/p&gt;
+&lt;p&gt;Настоятельно рекомендую пользоваться Git-хуками. Это позволит вам не тратить
+время на ерунду, и в итоге быть более эффективным и довольным разработчиком.&lt;/p&gt;
+&lt;p&gt;Примеры из поста можно найти
+&lt;a href="https://github.com/and-semakin/git_hooks_example"&gt;здесь&lt;/a&gt;.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Если понравилась статья, то
+&lt;a href="https://semakin.dev/pages/subscribe/"&gt;подпишитесь на уведомления&lt;/a&gt;
+о новых постах в блоге, чтобы ничего не пропустить!&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1&gt;Ссылки&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://pre-commit.com/"&gt;документация &lt;code&gt;pre-commit&lt;/code&gt;&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://pre-commit.com/hooks.html"&gt;реестр хуков для &lt;code&gt;pre-commit&lt;/code&gt;&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/pre-commit/pre-commit"&gt;репозиторий &lt;code&gt;pre-commit&lt;/code&gt; на GitHub&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks"&gt;документация Git про хуки&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;</content><category term="blog"></category><category term="python"></category><category term="pre-commit"></category><category term="git"></category></entry><entry><title>Форматируем код при помощи black</title><link href="https://semakin.dev/2020/05/black/" rel="alternate"></link><published>2020-05-26T13:54:45+05:00</published><updated>2020-05-26T21:54:31+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-05-26:/2020/05/black/</id><summary type="html">&lt;p&gt;Автоматическое форматирование кода избавляет от бесконечных споров про пробелы, запятые и скобки, экономя нервы и часы код-ревью.&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Почему полезно форматировать код&lt;/h1&gt;
 &lt;p&gt;В сообществе Python ещё лет 20 назад осознали ценность форматирования кода, когда
 на свет появился &lt;a href="https://www.python.org/dev/peps/pep-0008/"&gt;PEP8&lt;/a&gt; —
 документ, который призван сделать весь код, написанный на Python,
@@ -630,7 +999,7 @@ Chocolatey имеет намного больше общего с
 &lt;li&gt;&lt;a href="https://github.com/chocolatey/choco"&gt;исходный код&lt;/a&gt;;&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://www.youtube.com/watch?v=hfgZYpo5moA"&gt;видео про Chocolatey для тех, кто больше любит воспринимать информацию визуально&lt;/a&gt;.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;em&gt;Обложка: &lt;a href="https://www.publicdomainpictures.net/ru/view-image.php?image=285902&amp;amp;picture="&gt;Jean Beaufort, Chocolate&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;</content><category term="blog"></category><category term="windows"></category><category term="choco"></category></entry><entry><title>Линтеры в Python</title><link href="https://semakin.dev/2020/05/python_linters/" rel="alternate"></link><published>2020-05-17T22:38:56+05:00</published><updated>2020-05-17T22:38:56+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-05-17:/2020/05/python_linters/</id><summary type="html">&lt;p&gt;Обзор популярных статических анализаторов для Python-кода и как они экономят разработчику один день жизни в месяц.&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Линтеры&lt;/h1&gt;
+&lt;p&gt;&lt;em&gt;Обложка: &lt;a href="https://www.publicdomainpictures.net/ru/view-image.php?image=285902&amp;amp;picture="&gt;Jean Beaufort, Chocolate&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;</content><category term="blog"></category><category term="windows"></category><category term="choco"></category></entry><entry><title>Линтеры в Python</title><link href="https://semakin.dev/2020/05/python_linters/" rel="alternate"></link><published>2020-05-17T22:38:56+05:00</published><updated>2020-05-31T16:04:25+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-05-17:/2020/05/python_linters/</id><summary type="html">&lt;p&gt;Обзор популярных статических анализаторов для Python-кода и как они экономят разработчику один день жизни в месяц.&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Линтеры&lt;/h1&gt;
 &lt;p&gt;В сообществе Python, как и в любой другой группе людей, существует некое
 коллективное знание. Множество людей прошлось по всем возможным граблям
 и получило опыт через набитые шишки. Затем через какое-то время,
@@ -1081,6 +1450,9 @@ Warning, Convention и Refactor:&lt;/p&gt;
 &lt;p&gt;VS Code требует небольшой настройки, которая
 &lt;a href="https://code.visualstudio.com/docs/python/linting"&gt;описана здесь&lt;/a&gt;.&lt;/p&gt;
 &lt;h3&gt;Git-хуки&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Также читайте &lt;a href="https://semakin.dev/2020/05/pre-commit/"&gt;пост про Git-хуки и &lt;code&gt;pre-commit&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
 &lt;p&gt;В git есть &lt;a href="https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks"&gt;возможность запрограммировать&lt;/a&gt;
 определенные скрипты (хуки) в ответ на действия пользователя.
 Например, можно запускать
@@ -1095,7 +1467,7 @@ Git-хуки можно настроить, написав несложный sh
 такие как &lt;a href="https://pre-commit.com/"&gt;pre-commit&lt;/a&gt;.
 &lt;a href="https://ljvmiranda921.github.io/notebook/2018/06/21/precommits-using-black-and-flake8/"&gt;Вот здесь&lt;/a&gt;
 можно найти описание процесса настройки запуска &lt;code&gt;flake8&lt;/code&gt; через &lt;code&gt;pre-commit&lt;/code&gt;.&lt;/p&gt;
-&lt;p&gt;Обратите внимание, что git-хуки нужно будет настроить на машине каждого
+&lt;p&gt;Обратите внимание, что Git-хуки нужно будет настроить на машине каждого
 разработчика в проекте.&lt;/p&gt;
 &lt;h3&gt;Continuous Integration (CI)&lt;/h3&gt;
 &lt;p&gt;Последний эшелоном защиты от попадания “сломанного” кода в основную ветку
