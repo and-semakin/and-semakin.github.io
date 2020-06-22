@@ -12,13 +12,13 @@
 
         <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Питонические атаки Full Atom Feed" />
         <!-- Bootstrap Core CSS -->
-        <link href="https://semakin.dev/theme/css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../../theme/css/bootstrap.min.css" rel="stylesheet">
 
         <!-- Custom CSS -->
-        <link href="https://semakin.dev/theme/css/clean-blog.min.css" rel="stylesheet">
+        <link href="../../../theme/css/clean-blog.min.css" rel="stylesheet">
 
         <!-- Code highlight color scheme -->
-            <link href="https://semakin.dev/theme/css/code_blocks/monokai.css" rel="stylesheet">
+            <link href="../../../theme/css/code_blocks/monokai.css" rel="stylesheet">
 
 
         <!-- Custom Fonts -->
@@ -40,13 +40,13 @@
 		<meta property="og:site_name" content="Питонические атаки">
 
 	<meta property="og:type" content="article">
-            <meta property="article:author" content="https://semakin.dev/author/andrei-semakin.html">
-	<meta property="og:url" content="https://semakin.dev/2020/05/pre-commit/">
+            <meta property="article:author" content="../../../author/andrei-semakin.html">
+	<meta property="og:url" content="../../../2020/05/pre-commit/">
 	<meta property="og:title" content="Запуск Git-хуков при помощи pre-commit">
 	<meta property="article:published_time" content="2020-05-31 15:54:18+05:00">
             <meta property="og:description" content="Git-хуки позволяют автоматизировать запуск различных проверок (линтеры, форматтеры, тесты) при работе с системой контроля версий.">
 
-            <meta property="og:image" content="https://semakin.dev/static/hook.jpg">
+            <meta property="og:image" content="../../../static/hook.jpg">
 </head>
 
 <body class="article-pre-commit">
@@ -62,7 +62,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="https://semakin.dev/">Питонические атаки</a>
+                <a class="navbar-brand" href="../../../">Питонические атаки</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -70,8 +70,8 @@
                 <ul class="nav navbar-nav navbar-right">
                         <li><a href="/tags.html">Тэги</a></li>
 
-                            <li><a href="https://semakin.dev/pages/about/">Об авторе</a></li>
-                            <li><a href="https://semakin.dev/pages/subscribe/">Подписаться</a></li>
+                            <li><a href="../../../pages/about/">Об авторе</a></li>
+                            <li><a href="../../../pages/subscribe/">Подписаться</a></li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -80,7 +80,7 @@
     </nav>
 
     <!-- Page Header -->
-        <header class="intro-header" style="background-image: url('https://semakin.dev//static/hook.jpg')">
+        <header class="intro-header" style="background-image: url('../../..//static/hook.jpg')">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -88,7 +88,7 @@
                         <h1>Запуск Git-хуков при помощи pre-commit</h1>
                         <span class="meta">Опубликовано: 31 мая 2020, Вс,
                             автор:
-                                <a href="https://semakin.dev/author/andrei-semakin.html">Андрей Семакин</a>
+                                <a href="../../../author/andrei-semakin.html">Андрей Семакин</a>
                         </span>
                             <span class="meta">Обновлено: 31 мая 2020, Вс</span>
                         
@@ -187,8 +187,8 @@ total <span class="m">56</span>
 проверка имён файлов, которая не допустит добавление файлов с именами,
 содержащими не-ASCII символы.</p>
 <p>Давайте не будем этого делать, а взамен напишем простой скрипт,
-который будет запускать все нужные нам <a href="https://semakin.dev/2020/05/python_linters/">линтеры</a>
-и <a href="https://semakin.dev/2020/05/black/">форматтеры</a>:</p>
+который будет запускать все нужные нам <a href="../../../2020/05/python_linters/">линтеры</a>
+и <a href="../../../2020/05/black/">форматтеры</a>:</p>
 <div class="highlight"><pre><span></span><code><span class="ch">#!/usr/bin/env bash</span>
 
 <span class="c1"># Получаем список файлов, которые пользователь пытается закоммитить,</span>
@@ -291,7 +291,7 @@ Git-хуками.</p>
 поэтому установить его можно через <code>pip</code>. Он должен быть установлен глобально,
 а не в виртуальном окружении проекта, где вы собираетесь его использовать.
 Рекомендую использовать метод установки в домашнюю директорию пользователя
-(см. <a href="https://semakin.dev/2020/04/python_virtualenv/">заметку про виртуальные окружения</a>
+(см. <a href="../../../2020/04/python_virtualenv/">заметку про виртуальные окружения</a>
 за подробностями):</p>
 <div class="highlight"><pre><span></span><code>$ pip install --user pre-commit
 </code></pre></div>
@@ -471,7 +471,7 @@ All <span class="k">done</span>! ✨ 🍰 ✨
 <a href="https://github.com/and-semakin/git_hooks_example">здесь</a>.</p>
 <blockquote>
 <p>Если понравилась статья, то
-<a href="https://semakin.dev/pages/subscribe/">подпишитесь на уведомления</a>
+<a href="../../../pages/subscribe/">подпишитесь на уведомления</a>
 о новых постах в блоге, чтобы ничего не пропустить!</p>
 </blockquote>
 <h1>Ссылки</h1>
@@ -484,7 +484,7 @@ All <span class="k">done</span>! ✨ 🍰 ✨
     </article>
 
         <div class="tags">
-            <p>тэги: <a href="https://semakin.dev/tag/python.html">python</a>, <a href="https://semakin.dev/tag/pre-commit.html">pre-commit</a>, <a href="https://semakin.dev/tag/git.html">git</a></p>
+            <p>тэги: <a href="../../../tag/python.html">python</a>, <a href="../../../tag/pre-commit.html">pre-commit</a>, <a href="../../../tag/git.html">git</a></p>
         </div>
 
     <hr>
@@ -535,28 +535,14 @@ All <span class="k">done</span>! ✨ 🍰 ✨
     </footer>
 
     <!-- jQuery -->
-    <script src="https://semakin.dev/theme/js/jquery.min.js"></script>
+    <script src="../../../theme/js/jquery.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="https://semakin.dev/theme/js/bootstrap.min.js"></script>
+    <script src="../../../theme/js/bootstrap.min.js"></script>
 
         <!-- Custom Theme JavaScript -->
-        <script src="https://semakin.dev/theme/js/clean-blog.min.js"></script>
+        <script src="../../../theme/js/clean-blog.min.js"></script>
 
-<!-- Yandex.Metrika counter -->
-<script type="text/javascript" >
-   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-   m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-
-   ym(62079343, "init", {
-        clickmap:true,
-        trackLinks:true,
-        accurateTrackBounce:true
-   });
-</script>
-<noscript><div><img src="https://mc.yandex.ru/watch/62079343" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-<!-- /Yandex.Metrika counter -->
 </body>
 
 </html>

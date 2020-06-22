@@ -12,13 +12,13 @@
 
         <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Питонические атаки Full Atom Feed" />
         <!-- Bootstrap Core CSS -->
-        <link href="https://semakin.dev/theme/css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../../theme/css/bootstrap.min.css" rel="stylesheet">
 
         <!-- Custom CSS -->
-        <link href="https://semakin.dev/theme/css/clean-blog.min.css" rel="stylesheet">
+        <link href="../../../theme/css/clean-blog.min.css" rel="stylesheet">
 
         <!-- Code highlight color scheme -->
-            <link href="https://semakin.dev/theme/css/code_blocks/monokai.css" rel="stylesheet">
+            <link href="../../../theme/css/code_blocks/monokai.css" rel="stylesheet">
 
 
         <!-- Custom Fonts -->
@@ -38,13 +38,13 @@
 		<meta property="og:site_name" content="Питонические атаки">
 
 	<meta property="og:type" content="article">
-            <meta property="article:author" content="https://semakin.dev/author/andrei-semakin.html">
-	<meta property="og:url" content="https://semakin.dev/2020/05/no_newline_at_end_of_file/">
+            <meta property="article:author" content="../../../author/andrei-semakin.html">
+	<meta property="og:url" content="../../../2020/05/no_newline_at_end_of_file/">
 	<meta property="og:title" content="Почему важно всегда ставить символ переноса строки в конце текстовых файлов?">
 	<meta property="article:published_time" content="2020-05-31 19:30:24+05:00">
             <meta property="og:description" content="Так легко упустить эту маленькую, но важную деталь.">
 
-            <meta property="og:image" content="https://semakin.dev/static/code.jpg">
+            <meta property="og:image" content="../../../static/code.jpg">
 </head>
 
 <body class="article-no_newline_at_end_of_file">
@@ -60,7 +60,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="https://semakin.dev/">Питонические атаки</a>
+                <a class="navbar-brand" href="../../../">Питонические атаки</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -68,8 +68,8 @@
                 <ul class="nav navbar-nav navbar-right">
                         <li><a href="/tags.html">Тэги</a></li>
 
-                            <li><a href="https://semakin.dev/pages/about/">Об авторе</a></li>
-                            <li><a href="https://semakin.dev/pages/subscribe/">Подписаться</a></li>
+                            <li><a href="../../../pages/about/">Об авторе</a></li>
+                            <li><a href="../../../pages/subscribe/">Подписаться</a></li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -78,7 +78,7 @@
     </nav>
 
     <!-- Page Header -->
-        <header class="intro-header" style="background-image: url('https://semakin.dev//static/code.jpg')">
+        <header class="intro-header" style="background-image: url('../../..//static/code.jpg')">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -86,7 +86,7 @@
                         <h1>Почему важно всегда ставить символ переноса строки в конце текстовых файлов?</h1>
                         <span class="meta">Опубликовано: 31 мая 2020, Вс,
                             автор:
-                                <a href="https://semakin.dev/author/andrei-semakin.html">Андрей Семакин</a>
+                                <a href="../../../author/andrei-semakin.html">Андрей Семакин</a>
                         </span>
                             <span class="meta">Обновлено: 31 мая 2020, Вс</span>
                         
@@ -116,7 +116,7 @@
 
 
 <p>Или на GitHub в интерфейсе для просмотра диффов:</p>
-<p><img alt="GitHub &quot;now newline at end of file&quot; warning" src="https://semakin.dev/static/github_no_newline_at_end_of_file.jpg"></p>
+<p><img alt="GitHub &quot;now newline at end of file&quot; warning" src="../../../static/github_no_newline_at_end_of_file.jpg"></p>
 <p>Почему это так важно, что Git и GitHub предупреждают нас об этом?
 Давайте разберемся.</p>
 <h1>Что такое символ переноса строки?</h1>
@@ -275,7 +275,7 @@ vbn
 <li>VS Code: <code>"files.insertFinalNewline": true</code>.</li>
 </ul>
 <p>Для других редакторов смотрите настройку <a href="https://thoughtbot.com/blog/no-newline-at-end-of-file#following-the-rules-in-your-editor">здесь</a>.</p>
-<p>Кстати, если вы пользуетесь <a href="https://semakin.dev/2020/05/black/">форматтером <code>black</code></a>,
+<p>Кстати, если вы пользуетесь <a href="../../../2020/05/black/">форматтером <code>black</code></a>,
 то у меня хорошие новости —
 он всегда добавляет перенос строки в конец всех файлов <code>*.py</code>.</p>
 <h1>Заключение</h1>
@@ -289,7 +289,7 @@ vbn
 как минимум убережёт вас и ваших коллег от всяких неожиданных эффектов при
 работе с утилитами Unix.</p>
 <p>В текстовом редакторе это выглядит как лишняя пустая строка в конце файла:</p>
-<p><img alt="Пример того, как это должно выглядеть в текстовом редакторе" src="https://semakin.dev/static/newline_editor_example.jpg"></p>
+<p><img alt="Пример того, как это должно выглядеть в текстовом редакторе" src="../../../static/newline_editor_example.jpg"></p>
 <h1>Дополнительное чтение</h1>
 <ul>
 <li><a href="https://stackoverflow.com/questions/5813311/no-newline-at-end-of-file/5813359#5813359">StackOverflow: No newline at end of file</a>;</li>
@@ -299,7 +299,7 @@ vbn
     </article>
 
         <div class="tags">
-            <p>тэги: <a href="https://semakin.dev/tag/good-practice.html">good practice</a></p>
+            <p>тэги: <a href="../../../tag/good-practice.html">good practice</a></p>
         </div>
 
     <hr>
@@ -350,28 +350,14 @@ vbn
     </footer>
 
     <!-- jQuery -->
-    <script src="https://semakin.dev/theme/js/jquery.min.js"></script>
+    <script src="../../../theme/js/jquery.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="https://semakin.dev/theme/js/bootstrap.min.js"></script>
+    <script src="../../../theme/js/bootstrap.min.js"></script>
 
         <!-- Custom Theme JavaScript -->
-        <script src="https://semakin.dev/theme/js/clean-blog.min.js"></script>
+        <script src="../../../theme/js/clean-blog.min.js"></script>
 
-<!-- Yandex.Metrika counter -->
-<script type="text/javascript" >
-   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-   m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-
-   ym(62079343, "init", {
-        clickmap:true,
-        trackLinks:true,
-        accurateTrackBounce:true
-   });
-</script>
-<noscript><div><img src="https://mc.yandex.ru/watch/62079343" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-<!-- /Yandex.Metrika counter -->
 </body>
 
 </html>

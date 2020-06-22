@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/png" href="/favicon_32.png" />
+
+
+        <title>Аннотации типов в Python</title>
+
+        <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Питонические атаки Full Atom Feed" />
+        <!-- Bootstrap Core CSS -->
+        <link href="../../../theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="../../../theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="../../../theme/css/code_blocks/monokai.css" rel="stylesheet">
+
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+
+
+        <meta name="description" content="Введение в тайп-аннотации и тайп-чекинг в Python.">
+
+        <meta name="author" content="Андрей Семакин">
+
+        <meta name="tags" content="python">
+        <meta name="tags" content="typing">
+        <meta name="tags" content="mypy">
+
+	                <meta property="og:locale" content="">
+		<meta property="og:site_name" content="Питонические атаки">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="../../../author/andrei-semakin.html">
+	<meta property="og:url" content="../../../2020/06/type_hints/">
+	<meta property="og:title" content="Аннотации типов в Python">
+	<meta property="article:published_time" content="2020-06-22 23:34:35.202192+05:00">
+            <meta property="og:description" content="Введение в тайп-аннотации и тайп-чекинг в Python.">
+
+            <meta property="og:image" content="../../../static/lego_bits.jpg">
+</head>
+
+<body class="article-type_hints">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../../">Питонические атаки</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                        <li><a href="/tags.html">Тэги</a></li>
+
+                            <li><a href="../../../pages/about/">Об авторе</a></li>
+                            <li><a href="../../../pages/subscribe/">Подписаться</a></li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('../../..//static/lego_bits.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Аннотации типов в Python</h1>
+                        <span class="meta">Опубликовано: 22 июня 2020, Пн,
+                            автор:
+                                <a href="../../../author/andrei-semakin.html">Андрей Семакин</a>
+                        </span>
+                            <span class="meta">Обновлено: 22 июня 2020, Пн</span>
+                        
+                            <span class="meta">
+                                <i class="fa fa-clock-o" aria-hidden="true"></i>
+                                7 минут
+                            </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Scroll progress bar -->
+    <div id="_progress"></div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <h1>Аннотации типов в Python</h1>
+<p>Python — это язык с сильной динамической типизацией.</p>
+<ul>
+<li><a href="https://ru.wikipedia.org/wiki/%D0%A1%D0%B8%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F_%D0%B8_%D1%81%D0%BB%D0%B0%D0%B1%D0%B0%D1%8F_%D1%82%D0%B8%D0%BF%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F">Сильная</a>
+    — значит, что язык не допускает неявных приведений типов в неоднозначных
+    ситуациях или когда будет утрачена точность, например, нельзя “сложить”
+    число и строку.</li>
+<li><a href="https://ru.wikipedia.org/wiki/%D0%94%D0%B8%D0%BD%D0%B0%D0%BC%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B0%D1%8F_%D1%82%D0%B8%D0%BF%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F">Динамическая</a>
+    — значит, что тип переменной определяется во время присваивания ей значения и
+    может изменяться по ходу программы.</li>
+</ul>
+<p>Такая система типов — это очень удачный компромисс между простотой разработки
+и надежностью написанных программ, но она не лишена недостатков.</p>
+<p>Например, объявления переменных с типами в языках со статической типизацией,
+кроме своего основного назначения — инструкций компилятору или интерпретатору,
+ещё и помогают программисту лучше понимать написанный код, служат своеобразной
+документацией. Динамическая типизация не в состоянии этого дать.</p>
+<p>Раньше, когда на Python писали в основном небольшие скрипты, это не было
+такой уж острой проблемой, потому что всю программу за разумный промежуток
+времени можно было охватить взглядом и понять. В последнее время язык стал
+значительно популярнее.</p>
+<blockquote>
+<p>По данным исследований StackOverflow за
+<a href="https://insights.stackoverflow.com/survey/2020#most-popular-technologies">2020</a>,
+<a href="https://insights.stackoverflow.com/survey/2019#most-popular-technologies">2019</a>,
+<a href="https://insights.stackoverflow.com/survey/2018#most-popular-technologies">2018</a>,
+<a href="https://insights.stackoverflow.com/survey/2017#most-popular-technologies">2017</a>,
+<a href="https://insights.stackoverflow.com/survey/2016#technology-most-popular-technologies">2016</a>,
+<a href="https://insights.stackoverflow.com/survey/2015#tech-lang">2015</a>
+(там же можно посмотреть результаты за 2014 и 2013)
+годы, Python с каждым годом
+растёт в популярности.</p>
+</blockquote>
+<p>Сегодня на Python написано много сложных систем из сотен файлов и сотен тысяч
+строк кода. В таких обстоятельствах документирующее свойство системы типов
+становится очень полезным. В достаточно крупной кодовой базе при отсутствии
+информации о типах очень сложно угадать
+(а только гадать и остаётся), какие же именно объекты циркулируют по программе.</p>
+<p>Кроме того, даже если код без информации о типах может быть и вполне
+понятен человеку, например, благодаря удачно выбранным именам, то для
+автоматики — это в любом случае абсолютно непроницаемый <s>черный</s>
+непрозрачный ящик.
+В такой ситуации очень сложно, не выполняя код (мы же говорим про статический
+анализ), понять как он будет вести себя в ран-тайме. Аннотации типов позволяют
+IDE, <a href="../../../2020/05/python_linters/">линтерам</a> и тайп-чекерам лучше понимать
+код программы, что дает возможность
+рано отлавливать достаточно хитрые ошибки. В конечном итоге это делает
+написанные программы надежнее.</p>
+<p>По этим соображениям, в Python 3.5 появился специальный синтаксис для
+объявления типов параметров функций и их возвращаемых значений
+(<a href="https://www.python.org/dev/peps/pep-0484/">PEP 484</a>).
+В Python 3.6 эта возможность была расширена — стало можно объявлять типы
+переменных вообще в любом месте программы
+(<a href="https://www.python.org/dev/peps/pep-0526/">PEP 526</a>). С каждой новой версией
+языка эта функциональность улучшается, и писать аннотации типов становится
+всё проще, удобнее и естественнее, а экосистема вокруг типизированного
+Python развивается семимильными шагами.</p>
+<p>Нужно отметить, что тайп-аннотации — это именно возможность, а не обязанность.
+У программиста есть выбор — добавлять информацию о типах или нет.
+Таким образом Python пытается усидеть на двух стульях — остаться языком с
+динамической типизацией и дать возможность для статического анализа написанных
+программ. Привнести в хаос немного порядка, так сказать. И, по-моему, у Python 
+это неплохо получается.</p>
+<h1>Как это работает?</h1>
+<p>Программист при написании кода расставляет информацию о типах переменных,
+параметров и возвращаемых значений функций. Это никак не влияет на выполнение 
+программы. Python сам по себе никак не использует эту информацию в ран-тайме,
+он лишь перекладывает её в специальные атрибуты функций или переменных,
+делая доступной для сторонних утилит. То есть, если указано, что функция
+принимает строки, то это никак не помешает вызвать её с целыми числами или
+списками — в зависимости от тела функции, она может отработать, а может
+завершиться ошибкой, но сама возможность вызова с любыми типами аргументов
+никак не ограничивается. </p>
+<p>Зачем же тогда писать тайп-аннотации?</p>
+<ul>
+<li>документация для разработчиков;</li>
+<li>сторонние утилиты и библиотеки могут использовать эту информацию по своему
+усмотрению, например, выполняя проверки типов или приводя данные к нужному типу.</li>
+</ul>
+<p>Первый пункт достаточно очевидный, а про второй мы поговорим чуть позже в
+разделе про тайп-чекеры.</p>
+<h1>Простые типы</h1>
+<p>Вот так, например, можно тайп-аннотировать простую функцию:</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">greeting</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;world&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">return</span> <span class="s2">&quot;Hello, &quot;</span> <span class="o">+</span> <span class="n">name</span>
+</code></pre></div>
+
+
+<p>Типы параметров, принимаемых функцией, записываются после имени параметра
+через знак двоеточия, но перед значением по умолчанию, если оно присутствует.
+Возвращаемое значение функции записывается после знака “стрелки”.</p>
+<p>Теперь читатель просто взглянув на сигнатуру функции может понять, что функция
+принимает строку и возвращает строку. Наверное, если передать в неё другой тип,
+то она не сможет корректно отработать.</p>
+<p>Точно так же можно использовать для тайп-аннотаций и любые другие базовые
+(примитивные, не-контейнерные) типы в Python:
+<code>int</code>, <code>float</code>, <code>bool</code>, <code>str</code>, <code>bytes</code>, <code>None</code> и вообще практически что угодно.
+Чуть позже посмотрим, как типизировать контейнерные типы данных, такие как списки,
+кортежи, словари и множества.</p>
+<p>Вот так можно зааннотировать функцию, которая принимает два числа с плавающей
+точкой и возвращает число с плавающей точкой:</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">body_mass_index</span><span class="p">(</span><span class="n">weight</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">weight</span> <span class="o">/</span> <span class="n">height</span> <span class="o">**</span> <span class="mi">2</span>
+</code></pre></div>
+
+
+<p>А вот так функцию, которая принимает строку и булевый аргумент, но ничего не
+возвращает:</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">print_hello</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">upper</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">upper</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello,&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+</code></pre></div>
+
+
+<p>Вот так можно аннотировать любые переменные в любом месте кода (Python 3.6+):</p>
+<div class="highlight"><pre><span></span><code><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Andrey&quot;</span>
+<span class="n">age</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">25</span>
+<span class="n">is_sick_with_covid19</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># надеюсь</span>
+<span class="n">pi</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">3.1415</span>
+
+<span class="c1"># можно даже аннотировать переменные, не назначая им значения</span>
+<span class="n">foo</span><span class="p">:</span> <span class="nb">str</span>
+</code></pre></div>
+
+
+<p>Если мы создадим свой класс, то его тоже можно использовать для аннотаций:</p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Example</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+<span class="c1"># довольно бессмысленно, но для примера пойдет</span>
+<span class="n">example_instance</span><span class="p">:</span> <span class="n">Example</span> <span class="o">=</span> <span class="n">Example</span><span class="p">()</span>
+</code></pre></div>
+
+
+<h1>Контейнерные типы и дженерики</h1>
+<p>Перейдем к более сложным типам, таким как списки, кортежи, словари и множества.
+Можно аннотировать в лоб, используя сами имена классов:</p>
+<div class="highlight"><pre><span></span><code><span class="n">primes</span><span class="p">:</span> <span class="nb">list</span>
+<span class="n">person_info</span><span class="p">:</span> <span class="nb">tuple</span>
+<span class="n">stock_prices</span><span class="p">:</span> <span class="nb">dict</span>
+<span class="n">valid_answers</span><span class="p">:</span> <span class="nb">set</span>
+</code></pre></div>
+
+
+<p>Это не слишком информативно, потому что кроме самого типа контейнера было бы
+ещё полезно знать, какие данные он в себе содержит. Что такое <code>person_info</code>?
+Кортеж чего?</p>
+<p>В Python до версии 3.9 для этого придётся использовать отдельные классы из
+модуля <code>typing</code>, потому что стандартные классы не представляют такой
+функциональности. Делается это при помощи квадратных скобок, как будто мы
+извлекаем что-то по индексу:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Set</span>
+
+<span class="c1"># тип всех элементов списка</span>
+<span class="n">primes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+
+<span class="c1"># тип каждого элемента кортежа</span>
+<span class="n">person_info</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
+
+<span class="c1"># тип ключей, тип значений</span>
+<span class="n">stock_prices</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
+
+<span class="c1"># тип всех элементов множества</span>
+<span class="n">valid_answers</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+</code></pre></div>
+
+
+<p>Начиная с Python 3.9 можно использовать стандартные классы в точно таких же
+целях, ничего ниоткуда не импортируя:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># будет работать только начиная с Python 3.9!</span>
+
+<span class="c1"># тип всех элементов списка</span>
+<span class="n">primes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+
+<span class="c1"># тип каждого элемента кортежа</span>
+<span class="n">person_info</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
+
+<span class="c1"># тип ключей, тип значений</span>
+<span class="n">stock_prices</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
+
+<span class="c1"># тип всех элементов множества</span>
+<span class="n">valid_answers</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+</code></pre></div>
+
+
+<p>Согласитесь, так намного понятнее. Сразу видно, какой тип данных лежит
+внутри контейнера. Такие типы называются обобщёнными (generic types).</p>
+<p>Кстати, в типизации можно яснее увидеть разницу между тем как должны
+использоваться списки и кортежи (<code>list</code> vs. <code>tuple</code>).</p>
+<ul>
+<li>Списки содержат однородные данные — они все должны быть одного типа,
+иначе с таким списком будет тяжеловато работать.</li>
+<li>Кортеж, напротив, может содержать разнородные данные, которые в зависимости
+от позиции могут иметь тот или иной тип.</li>
+<li>Список нужно использовать,
+когда длина заранее неизвестна либо она переменна, например,
+список пользователей.</li>
+<li>Кортеж нужно использовать, когда длина данных известна
+заранее и строго фиксирована, например, как в записи из таблицы в СУБД.</li>
+</ul>
+<p>Получается, кортеж — это не просто неизменяемый брат-близнец списка.</p>
+<p>Если сильно хочется использовать кортеж как просто неизменяемую
+последовательность однородных данных, то можно зааннотировать его вот так,
+используя <code>...</code> (это специальный объект <code>Ellipsis</code>, записывается как многоточие,
+при чтении исходников вслух в этом месте нужно делать драматическую паузу):</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># кортеж из строк, длина неизвестна</span>
+<span class="n">months</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+</code></pre></div>
+
+
+<h1>Составные типы</h1>
+<p>Часто случаются ситуации, когда нужно объединить несколько типов, например,
+для того, чтобы указать, что функция может принимать и строки, и числа.
+Этого можно достичь при помощи дженерик-типа <code>Union</code> из модуля <code>typing</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+
+<span class="k">def</span> <span class="nf">add_or_concatenate</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">b</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+</code></pre></div>
+
+
+<p>Также очень часто возникает ситуация, когда возможно либо значение определенного
+типа, либо <code>None</code>. Это настолько частая ситуация, что для этого даже сделали
+отдельный дженерик-тип <code>Optional</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="c1"># по сути это одно и то же, но первый вариант проще читается</span>
+<span class="n">phone</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+<span class="n">phone</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
+</code></pre></div>
+
+
+<p>Также может возникнуть ситуация, когда не получается указать какой-либо
+конкретный тип, потому что, например, функция может принимать на вход абсолютно
+что угодно. Для этих случаев тоже есть специальный объект <code>typing.Any</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+
+<span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">arg</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">arg</span>
+</code></pre></div>
+
+
+<p>Можно считать, что <code>Any</code> неявно подставляется везде, где не указан более
+конкретный тип. Очень соблазнительно везде вставлять этот тип, но
+настоятельно рекомендую использовать его только в крайних случаях, потому что
+чрезмерное его использование сводит пользу от типизации на нет.</p>
+<p>Вообще советую заглянуть в
+<a href="https://docs.python.org/3/library/typing.html">документацию модуля <code>typing</code></a>,
+там есть много интересных классов на все случаи жизни.</p>
+<h1>Проверка типов</h1>
+<p>Допустим, что тайп-аннотации написаны. Как начать получать от этого пользу?</p>
+<p>В экосистеме Python есть несколько конкурирующих между собой тайп-чекеров,
+например, <a href="http://mypy-lang.org/"><code>mypy</code></a>,
+<a href="https://pyre-check.org/"><code>pyre</code></a>,
+<a href="https://github.com/google/pytype"><code>pytype</code></a>,
+<a href="https://github.com/Microsoft/pyright"><code>pyright</code></a>.
+Самым популярным среди них является <code>mypy</code>, наверное, потому что одним из
+ключевых его разработчиков является сам
+<a href="https://ru.wikipedia.org/wiki/%D0%92%D0%B0%D0%BD_%D0%A0%D0%BE%D1%81%D1%81%D1%83%D0%BC,_%D0%93%D0%B2%D0%B8%D0%B4%D0%BE">Гвидо ван Россум</a>.
+Давайте на <code>mypy</code> и остановимся.</p>
+<p>Установим <code>mypy</code> в проект. Внутри виртуального окружения проекта нужно выполнить:</p>
+<div class="highlight"><pre><span></span><code>$ pip install mypy
+</code></pre></div>
+
+
+<p>Для <code>pipenv</code> и <code>poetry</code> соответственно вот так:</p>
+<div class="highlight"><pre><span></span><code>$ pipenv install --dev mypy
+$ poetry add --dev mypy
+</code></pre></div>
+
+
+<p>Давайте напишем самый тривиальный пример программы с ошибкой:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;qwerty&quot;</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+</code></pre></div>
+
+
+<p>При выполнении, очевидно, программа завершится ошибкой:</p>
+<div class="highlight"><pre><span></span><code>$ python example.py
+Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
+  File <span class="s2">&quot;example.py&quot;</span>, line <span class="m">1</span>, in &lt;module&gt;
+    print<span class="o">(</span><span class="s2">&quot;qwerty&quot;</span> + <span class="m">1</span><span class="o">)</span>
+TypeError: can only concatenate str <span class="o">(</span>not <span class="s2">&quot;int&quot;</span><span class="o">)</span> to str
+</code></pre></div>
+
+
+<p>Давайте посмотрим, сможет ли тайп-чекер обнаружить эту проблему:</p>
+<div class="highlight"><pre><span></span><code>$ mypy example.py
+example.py:1: error: Unsupported operand types <span class="k">for</span> + <span class="o">(</span><span class="s2">&quot;str&quot;</span> and <span class="s2">&quot;int&quot;</span><span class="o">)</span>
+Found <span class="m">1</span> error in <span class="m">1</span> file <span class="o">(</span>checked <span class="m">1</span> <span class="nb">source</span> file<span class="o">)</span>
+</code></pre></div>
+
+
+<p>Отлично! Не исполняя программу, <code>mypy</code> смог понять, что в ней присутствует ошибка.
+Давайте запрячем эту же самую ошибку чуть глубже, используя функцию:</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">greet</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello, &quot;</span> <span class="o">+</span> <span class="n">name</span><span class="p">)</span>
+
+<span class="c1"># правильный вызов</span>
+<span class="n">greet</span><span class="p">(</span><span class="s2">&quot;world!&quot;</span><span class="p">)</span>
+<span class="c1"># а вот тут будет ошибка</span>
+<span class="n">greet</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</code></pre></div>
+
+
+<p>Проверим типы в этой программе:</p>
+<div class="highlight"><pre><span></span><code>$ mypy example2.py
+example2.py:9: error: Argument <span class="m">1</span> to <span class="s2">&quot;greet&quot;</span> has incompatible <span class="nb">type</span> <span class="s2">&quot;int&quot;</span><span class="p">;</span> expected <span class="s2">&quot;str&quot;</span>
+Found <span class="m">1</span> error in <span class="m">1</span> file <span class="o">(</span>checked <span class="m">1</span> <span class="nb">source</span> file<span class="o">)</span>
+</code></pre></div>
+
+
+<p>Тайп-чекер пропустил правильный вызов функции, но обнаружил вызов функции
+с ошибкой.</p>
+<h1>Заключение</h1>
+<p>Тайп-аннотации — это настолько круто и удобно, что, честно говоря, я уже плохо
+представляю, как раньше (до Python 3.5) без этого люди вообще программировали.
+Для меня это самый веский аргумент в пользу Python 3 и против Python 2.
+Это незаменимый инструмент при разработке насколько-нибудь крупной программы.</p>
+<p>Обязательно нужно интегрировать тайп-чекинг в свой редактор/IDE, чтобы ошибки
+подсвечивались ещё на этапе написания кода. Можно интегрировать тайп-чекинг в
+Git-хуки и CI.</p>
+<p>На странице <a href="https://github.com/typeddjango/awesome-python-typing">"Awesome Python Typing"</a>
+можно найти ещё много полезных инструментов, которые пользуются тайп-аннотациями.</p>
+<p>Если понравилась статья, то
+<a href="../../../pages/subscribe/">подпишитесь на уведомления</a>
+о новых постах в блоге, чтобы ничего не пропустить!</p>
+<h1>Дополнительное чтение:</h1>
+<ul>
+<li>введение в аннотации типов <a href="https://habr.com/ru/company/lamoda/blog/432656/">часть 1</a> и <a href="https://habr.com/ru/company/lamoda/blog/435988/">часть 2</a> на Хабре;</li>
+<li><a href="https://docs.python.org/3/library/typing.html">документация к модулю <code>typing</code></a>;</li>
+<li><a href="https://mypy.readthedocs.io/en/stable/">документация <code>mypy</code></a>;</li>
+<li><a href="https://github.com/python/mypy">репозиторий <code>mypy</code> на GitHub</a>;</li>
+<li><a href="http://mypy-lang.org/">сайт <code>mypy</code></a>;</li>
+<li><a href="https://pyre-check.org/">сайт <code>pyre</code></a>;</li>
+<li><a href="https://github.com/google/pytype">репозиторий <code>pytype</code> на GitHub</a>;</li>
+<li><a href="https://github.com/Microsoft/pyright">репозиторий <code>pyright</code> на GitHub</a>;</li>
+<li><a href="https://github.com/typeddjango/awesome-python-typing">Awesome Python Typing</a>;</li>
+<li><a href="https://habr.com/ru/post/161205/">ликбез по типизации в языках программирования</a> на Хабре.</li>
+</ul>
+<p><em>Обложка: <a href="https://flic.kr/p/4hABNH">Windell Oskay, Technic Bits</a></em></p>
+    </article>
+
+        <div class="tags">
+            <p>тэги: <a href="../../../tag/python.html">python</a>, <a href="../../../tag/typing.html">typing</a>, <a href="../../../tag/mypy.html">mypy</a></p>
+        </div>
+
+    <hr>
+
+
+        <script
+            src="https://utteranc.es/client.js"
+            repo="and-semakin/and-semakin.github.io"
+            issue-term="pathname"
+            label="comments"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+        </script>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="/feeds/all.atom.xml">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://t.me/pythonic_attacks">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-telegram fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">        &copy; 2020 Андрей Семакин
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="../../../theme/js/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../../../theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="../../../theme/js/clean-blog.min.js"></script>
+
+</body>
+
+</html>
