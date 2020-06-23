@@ -12,13 +12,13 @@
 
         <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Питонические атаки Full Atom Feed" />
         <!-- Bootstrap Core CSS -->
-        <link href="../../../theme/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://semakin.dev/theme/css/bootstrap.min.css" rel="stylesheet">
 
         <!-- Custom CSS -->
-        <link href="../../../theme/css/clean-blog.min.css" rel="stylesheet">
+        <link href="https://semakin.dev/theme/css/clean-blog.min.css" rel="stylesheet">
 
         <!-- Code highlight color scheme -->
-            <link href="../../../theme/css/code_blocks/monokai.css" rel="stylesheet">
+            <link href="https://semakin.dev/theme/css/code_blocks/monokai.css" rel="stylesheet">
 
 
         <!-- Custom Fonts -->
@@ -40,13 +40,13 @@
 		<meta property="og:site_name" content="Питонические атаки">
 
 	<meta property="og:type" content="article">
-            <meta property="article:author" content="../../../author/andrei-semakin.html">
-	<meta property="og:url" content="../../../2020/05/python_linters/">
+            <meta property="article:author" content="https://semakin.dev/author/andrei-semakin.html">
+	<meta property="og:url" content="https://semakin.dev/2020/05/python_linters/">
 	<meta property="og:title" content="Линтеры в Python">
 	<meta property="article:published_time" content="2020-05-17 22:38:56+05:00">
             <meta property="og:description" content="Обзор популярных статических анализаторов для Python-кода и как они экономят разработчику один день жизни в месяц.">
 
-            <meta property="og:image" content="../../../static/traffic_lights.jpg">
+            <meta property="og:image" content="https://semakin.dev/static/traffic_lights.jpg">
 </head>
 
 <body class="article-python_linters">
@@ -62,7 +62,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../../../">Питонические атаки</a>
+                <a class="navbar-brand" href="https://semakin.dev/">Питонические атаки</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -70,8 +70,8 @@
                 <ul class="nav navbar-nav navbar-right">
                         <li><a href="/tags.html">Тэги</a></li>
 
-                            <li><a href="../../../pages/about/">Об авторе</a></li>
-                            <li><a href="../../../pages/subscribe/">Подписаться</a></li>
+                            <li><a href="https://semakin.dev/pages/about/">Об авторе</a></li>
+                            <li><a href="https://semakin.dev/pages/subscribe/">Подписаться</a></li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -80,7 +80,7 @@
     </nav>
 
     <!-- Page Header -->
-        <header class="intro-header" style="background-image: url('../../..//static/traffic_lights.jpg')">
+        <header class="intro-header" style="background-image: url('https://semakin.dev//static/traffic_lights.jpg')">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -88,7 +88,7 @@
                         <h1>Линтеры в Python</h1>
                         <span class="meta">Опубликовано: 17 мая 2020, Вс,
                             автор:
-                                <a href="../../../author/andrei-semakin.html">Андрей Семакин</a>
+                                <a href="https://semakin.dev/author/andrei-semakin.html">Андрей Семакин</a>
                         </span>
                             <span class="meta">Обновлено: 31 мая 2020, Вс</span>
                         
@@ -164,7 +164,7 @@
 его однообразным и более читаемым. А названо оно "lint" в честь вот такой
 штуки:</p>
 </blockquote>
-<p><img alt="lint roller" src="../../../static/lint_roller.jpg"></p>
+<p><img alt="lint roller" src="https://semakin.dev/static/lint_roller.jpg"></p>
 <h2>flake8</h2>
 <p><code>flake8</code> — это утилита-комбайн, которая органично объединяет в себе несколько
 других анализаторов кода (<code>pycodestyle</code>, <code>pyflakes</code> и <code>mccabe</code>), а также
@@ -563,7 +563,7 @@ Warning, Convention и Refactor:</p>
 <a href="https://code.visualstudio.com/docs/python/linting">описана здесь</a>.</p>
 <h3>Git-хуки</h3>
 <blockquote>
-<p>Также читайте <a href="../../../2020/05/pre-commit/">пост про Git-хуки и <code>pre-commit</code></a>.</p>
+<p>Также читайте <a href="https://semakin.dev/2020/05/pre-commit/">пост про Git-хуки и <code>pre-commit</code></a>.</p>
 </blockquote>
 <p>В git есть <a href="https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks">возможность запрограммировать</a>
 определенные скрипты (хуки) в ответ на действия пользователя.
@@ -571,7 +571,7 @@ Warning, Convention и Refactor:</p>
 какие-нибудь проверки перед коммитом, заново скачивать зависимости проекта
 при переключении веток, высылать сообщение в рабочий чат
 после пуша в удалённый репозиторий и вообще что угодно.</p>
-<p><img alt="я запушель" src="../../../static/i_have_pushed_meme.jpg"></p>
+<p><img alt="я запушель" src="https://semakin.dev/static/i_have_pushed_meme.jpg"></p>
 <p>Нас интересует возможность запускать линтер перед коммитом так,
 чтобы если линтер найдёт какие-нибудь проблемы, операция коммита прерывалась.
 Git-хуки можно настроить, написав несложный shell-скрипт,
@@ -626,7 +626,7 @@ Git-хуки можно настроить, написав несложный sh
 Мне же <code>pylint</code> всегда казался слишком сложным в эксплуатации.</p>
 <p>А кто-то вообще рекомендует устанавливать <code>flake8</code> и <code>pylint</code> параллельно.</p>
 <p>Если понравилась статья, то
-<a href="../../../pages/subscribe/">подпишитесь на уведомления</a>
+<a href="https://semakin.dev/pages/subscribe/">подпишитесь на уведомления</a>
 о новых постах в блоге, чтобы ничего не пропустить!</p>
 <h1>Дополнительное чтение</h1>
 <ul>
@@ -644,7 +644,7 @@ Git-хуки можно настроить, написав несложный sh
     </article>
 
         <div class="tags">
-            <p>тэги: <a href="../../../tag/python.html">python</a>, <a href="../../../tag/flake8.html">flake8</a>, <a href="../../../tag/pylint.html">pylint</a></p>
+            <p>тэги: <a href="https://semakin.dev/tag/python.html">python</a>, <a href="https://semakin.dev/tag/flake8.html">flake8</a>, <a href="https://semakin.dev/tag/pylint.html">pylint</a></p>
         </div>
 
     <hr>
@@ -695,14 +695,28 @@ Git-хуки можно настроить, написав несложный sh
     </footer>
 
     <!-- jQuery -->
-    <script src="../../../theme/js/jquery.min.js"></script>
+    <script src="https://semakin.dev/theme/js/jquery.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="../../../theme/js/bootstrap.min.js"></script>
+    <script src="https://semakin.dev/theme/js/bootstrap.min.js"></script>
 
         <!-- Custom Theme JavaScript -->
-        <script src="../../../theme/js/clean-blog.min.js"></script>
+        <script src="https://semakin.dev/theme/js/clean-blog.min.js"></script>
 
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript" >
+   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+   m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+   ym(62079343, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true
+   });
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/62079343" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
 </body>
 
 </html>

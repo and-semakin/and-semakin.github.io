@@ -1,5 +1,345 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Питонические атаки - blog</title><link href="https://semakin.dev/" rel="alternate"></link><link href="https://semakin.dev/feeds/blog.atom.xml" rel="self"></link><id>https://semakin.dev/</id><updated>2020-05-31T19:31:20+05:00</updated><subtitle>Про разработку в целом и про Python в частности</subtitle><entry><title>Почему важно всегда ставить символ переноса строки в конце текстовых файлов?</title><link href="https://semakin.dev/2020/05/no_newline_at_end_of_file/" rel="alternate"></link><published>2020-05-31T19:30:24+05:00</published><updated>2020-05-31T19:31:20+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-05-31:/2020/05/no_newline_at_end_of_file/</id><summary type="html">&lt;p&gt;Так легко упустить эту маленькую, но важную деталь.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Иногда при просмотре диффов коммитов через &lt;code&gt;git log&lt;/code&gt; или &lt;code&gt;git diff&lt;/code&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Питонические атаки - blog</title><link href="https://semakin.dev/" rel="alternate"></link><link href="https://semakin.dev/feeds/blog.atom.xml" rel="self"></link><id>https://semakin.dev/</id><updated>2020-06-22T23:35:05+05:00</updated><subtitle>Про разработку в целом и про Python в частности</subtitle><entry><title>Аннотации типов в Python</title><link href="https://semakin.dev/2020/06/type_hints/" rel="alternate"></link><published>2020-06-22T23:35:05+05:00</published><updated>2020-06-22T23:35:05+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-06-22:/2020/06/type_hints/</id><summary type="html">&lt;p&gt;Введение в тайп-аннотации и тайп-чекинг в Python.&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Аннотации типов в Python&lt;/h1&gt;
+&lt;p&gt;Python — это язык с сильной динамической типизацией.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://ru.wikipedia.org/wiki/%D0%A1%D0%B8%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F_%D0%B8_%D1%81%D0%BB%D0%B0%D0%B1%D0%B0%D1%8F_%D1%82%D0%B8%D0%BF%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F"&gt;Сильная&lt;/a&gt;
+    — значит, что язык не допускает неявных приведений типов в неоднозначных
+    ситуациях или когда будет утрачена точность, например, нельзя “сложить”
+    число и строку.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://ru.wikipedia.org/wiki/%D0%94%D0%B8%D0%BD%D0%B0%D0%BC%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B0%D1%8F_%D1%82%D0%B8%D0%BF%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F"&gt;Динамическая&lt;/a&gt;
+    — значит, что тип переменной определяется во время присваивания ей значения и
+    может изменяться по ходу программы.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Такая система типов — это очень удачный компромисс между простотой разработки
+и надежностью написанных программ, но она не лишена недостатков.&lt;/p&gt;
+&lt;p&gt;Например, объявления переменных с типами в языках со статической типизацией,
+кроме своего основного назначения — инструкций компилятору или интерпретатору,
+ещё и помогают программисту лучше понимать написанный код, служат своеобразной
+документацией. Динамическая типизация не в состоянии этого дать.&lt;/p&gt;
+&lt;p&gt;Раньше, когда на Python писали в основном небольшие скрипты, это не было
+такой уж острой проблемой, потому что всю программу за разумный промежуток
+времени можно было охватить взглядом и понять. В последнее время язык стал
+значительно популярнее.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;По данным исследований StackOverflow за
+&lt;a href="https://insights.stackoverflow.com/survey/2020#most-popular-technologies"&gt;2020&lt;/a&gt;,
+&lt;a href="https://insights.stackoverflow.com/survey/2019#most-popular-technologies"&gt;2019&lt;/a&gt;,
+&lt;a href="https://insights.stackoverflow.com/survey/2018#most-popular-technologies"&gt;2018&lt;/a&gt;,
+&lt;a href="https://insights.stackoverflow.com/survey/2017#most-popular-technologies"&gt;2017&lt;/a&gt;,
+&lt;a href="https://insights.stackoverflow.com/survey/2016#technology-most-popular-technologies"&gt;2016&lt;/a&gt;,
+&lt;a href="https://insights.stackoverflow.com/survey/2015#tech-lang"&gt;2015&lt;/a&gt;
+(там же можно посмотреть результаты за 2014 и 2013)
+годы, Python с каждым годом
+растёт в популярности.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Сегодня на Python написано много сложных систем из сотен файлов и сотен тысяч
+строк кода. В таких обстоятельствах документирующее свойство системы типов
+становится очень полезным. В достаточно крупной кодовой базе при отсутствии
+информации о типах очень сложно угадать
+(а только гадать и остаётся), какие же именно объекты циркулируют по программе.&lt;/p&gt;
+&lt;p&gt;Кроме того, даже если код без информации о типах может быть и вполне
+понятен человеку, например, благодаря удачно выбранным именам, то для
+автоматики — это в любом случае абсолютно непроницаемый &lt;s&gt;черный&lt;/s&gt;
+непрозрачный ящик.
+В такой ситуации очень сложно, не выполняя код (мы же говорим про статический
+анализ), понять как он будет вести себя в ран-тайме. Аннотации типов позволяют
+IDE, &lt;a href="https://semakin.dev/2020/05/python_linters/"&gt;линтерам&lt;/a&gt; и тайп-чекерам лучше понимать
+код программы, что дает возможность
+рано отлавливать достаточно хитрые ошибки. В конечном итоге это делает
+написанные программы надежнее.&lt;/p&gt;
+&lt;p&gt;По этим соображениям, в Python 3.5 появился специальный синтаксис для
+объявления типов параметров функций и их возвращаемых значений
+(&lt;a href="https://www.python.org/dev/peps/pep-0484/"&gt;PEP 484&lt;/a&gt;).
+В Python 3.6 эта возможность была расширена — стало можно объявлять типы
+переменных вообще в любом месте программы
+(&lt;a href="https://www.python.org/dev/peps/pep-0526/"&gt;PEP 526&lt;/a&gt;). С каждой новой версией
+языка эта функциональность улучшается, и писать аннотации типов становится
+всё проще, удобнее и естественнее, а экосистема вокруг типизированного
+Python развивается семимильными шагами.&lt;/p&gt;
+&lt;p&gt;Нужно отметить, что тайп-аннотации — это именно возможность, а не обязанность.
+У программиста есть выбор — добавлять информацию о типах или нет.
+Таким образом Python пытается усидеть на двух стульях — остаться языком с
+динамической типизацией и дать возможность для статического анализа написанных
+программ. Привнести в хаос немного порядка, так сказать. И, по-моему, у Python 
+это неплохо получается.&lt;/p&gt;
+&lt;h1&gt;Как это работает?&lt;/h1&gt;
+&lt;p&gt;Программист при написании кода расставляет информацию о типах переменных,
+параметров и возвращаемых значений функций. Это никак не влияет на выполнение 
+программы. Python сам по себе никак не использует эту информацию в ран-тайме,
+он лишь перекладывает её в специальные атрибуты функций или переменных,
+делая доступной для сторонних утилит. То есть, если указано, что функция
+принимает строки, то это никак не помешает вызвать её с целыми числами или
+списками — в зависимости от тела функции, она может отработать, а может
+завершиться ошибкой, но сама возможность вызова с любыми типами аргументов
+никак не ограничивается. &lt;/p&gt;
+&lt;p&gt;Зачем же тогда писать тайп-аннотации?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;документация для разработчиков;&lt;/li&gt;
+&lt;li&gt;сторонние утилиты и библиотеки могут использовать эту информацию по своему
+усмотрению, например, выполняя проверки типов или приводя данные к нужному типу.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Первый пункт достаточно очевидный, а про второй мы поговорим чуть позже в
+разделе про тайп-чекеры.&lt;/p&gt;
+&lt;h1&gt;Простые типы&lt;/h1&gt;
+&lt;p&gt;Вот так, например, можно тайп-аннотировать простую функцию:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;greeting&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;world&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Hello, &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Типы параметров, принимаемых функцией, записываются после имени параметра
+через знак двоеточия, но перед значением по умолчанию, если оно присутствует.
+Возвращаемое значение функции записывается после знака “стрелки”.&lt;/p&gt;
+&lt;p&gt;Теперь читатель просто взглянув на сигнатуру функции может понять, что функция
+принимает строку и возвращает строку. Наверное, если передать в неё другой тип,
+то она не сможет корректно отработать.&lt;/p&gt;
+&lt;p&gt;Точно так же можно использовать для тайп-аннотаций и любые другие базовые
+(примитивные, не-контейнерные) типы в Python:
+&lt;code&gt;int&lt;/code&gt;, &lt;code&gt;float&lt;/code&gt;, &lt;code&gt;bool&lt;/code&gt;, &lt;code&gt;str&lt;/code&gt;, &lt;code&gt;bytes&lt;/code&gt;, &lt;code&gt;None&lt;/code&gt; и вообще практически что угодно.
+Чуть позже посмотрим, как типизировать контейнерные типы данных, такие как списки,
+кортежи, словари и множества.&lt;/p&gt;
+&lt;p&gt;Вот так можно зааннотировать функцию, которая принимает два числа с плавающей
+точкой и возвращает число с плавающей точкой:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;body_mass_index&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;weight&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;float&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;height&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;float&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="nb"&gt;float&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;weight&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="n"&gt;height&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;А вот так функцию, которая принимает строку и булевый аргумент, но ничего не
+возвращает:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;print_hello&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;upper&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;bool&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;False&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;upper&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;upper&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Hello,&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Вот так можно аннотировать любые переменные в любом месте кода (Python 3.6+):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Andrey&amp;quot;&lt;/span&gt;
+&lt;span class="n"&gt;age&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;25&lt;/span&gt;
+&lt;span class="n"&gt;is_sick_with_covid19&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;bool&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;False&lt;/span&gt;  &lt;span class="c1"&gt;# надеюсь&lt;/span&gt;
+&lt;span class="n"&gt;pi&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;float&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mf"&gt;3.1415&lt;/span&gt;
+
+&lt;span class="c1"&gt;# можно даже аннотировать переменные, не назначая им значения&lt;/span&gt;
+&lt;span class="n"&gt;foo&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Если мы создадим свой класс, то его тоже можно использовать для аннотаций:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Example&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="k"&gt;pass&lt;/span&gt;
+
+&lt;span class="c1"&gt;# довольно бессмысленно, но для примера пойдет&lt;/span&gt;
+&lt;span class="n"&gt;example_instance&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Example&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Example&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;Контейнерные типы и дженерики&lt;/h1&gt;
+&lt;p&gt;Перейдем к более сложным типам, таким как списки, кортежи, словари и множества.
+Можно аннотировать в лоб, используя сами имена классов:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;primes&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;list&lt;/span&gt;
+&lt;span class="n"&gt;person_info&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;tuple&lt;/span&gt;
+&lt;span class="n"&gt;stock_prices&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;dict&lt;/span&gt;
+&lt;span class="n"&gt;valid_answers&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;set&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Это не слишком информативно, потому что кроме самого типа контейнера было бы
+ещё полезно знать, какие данные он в себе содержит. Что такое &lt;code&gt;person_info&lt;/code&gt;?
+Кортеж чего?&lt;/p&gt;
+&lt;p&gt;В Python до версии 3.9 для этого придётся использовать отдельные классы из
+модуля &lt;code&gt;typing&lt;/code&gt;, потому что стандартные классы не представляют такой
+функциональности. Делается это при помощи квадратных скобок, как будто мы
+извлекаем что-то по индексу:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;typing&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;List&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Tuple&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Dict&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Set&lt;/span&gt;
+
+&lt;span class="c1"&gt;# тип всех элементов списка&lt;/span&gt;
+&lt;span class="n"&gt;primes&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;List&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+&lt;span class="c1"&gt;# тип каждого элемента кортежа&lt;/span&gt;
+&lt;span class="n"&gt;person_info&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Tuple&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;float&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;float&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+&lt;span class="c1"&gt;# тип ключей, тип значений&lt;/span&gt;
+&lt;span class="n"&gt;stock_prices&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Dict&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;float&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+&lt;span class="c1"&gt;# тип всех элементов множества&lt;/span&gt;
+&lt;span class="n"&gt;valid_answers&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Set&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Начиная с Python 3.9 можно использовать стандартные классы в точно таких же
+целях, ничего ниоткуда не импортируя:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# будет работать только начиная с Python 3.9!&lt;/span&gt;
+
+&lt;span class="c1"&gt;# тип всех элементов списка&lt;/span&gt;
+&lt;span class="n"&gt;primes&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;list&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+&lt;span class="c1"&gt;# тип каждого элемента кортежа&lt;/span&gt;
+&lt;span class="n"&gt;person_info&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;tuple&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;float&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;float&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+&lt;span class="c1"&gt;# тип ключей, тип значений&lt;/span&gt;
+&lt;span class="n"&gt;stock_prices&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;dict&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;float&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+&lt;span class="c1"&gt;# тип всех элементов множества&lt;/span&gt;
+&lt;span class="n"&gt;valid_answers&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;set&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Согласитесь, так намного понятнее. Сразу видно, какой тип данных лежит
+внутри контейнера. Такие типы называются обобщёнными (generic types).&lt;/p&gt;
+&lt;p&gt;Кстати, в типизации можно яснее увидеть разницу между тем как должны
+использоваться списки и кортежи (&lt;code&gt;list&lt;/code&gt; vs. &lt;code&gt;tuple&lt;/code&gt;).&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Списки содержат однородные данные — они все должны быть одного типа,
+иначе с таким списком будет тяжеловато работать.&lt;/li&gt;
+&lt;li&gt;Кортеж, напротив, может содержать разнородные данные, которые в зависимости
+от позиции могут иметь тот или иной тип.&lt;/li&gt;
+&lt;li&gt;Список нужно использовать,
+когда длина заранее неизвестна либо она переменна, например,
+список пользователей.&lt;/li&gt;
+&lt;li&gt;Кортеж нужно использовать, когда длина данных известна
+заранее и строго фиксирована, например, как в записи из таблицы в СУБД.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Получается, кортеж — это не просто неизменяемый брат-близнец списка.&lt;/p&gt;
+&lt;p&gt;Если сильно хочется использовать кортеж как просто неизменяемую
+последовательность однородных данных, то можно зааннотировать его вот так,
+используя &lt;code&gt;...&lt;/code&gt; (это специальный объект &lt;code&gt;Ellipsis&lt;/code&gt;, записывается как многоточие,
+при чтении исходников вслух в этом месте нужно делать драматическую паузу):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# кортеж из строк, длина неизвестна&lt;/span&gt;
+&lt;span class="n"&gt;months&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Tuple&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;Составные типы&lt;/h1&gt;
+&lt;p&gt;Часто случаются ситуации, когда нужно объединить несколько типов, например,
+для того, чтобы указать, что функция может принимать и строки, и числа.
+Этого можно достичь при помощи дженерик-типа &lt;code&gt;Union&lt;/code&gt; из модуля &lt;code&gt;typing&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;typing&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Union&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;add_or_concatenate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Union&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Union&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;]):&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Также очень часто возникает ситуация, когда возможно либо значение определенного
+типа, либо &lt;code&gt;None&lt;/code&gt;. Это настолько частая ситуация, что для этого даже сделали
+отдельный дженерик-тип &lt;code&gt;Optional&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;typing&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Optional&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Union&lt;/span&gt;
+
+&lt;span class="c1"&gt;# по сути это одно и то же, но первый вариант проще читается&lt;/span&gt;
+&lt;span class="n"&gt;phone&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Optional&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;phone&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Union&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Также может возникнуть ситуация, когда не получается указать какой-либо
+конкретный тип, потому что, например, функция может принимать на вход абсолютно
+что угодно. Для этих случаев тоже есть специальный объект &lt;code&gt;typing.Any&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;typing&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Any&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Any&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;Any&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;arg&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Можно считать, что &lt;code&gt;Any&lt;/code&gt; неявно подставляется везде, где не указан более
+конкретный тип. Очень соблазнительно везде вставлять этот тип, но
+настоятельно рекомендую использовать его только в крайних случаях, потому что
+чрезмерное его использование сводит пользу от типизации на нет.&lt;/p&gt;
+&lt;p&gt;Вообще советую заглянуть в
+&lt;a href="https://docs.python.org/3/library/typing.html"&gt;документацию модуля &lt;code&gt;typing&lt;/code&gt;&lt;/a&gt;,
+там есть много интересных классов на все случаи жизни.&lt;/p&gt;
+&lt;h1&gt;Проверка типов&lt;/h1&gt;
+&lt;p&gt;Допустим, что тайп-аннотации написаны. Как начать получать от этого пользу?&lt;/p&gt;
+&lt;p&gt;В экосистеме Python есть несколько конкурирующих между собой тайп-чекеров,
+например, &lt;a href="http://mypy-lang.org/"&gt;&lt;code&gt;mypy&lt;/code&gt;&lt;/a&gt;,
+&lt;a href="https://pyre-check.org/"&gt;&lt;code&gt;pyre&lt;/code&gt;&lt;/a&gt;,
+&lt;a href="https://github.com/google/pytype"&gt;&lt;code&gt;pytype&lt;/code&gt;&lt;/a&gt;,
+&lt;a href="https://github.com/Microsoft/pyright"&gt;&lt;code&gt;pyright&lt;/code&gt;&lt;/a&gt;.
+Самым популярным среди них является &lt;code&gt;mypy&lt;/code&gt;, наверное, потому что одним из
+ключевых его разработчиков является сам
+&lt;a href="https://ru.wikipedia.org/wiki/%D0%92%D0%B0%D0%BD_%D0%A0%D0%BE%D1%81%D1%81%D1%83%D0%BC,_%D0%93%D0%B2%D0%B8%D0%B4%D0%BE"&gt;Гвидо ван Россум&lt;/a&gt;.
+Давайте на &lt;code&gt;mypy&lt;/code&gt; и остановимся.&lt;/p&gt;
+&lt;p&gt;Установим &lt;code&gt;mypy&lt;/code&gt; в проект. Внутри виртуального окружения проекта нужно выполнить:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install mypy
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Для &lt;code&gt;pipenv&lt;/code&gt; и &lt;code&gt;poetry&lt;/code&gt; соответственно вот так:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv install --dev mypy
+$ poetry add --dev mypy
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Давайте напишем самый тривиальный пример программы с ошибкой:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;qwerty&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;При выполнении, очевидно, программа завершится ошибкой:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ python example.py
+Traceback &lt;span class="o"&gt;(&lt;/span&gt;most recent call last&lt;span class="o"&gt;)&lt;/span&gt;:
+  File &lt;span class="s2"&gt;&amp;quot;example.py&amp;quot;&lt;/span&gt;, line &lt;span class="m"&gt;1&lt;/span&gt;, in &amp;lt;module&amp;gt;
+    print&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;qwerty&amp;quot;&lt;/span&gt; + &lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+TypeError: can only concatenate str &lt;span class="o"&gt;(&lt;/span&gt;not &lt;span class="s2"&gt;&amp;quot;int&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; to str
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Давайте посмотрим, сможет ли тайп-чекер обнаружить эту проблему:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ mypy example.py
+example.py:1: error: Unsupported operand types &lt;span class="k"&gt;for&lt;/span&gt; + &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;str&amp;quot;&lt;/span&gt; and &lt;span class="s2"&gt;&amp;quot;int&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+Found &lt;span class="m"&gt;1&lt;/span&gt; error in &lt;span class="m"&gt;1&lt;/span&gt; file &lt;span class="o"&gt;(&lt;/span&gt;checked &lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="nb"&gt;source&lt;/span&gt; file&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Отлично! Не исполняя программу, &lt;code&gt;mypy&lt;/code&gt; смог понять, что в ней присутствует ошибка.
+Давайте запрячем эту же самую ошибку чуть глубже, используя функцию:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;greet&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Hello, &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;# правильный вызов&lt;/span&gt;
+&lt;span class="n"&gt;greet&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;world!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;# а вот тут будет ошибка&lt;/span&gt;
+&lt;span class="n"&gt;greet&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Проверим типы в этой программе:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ mypy example2.py
+example2.py:9: error: Argument &lt;span class="m"&gt;1&lt;/span&gt; to &lt;span class="s2"&gt;&amp;quot;greet&amp;quot;&lt;/span&gt; has incompatible &lt;span class="nb"&gt;type&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;int&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; expected &lt;span class="s2"&gt;&amp;quot;str&amp;quot;&lt;/span&gt;
+Found &lt;span class="m"&gt;1&lt;/span&gt; error in &lt;span class="m"&gt;1&lt;/span&gt; file &lt;span class="o"&gt;(&lt;/span&gt;checked &lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="nb"&gt;source&lt;/span&gt; file&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Тайп-чекер пропустил правильный вызов функции, но обнаружил вызов функции
+с ошибкой.&lt;/p&gt;
+&lt;h1&gt;Заключение&lt;/h1&gt;
+&lt;p&gt;Тайп-аннотации — это настолько круто и удобно, что, честно говоря, я уже плохо
+представляю, как раньше (до Python 3.5) без этого люди вообще программировали.
+Для меня это самый веский аргумент в пользу Python 3 и против Python 2.
+Это незаменимый инструмент при разработке насколько-нибудь крупной программы.&lt;/p&gt;
+&lt;p&gt;Обязательно нужно интегрировать тайп-чекинг в свой редактор/IDE, чтобы ошибки
+подсвечивались ещё на этапе написания кода. Можно интегрировать тайп-чекинг в
+Git-хуки и CI.&lt;/p&gt;
+&lt;p&gt;На странице &lt;a href="https://github.com/typeddjango/awesome-python-typing"&gt;"Awesome Python Typing"&lt;/a&gt;
+можно найти ещё много полезных инструментов, которые пользуются тайп-аннотациями.&lt;/p&gt;
+&lt;p&gt;Если понравилась статья, то
+&lt;a href="https://semakin.dev/pages/subscribe/"&gt;подпишитесь на уведомления&lt;/a&gt;
+о новых постах в блоге, чтобы ничего не пропустить!&lt;/p&gt;
+&lt;h1&gt;Дополнительное чтение:&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;введение в аннотации типов &lt;a href="https://habr.com/ru/company/lamoda/blog/432656/"&gt;часть 1&lt;/a&gt; и &lt;a href="https://habr.com/ru/company/lamoda/blog/435988/"&gt;часть 2&lt;/a&gt; на Хабре;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://docs.python.org/3/library/typing.html"&gt;документация к модулю &lt;code&gt;typing&lt;/code&gt;&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://mypy.readthedocs.io/en/stable/"&gt;документация &lt;code&gt;mypy&lt;/code&gt;&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/python/mypy"&gt;репозиторий &lt;code&gt;mypy&lt;/code&gt; на GitHub&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://mypy-lang.org/"&gt;сайт &lt;code&gt;mypy&lt;/code&gt;&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://pyre-check.org/"&gt;сайт &lt;code&gt;pyre&lt;/code&gt;&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/google/pytype"&gt;репозиторий &lt;code&gt;pytype&lt;/code&gt; на GitHub&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/Microsoft/pyright"&gt;репозиторий &lt;code&gt;pyright&lt;/code&gt; на GitHub&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/typeddjango/awesome-python-typing"&gt;Awesome Python Typing&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://habr.com/ru/post/161205/"&gt;ликбез по типизации в языках программирования&lt;/a&gt; на Хабре.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;em&gt;Обложка: &lt;a href="https://flic.kr/p/4hABNH"&gt;Windell Oskay, Technic Bits&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;</content><category term="blog"></category><category term="python"></category><category term="typing"></category><category term="mypy"></category></entry><entry><title>Почему важно всегда ставить символ переноса строки в конце текстовых файлов?</title><link href="https://semakin.dev/2020/05/no_newline_at_end_of_file/" rel="alternate"></link><published>2020-05-31T19:30:24+05:00</published><updated>2020-05-31T19:31:20+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-05-31:/2020/05/no_newline_at_end_of_file/</id><summary type="html">&lt;p&gt;Так легко упустить эту маленькую, но важную деталь.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Иногда при просмотре диффов коммитов через &lt;code&gt;git log&lt;/code&gt; или &lt;code&gt;git diff&lt;/code&gt;
 можно заметить следующий вывод:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;\ No newline at end of file
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
