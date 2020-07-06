@@ -1,5 +1,228 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Питонические атаки - blog</title><link href="https://semakin.dev/" rel="alternate"></link><link href="https://semakin.dev/feeds/blog.atom.xml" rel="self"></link><id>https://semakin.dev/</id><updated>2020-06-22T23:35:05+05:00</updated><subtitle>Про разработку в целом и про Python в частности</subtitle><entry><title>Аннотации типов в Python</title><link href="https://semakin.dev/2020/06/type_hints/" rel="alternate"></link><published>2020-06-22T23:35:05+05:00</published><updated>2020-06-22T23:35:05+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-06-22:/2020/06/type_hints/</id><summary type="html">&lt;p&gt;Введение в тайп-аннотации и тайп-чекинг в Python.&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Аннотации типов в Python&lt;/h1&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Питонические атаки - blog</title><link href="https://semakin.dev/" rel="alternate"></link><link href="https://semakin.dev/feeds/blog.atom.xml" rel="self"></link><id>https://semakin.dev/</id><updated>2020-07-06T13:46:41+05:00</updated><subtitle>Про разработку в целом и про Python в частности</subtitle><entry><title>Эффективный обход словарей в цикле в Python</title><link href="https://semakin.dev/2020/07/iterate_over_dict/" rel="alternate"></link><published>2020-07-06T13:46:41+05:00</published><updated>2020-07-06T13:46:41+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-07-06:/2020/07/iterate_over_dict/</id><summary type="html">&lt;p&gt;Расскажу как правильно обойти словарь (dict) в цикле, чтобы получить ключи, значения или и ключи, и значения одновременно, при этом не получив ничего лишнего.&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Эффективный обход словарей в цикле в Python&lt;/h1&gt;
+&lt;p&gt;Словарь (dictionary, dict) — это  ассоциативный массив, который позволяет
+сохранять значения по ключам.&lt;/p&gt;
+&lt;p&gt;Это очень важная, даже можно сказать основополагающая структура данных,
+которая используется в Python под капотом буквально повсюду:
+модули, классы, объекты, &lt;code&gt;locals()&lt;/code&gt;, &lt;code&gt;globals()&lt;/code&gt; — все это так или иначе
+работает лишь благодаря словарям.&lt;/p&gt;
+&lt;p&gt;Кроме того, словарь отлично подходит для решения множества прикладных
+задач, обладает хорошей
+&lt;a href="https://wiki.python.org/moin/TimeComplexity#dict"&gt;вычислительной сложностью операций&lt;/a&gt;,
+так что и в вашем коде, наверняка, словари будут встречаться достаточно часто.&lt;/p&gt;
+&lt;p&gt;В Python большое внимание уделяется циклам.
+Правильно написанный заголовок цикла содержит много ценной информации:
+по чему итерируемся и какие данные будут использоваться в теле цикла.
+Это помогает читателю понять (или хотя бы предположить), что именно будет
+производиться в теле цикла, даже не смотря в него.
+Неправильно написанный цикл, который не выражает напрямую задумку автора,
+наоборот, сбивает читателя с толку и заставляет читать код целиком,
+возможно, даже не один раз.&lt;/p&gt;
+&lt;p&gt;Есть несколько способов обойти словарь в цикле.
+Очень важно научиться выбирать наиболее подходящий.&lt;/p&gt;
+&lt;h1&gt;Что будет если просто попытаться обойти словарь в цикле?&lt;/h1&gt;
+&lt;p&gt;Объявим словарь с отношением различных валют к российскому рублю,
+который нам по какой-то причине нужно обойти:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;currencies&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;rub&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;usd&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;69.78&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;eur&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;78.28&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Самый очевидный вариант обхода словаря — это попытаться напрямую запустить
+цикл &lt;code&gt;for&lt;/code&gt; по объекту словаря, так же как мы делаем это со списками,
+кортежами, строками и любыми другими итерируемыми объектами.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;something&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;currencies&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;something&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Словарь и правда поддерживает протокол итераций, но словарь не так прост,
+как другие объекты, которые мы упомянули выше. Словарь состоит из нескольких
+частей, ведь словарь — это отношение между ключами и значениями.
+Получается, что теоретически цикл по словарю может получать либо ключи,
+либо значения, либо пары (ключ, значение). Попробуете угадать, что же именно
+выведет код выше?&lt;/p&gt;
+&lt;p&gt;А выведет он следующее:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;rub
+usd
+eur
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;То есть обход словаря в цикле будет возвращать только &lt;strong&gt;ключи&lt;/strong&gt; этого словаря.&lt;/p&gt;
+&lt;p&gt;Пожалуй, задать такое поведение по умолчанию — это очень логичное решение со
+стороны разработчиков Python. Было бы намного внезапнее, если бы цикл по
+словарю получал значения. Вариант с кортежами (ключ, значение) в качестве
+поведения по умолчанию мне кажется не таким уж плохим, но имеем то, что имеем.&lt;/p&gt;
+&lt;p&gt;Есть куча задач, в которых нужно обойти лишь ключи словаря, и это отличное
+решение для таких задач. У этого способа есть один крупный недостаток: нужно
+знать как работают словари. По коду совершенно неясно, что будет обходиться в
+цикле — ключи, значения или пары, а читатель может либо этого не знать,
+либо забыть, и в итоге неправильно интерпретировать код.
+Поэтому во избежание неоднозначности даже для обхода ключей словаря я
+рекомендую использовать следующий способ.&lt;/p&gt;
+&lt;h1&gt;Как обойти в цикле ключи словаря?&lt;/h1&gt;
+&lt;p&gt;Давайте представим, что нам нужно нарисовать какую-нибудь таблицу с валютами,
+и для создания шапки этой таблицы нужно получить список всех валют.
+Значения словаря нас не интересуют, только ключи.&lt;/p&gt;
+&lt;p&gt;У словаря есть метод &lt;a href="https://docs.python.org/3/library/stdtypes.html#dict.keys"&gt;&lt;code&gt;.keys()&lt;/code&gt;&lt;/a&gt;,
+который возвращает представление словаря (dict view), возвращающее ключи.&lt;/p&gt;
+&lt;p&gt;Что такое представление словаря? Это некий объект, который предоставляет
+доступ к данным в словаре, либо к части этих данных, и работает по следующим
+принципам:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;не копирует содержимое словаря, а обращается к нему динамически,
+на больших словарях это здорово экономит память и улучшает скорость
+работы программы;&lt;/li&gt;
+&lt;li&gt;если словарь изменяется, то эти изменения автоматически становятся доступными
+и через представление словаря;&lt;/li&gt;
+&lt;li&gt;не является списком, не поддерживает извлечение элементов по индексам;&lt;/li&gt;
+&lt;li&gt;является итерируемым объектом, можно использовать в циклах сколько угодно раз.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Создадим такое представление словаря по ключам:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;dict_keys&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;currencies&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;keys&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;dict_keys&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;# dict_keys([&amp;#39;rub&amp;#39;, &amp;#39;usd&amp;#39;, &amp;#39;eur&amp;#39;])&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Давайте добавим новый ключ в словарь:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;currencies&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;jpy&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mf"&gt;0.65&lt;/span&gt;
+
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;dict_keys&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;# dict_keys([&amp;#39;rub&amp;#39;, &amp;#39;usd&amp;#39;, &amp;#39;eur&amp;#39;, &amp;#39;jpy&amp;#39;])&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Как видите, созданное ранее представление словаря обновилось автоматически,
+когда обновился его словарь.&lt;/p&gt;
+&lt;p&gt;Обратите внимание, что представление словаря — это не список, а совершенно
+другой объект. Представление словаря не поддерживает извлечение значений
+по индексам:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;dict_keys&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="c1"&gt;# Traceback (most recent call last):&lt;/span&gt;
+&lt;span class="c1"&gt;#   File &amp;quot;&amp;lt;stdin&amp;gt;&amp;quot;, line 1, in &amp;lt;module&amp;gt;&lt;/span&gt;
+&lt;span class="c1"&gt;# TypeError: &amp;#39;dict_keys&amp;#39; object is not subscriptable&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Зато представление словаря является итерируемым объектом и его без проблем
+можно обходить при помощи цикла:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;key&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;currencies&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;keys&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;# rub&lt;/span&gt;
+&lt;span class="c1"&gt;# usd&lt;/span&gt;
+&lt;span class="c1"&gt;# eur&lt;/span&gt;
+&lt;span class="c1"&gt;# jpy&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Результат тот же самый, что и в предыдущем способе обхода словаря, но в
+этот раз явно видно, что в цикле будут обрабатываться только ключи словаря.&lt;/p&gt;
+&lt;p&gt;Обратите внимание, что если в цикле вам нужны не только ключи словаря,
+но и значения, то обходить словарь таким образом — не самое эффективное решение.
+Смотрите дальше, как можно обойти словарь, чтобы получать и ключи, и значения.&lt;/p&gt;
+&lt;h1&gt;Как обойти в цикле значения словаря?&lt;/h1&gt;
+&lt;p&gt;По аналогии с ключами, из словаря можно извлечь только значения, без ключей.
+Это делается через метод словарей
+&lt;a href="https://docs.python.org/3/library/stdtypes.html#dict.values"&gt;&lt;code&gt;.values()&lt;/code&gt;&lt;/a&gt;,
+который возвращает представление словаря, содержащее только значения.&lt;/p&gt;
+&lt;p&gt;Это представление работает по тем же правилам,
+что и возвращаемое методом &lt;code&gt;.keys()&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Вот как можно обойти в цикле только значения словаря, без ключей:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;currencies&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;values&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;# 1&lt;/span&gt;
+&lt;span class="c1"&gt;# 69.78&lt;/span&gt;
+&lt;span class="c1"&gt;# 78.28&lt;/span&gt;
+&lt;span class="c1"&gt;# 0.65&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;По значениям словаря уже невозможно получить ключи
+(ну, вообще можно попытаться, но для этого потребуется полный перебор словаря,
+и не факт, что ключи будут восстановлены правильно).
+Этот способ подойдёт только если в цикле используются исключительно
+значения словаря, а ключи не нужны.&lt;/p&gt;
+&lt;h1&gt;Как обойти в цикле и ключи, и значения словаря?&lt;/h1&gt;
+&lt;p&gt;Пожалуй, это самый распространённый случай.
+Во многих задачах, где выполняется обход словаря, в цикле используются и ключи,
+и соответствующие им значения.&lt;/p&gt;
+&lt;p&gt;Специально для этого у словарей есть метод
+&lt;a href="https://docs.python.org/3/library/stdtypes.html#dict.items"&gt;&lt;code&gt;.items()&lt;/code&gt;&lt;/a&gt;,
+который возвращает представление словаря, содержащее кортежи из двух элементов,
+вида (ключ, значение).&lt;/p&gt;
+&lt;p&gt;Это представление работает по точно таким же правилам,
+как &lt;code&gt;.keys()&lt;/code&gt; и &lt;code&gt;.values()&lt;/code&gt;. Единственное отличие этого представления от
+предыдущих состоит в том, что оно возвращает не единичные значения,
+а кортежи из двух значений.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;item&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;currencies&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;items&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="c1"&gt;# item — это кортеж (ключ, значение)&lt;/span&gt;
+    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;span class="c1"&gt;# rub 1&lt;/span&gt;
+&lt;span class="c1"&gt;# usd 69.78&lt;/span&gt;
+&lt;span class="c1"&gt;# eur 78.28&lt;/span&gt;
+&lt;span class="c1"&gt;# jpy 0.65&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;В Python есть возможность распаковывать итерируемые объекты, такие как кортежи,
+в различные переменные. Давайте на примере посмотрим как это работает:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;point&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;z&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;point&lt;/span&gt;
+
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;# 1&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;# 2&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;z&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;# 3&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Таким образом можно распаковывать последовательности любого размера.
+Это намного проще, чем извлекать значения по индексам и присваивать в
+отдельные переменные. Этот приём можно использовать практически в любом месте
+программы, в том числе и в заголовке цикла.&lt;/p&gt;
+&lt;p&gt;Вот так можно обойти ключи и значения словаря, сохраняя ключ и значение в
+разные переменные прямо в заголовке цикла при помощи распаковки кортежа:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;currencies&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;items&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;# rub 1&lt;/span&gt;
+&lt;span class="c1"&gt;# usd 69.78&lt;/span&gt;
+&lt;span class="c1"&gt;# eur 78.28&lt;/span&gt;
+&lt;span class="c1"&gt;# jpy 0.65&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;Заключение&lt;/h1&gt;
+&lt;p&gt;При обходе словаря стоит руководствоваться следующей логикой:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;если в цикле используются и ключи, и значения словаря,
+то нужно использовать метод &lt;code&gt;.items()&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;если в цикле используются только значения словаря,
+а ключи не важны, то нужно использовать метод &lt;code&gt;.values()&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;если в цикле нужны ключи словаря и ничего больше,
+то нужно использовать метод &lt;code&gt;.keys()&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Идеоматичный код проще читается и, как правило, работает быстрее.&lt;/p&gt;
+&lt;p&gt;Посмотрите запись классического выступления Реймонда Хеттингера,
+где он рассказывает про написание идеоматичного код.
+Много внимания уделяется циклам и словарям.&lt;/p&gt;
+&lt;iframe width="560" height="315" src="https://www.youtube.com/embed/OSGv2VnC0go" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen&gt;&lt;/iframe&gt;
+
+&lt;p&gt;Обратите внимание, что это запись выступления от 2013 года,
+когда ещё вовсю был в ходу Python 2. В выступлении часто сравнивается Python 2
+и Python 3. Не запутайтесь.&lt;/p&gt;
+&lt;p&gt;Если понравилась статья, то
+&lt;a href="https://semakin.dev/pages/subscribe/"&gt;подпишитесь на уведомления&lt;/a&gt;
+о новых постах в блоге, чтобы ничего не пропустить!&lt;/p&gt;
+&lt;h1&gt;Ссылки&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://realpython.com/iterate-through-dictionary-python/"&gt;очень подробный разбор по обходу словарей на RealPython&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://docs.python.org/3/library/stdtypes.html#dict-views"&gt;документация про представления словарей&lt;/a&gt;;&lt;/li&gt;
+&lt;li&gt;и, конечно же, посмотрите выступление Реймонда Хеттингера, обожаю этого чувака.&lt;/li&gt;
+&lt;/ul&gt;</content><category term="blog"></category><category term="python"></category><category term="dict"></category><category term="loop"></category><category term="for"></category><category term="iterate"></category></entry><entry><title>Аннотации типов в Python</title><link href="https://semakin.dev/2020/06/type_hints/" rel="alternate"></link><published>2020-06-22T23:35:05+05:00</published><updated>2020-06-22T23:35:05+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-06-22:/2020/06/type_hints/</id><summary type="html">&lt;p&gt;Введение в тайп-аннотации и тайп-чекинг в Python.&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Аннотации типов в Python&lt;/h1&gt;
 &lt;p&gt;Python — это язык с сильной динамической типизацией.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="https://ru.wikipedia.org/wiki/%D0%A1%D0%B8%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F_%D0%B8_%D1%81%D0%BB%D0%B0%D0%B1%D0%B0%D1%8F_%D1%82%D0%B8%D0%BF%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F"&gt;Сильная&lt;/a&gt;
