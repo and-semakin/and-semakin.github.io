@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/png" href="/favicon_32.png" />
+
+
+        <title>Настройка точечного обхода блокировок на роутере с OpenWRT</title>
+
+        <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Питонические атаки Full Atom Feed" />
+        <!-- Bootstrap Core CSS -->
+        <link href="https://semakin.dev/theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="https://semakin.dev/theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="https://semakin.dev/theme/css/code_blocks/monokai.css" rel="stylesheet">
+
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+
+
+        <meta name="description" content="Как перестать думать о блокировках сайтов и начать жить">
+
+        <meta name="author" content="Андрей Семакин">
+
+        <meta name="tags" content="network">
+        <meta name="tags" content="vpn">
+        <meta name="tags" content="wiregurad">
+        <meta name="tags" content="openwrt">
+
+	                <meta property="og:locale" content="">
+		<meta property="og:site_name" content="Питонические атаки">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="https://semakin.dev/author/andrei-semakin.html">
+	<meta property="og:url" content="https://semakin.dev/2020/12/openwrt_vpn_rkn/">
+	<meta property="og:title" content="Настройка точечного обхода блокировок на роутере с OpenWRT">
+	<meta property="article:published_time" content="2020-12-12 21:17:11+05:00">
+            <meta property="og:description" content="Как перестать думать о блокировках сайтов и начать жить">
+
+            <meta property="og:image" content="https://semakin.dev/static/wifi_router.jpg">
+</head>
+
+<body class="article-openwrt_vpn_rkn">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="https://semakin.dev/">Питонические атаки</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                        <li><a href="/tags.html">Тэги</a></li>
+
+                            <li><a href="https://semakin.dev/pages/about/">Об авторе</a></li>
+                            <li><a href="https://semakin.dev/pages/subscribe/">Подписаться</a></li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('https://semakin.dev//static/wifi_router.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Настройка точечного обхода блокировок на роутере с OpenWRT</h1>
+                        <span class="meta">Опубликовано: 12 декабря 2020, Сб,
+                            автор:
+                                <a href="https://semakin.dev/author/andrei-semakin.html">Андрей Семакин</a>
+                        </span>
+                            <span class="meta">Обновлено: 12 декабря 2020, Сб</span>
+                        
+                            <span class="meta">
+                                <i class="fa fa-clock-o" aria-hidden="true"></i>
+                                11 минут
+                            </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Scroll progress bar -->
+    <div id="_progress"></div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <p>Думаю, не стоит объяснять, почему проблема блокировок в рунете стоит настолько остро.
+И дело даже не в пресловутых сериалах на торрентах. Если не обходить
+блокировки, то банально сложно работать: то <a href="https://bugs.python.org">bugs.python.org</a>
+заблокирован, то документация по нужному тебе сервису недоступна, то какой-нибудь
+репозиторий с пакетами отвалился, из-за чего у тебя внезапно перестают собираться
+контейнеры, то <a href="https://linkedin.com/">LinkedIn</a> пишет письма на почту,
+а зайти на него ты не можешь. Например, вот
+<a href="https://web.archive.org/web/20200623061842/https://wiki.opennet.ru/BlockedRKN">здесь</a>
+можно найти список опенсорс-проектов, которые были заблокированы Роскомнадзором.
+Это всё тянется еще с тех времён в 2018 году, когда
+<a href="https://roskomsvoboda.org/38434/">Роскомнадзор пытался накрыть Telegram ковровыми блокировками</a>, блокируя без разбора всех направо и налево.
+Какое-то время я пытался с этим жить, игнорируя проблему, но однажды мое терпение
+лопнуло, во мне пробудился
+<a href="https://usher2.club/articles/msg-digitalresistance/">дух цифрового сопротивления</a>,
+и я решил настроить себе VPN — да так, чтобы это работало на всех моих устройствах сразу.</p>
+<p><img alt="Resistance Dog Good Boy" src="https://semakin.dev/static/resistance_dog.png"></p>
+<p>На данный момент случайно заблокированных сайтов уже стало сильно меньше,
+чем пару лет назад, но мне так понравилось не думать об этих блокировках вообще,
+что я и дальше буду этим пользоваться. Пожалуй, всегда.
+Не питаю никакого оптимизма по поводу людей, которые управляют этим рубильником,
+и не хочу зависеть от их спонтанных капризов.</p>
+<p>Так как большая часть моего трафика всё-таки ходит к незаблокированной части
+интернета, то логично пускать через VPN лишь тот трафик, который в этом нуждается.
+Ну нет ведь смысла гонять через VPN просмотр видео на YouTube или какую-нибудь игру?
+В итоге получится просто более медленный доступ, а профита никакого.</p>
+<p>Стоит отметить, что если вам нужен обход блокировок только на одном компьютере,
+там вам намного проще будет настроить VPN именно на нём. У многих провайдеров
+VPN есть программы-клиенты, которые в несколько кликов по красивым кнопкам настроят
+вам всё, что нужно — просто погуглите, сравните цены и условия.
+Ещё можете посмотреть в сторону таких бесплатных проектов, как
+<a href="https://antizapret.prostovpn.org/">АнтиЗапрет</a>.</p>
+<p>Опишу свой процесс настройки роутера на OpenWRT с точечным обходом блокировок.
+Мне уже приходилось делать это пару раз (то переезд со сменой провайдера, то смена
+роутера), и вот на третий раз я решил наконец задокументировать этот процесс,
+чтобы в следующие разы было легче. Может и ещё кому пригодится.</p>
+<h2>Роутер и прошивка</h2>
+<p><a href="https://openwrt.org/">OpenWRT</a> — это опенсорсный проект, который разрабатывает
+прошивки для роутеров на основе Linux. В той или иной мере, пожалуй,
+<a href="https://openwrt.org/supported_devices">поддерживаются</a> все существующие девайсы.
+Внутри есть даже свой собственный пакетный менеджер.
+Так как роутер с OpenWRT — это почти настоящая линукс-машина, то открывается
+огромное поле для различных извращений — файловые шары, торрент-клиенты,
+блокировка рекламы на уровне роутера, VPN — да что угодно.</p>
+<p>Мой нынешний роутер — это Xiaomi Mi WiFi Router 3G. Выбрал его, потому что в
+нём достаточно мощи, чтобы на нём хорошо работала OpenWRT. Да и вообще,
+Mir3G — это, похоже, один из самых популярных девайсов в тусовке людей, которые
+занимаются дрессировкой роутеров, так что в сети по нему уже есть
+<a href="https://4pda.ru/forum/index.php?showtopic=837667">много мануалов и обсуждений на форумах</a>.
+Если захотите купить такой же, то будьте аккуратны с конкретной моделью — их две
+под одним названием, а хорошая только
+<a href="https://4pda.ru/forum/index.php?showtopic=837667&amp;st=14800#entry89639151">та, у которой есть порт USB3</a>.
+Такой роутер должно быть несложно купить на Авито или других досках объявлений.</p>
+<p>У меня на данный момент установлена почти последняя версия прошивки:</p>
+<div class="highlight"><pre><span></span><code>OpenWrt 19.07.3, r11063-85e04e9f46
+</code></pre></div>
+
+<p>Прошивка OpenWRT и базовая настройка роутера выходит за рамки этой статьи.
+Поищите мануалы для вашего роутера. Далее предполагается, что у вас уже есть роутер с
+OpenWRT, подключенный к интернету, и к нему
+<a href="https://openwrt.org/docs/guide-quick-start/sshadministration">настроен доступ по SSH</a>.</p>
+<h2>Блокировки</h2>
+<p>Грубо говоря, существует два типа блокировок:</p>
+<ol>
+<li>по доменным именам;</li>
+<li>по IP-адресам.</li>
+</ol>
+<p>Нам нужно победить оба. Разберёмся с каждым из них по порядку.</p>
+<h2>Шаг 1. Шифрованный DNS</h2>
+<p><a href="https://ru.wikipedia.org/wiki/DNS">DNS (Domain Name System)</a> — это распределенная
+система (нет, это не сеть магазинов), состоящая из множества серверов по всему
+миру, которая позволяет вашему компьютеру преобразовать человекочитаемое имя сайта
+в машиночитаемый
+<a href="https://ru.wikipedia.org/wiki/IP-%D0%B0%D0%B4%D1%80%D0%B5%D1%81">IP-адрес</a>,
+например, из <code>github.com</code> получить <code>140.82.121.3</code>.
+Этот процесс называется "разрешением" или "резолвингом" доменного имени.</p>
+<p>Блокировка по доменным именам зачастую реализуется провайдером следующим образом:
+ваш роутер по умолчанию использует DNS-сервер, который контролируется провайдером
+и для заблокированных доменных имён возвращает специальный адрес сайта-заглушки.
+Именно это происходит, когда вы видите в браузере
+"доступ к ресурсу ограничен в соответствии со 149-ФЗ".</p>
+<p>Кажется, что решение очевидно — просто не пользоваться DNS-сервером провайдера,
+а использовать, например,
+<a href="https://ru.wikipedia.org/wiki/Google_Public_DNS">Google DNS</a>, IP-адреса которого
+уже стоит знать наизусть — <code>8.8.8.8, 8.8.4.4</code>. Раньше это действительно, но сегодня
+провайдеры уже не дадут вам так просто себя обмануть.</p>
+<p>Поскольку DNS — это очень старый протокол, в котором никак не было предусмотрено
+шифрование от слова "вообще", у провайдеров есть возможность перехватывать ваши
+запросы и подменять ответы, вставляя свой сайт-заглушку, даже если запрос шёл,
+например, к Google DNS. Именно этим они и занимаются. По сути, провайдер
+проводит против вас атаку <a href="https://ru.wikipedia.org/wiki/DNS_hijacking">DNS hijacking</a>.</p>
+<p>Вот как это работает, если всё хорошо. В таком сценарии можно даже не заметить этого
+<a href="https://ru.wikipedia.org/wiki/%D0%90%D1%82%D0%B0%D0%BA%D0%B0_%D0%BF%D0%BE%D1%81%D1%80%D0%B5%D0%B4%D0%BD%D0%B8%D0%BA%D0%B0">"человека посередине"</a>
+в лице вашего провайдера:</p>
+<p><img alt="DNS-запрос к незаблокированному домену" src="https://semakin.dev/static/dns_blocking_1.png"></p>
+<p>А вот так это работает, когда всё плохо.
+Провайдер наверняка даже не отправляет запрос к DNS-серверу, которому он предназначался,
+а просто сразу же возвращает ответ, подставляя адрес своей заглушки:</p>
+<p><img alt="DNS-запрос к заблокированному домену" src="https://semakin.dev/static/dns_blocking_2.png"></p>
+<p>Но по-настоящему эффективное решение есть. Если провайдер не сможет увидеть, к
+какому домену происходит обращение, то не сможет и подменить ответ. А ещё лучше,
+если он вообще не будет знать, что происходит резолвинг имени. Этого можно достичь
+шифрованием.</p>
+<p>Совсем недавно стали появляться шифрованные версии протокола DNS —
+<a href="https://en.wikipedia.org/wiki/DNSCrypt">DNSCrypt</a>,
+<a href="https://ru.wikipedia.org/wiki/DNS_%D0%BF%D0%BE%D0%B2%D0%B5%D1%80%D1%85_TLS">DoT (DNS-over-TLS)</a>
+и <a href="https://ru.wikipedia.org/wiki/DNS_%D0%BF%D0%BE%D0%B2%D0%B5%D1%80%D1%85_HTTPS">DoH (DNS-over-HTTPS)</a>.
+Судя по всему, именно последний из них (DoH) получит наибольшую популярность.
+При использовании этого протокола DNS-запрос складывается внутрь HTTPS-запроса,
+который, само собой, зашифрован. Для человека посередине, который перехватит
+такой трафик, это будет выглядеть как просто один из миллиарда шифрованных
+HTTP-запрос к Google или Cloudflare.</p>
+<p>Именно DNS-over-HTTPS мы и собираемся настроить в первую очередь.
+Ничего принципиально нового я не скажу, вся информация взята с
+<a href="https://openwrt.org/docs/guide-user/services/dns/doh_dnsmasq_https-dns-proxy">соответствующей страницы вики OpenWRT</a>.</p>
+<ol>
+<li>
+<p><a href="https://openwrt.org/ru/docs/guide-quick-start/sshadministration">Подключимся к роутеру по SSH</a>:</p>
+<div class="highlight"><pre><span></span><code>~ $ ssh root@192.168.1.1
+root@192.168.1.1<span class="err">&#39;</span>s password:
+BusyBox v1.30.1 <span class="o">()</span> built-in shell <span class="o">(</span>ash<span class="o">)</span>
+_______                     ________        __
+<span class="p">|</span>       <span class="p">|</span>.-----.-----.-----.<span class="p">|</span>  <span class="p">|</span>  <span class="p">|</span>  <span class="p">|</span>.----.<span class="p">|</span>  <span class="p">|</span>_
+<span class="p">|</span>   -   <span class="o">||</span>  _  <span class="p">|</span>  -__<span class="p">|</span>     <span class="o">||</span>  <span class="p">|</span>  <span class="p">|</span>  <span class="o">||</span>   _<span class="o">||</span>   _<span class="p">|</span>
+<span class="p">|</span>_______<span class="o">||</span>   __<span class="p">|</span>_____<span class="p">|</span>__<span class="p">|</span>__<span class="o">||</span>________<span class="o">||</span>__<span class="p">|</span>  <span class="p">|</span>____<span class="p">|</span>
+        <span class="p">|</span>__<span class="p">|</span> W I R E L E S S   F R E E D O M
+-----------------------------------------------------
+OpenWrt <span class="m">19</span>.07.3, r11063-85e04e9f46
+-----------------------------------------------------
+root@OpenWrt:~#
+</code></pre></div>
+
+</li>
+<li>
+<p>Обновим список пакетов. Эту команду нужно выполнять после каждой перезагрузки роутера
+перед установкой пакетов:</p>
+<div class="highlight"><pre><span></span><code>opkg update
+</code></pre></div>
+
+</li>
+<li>
+<p>Установим необходимые зависимости, которые в связке позволят принимать DNS-запросы
+от клиентов в локальной сети и отправлять их во внешний интернет,
+замаскированными под HTTPS-запросы. Третий пакет — это просто плагин для веб-интерфейса
+OpenWRT LuCI, чтобы можно было через GUI настраивать поведение DoH:</p>
+<div class="highlight"><pre><span></span><code>opkg install dnsmasq https-dns-proxy luci-app-https-dns-proxy
+</code></pre></div>
+
+</li>
+<li>
+<p>Чтобы плагин для LuCI заработал, нужно сделать выполнить вот такую команду:</p>
+<div class="highlight"><pre><span></span><code>/etc/init.d/rpcd restart
+</code></pre></div>
+
+</li>
+<li>
+<p>Готово! Теперь на компьютере, подключенном к роутеру,
+можно проверить как это работает:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># это было до настройки</span>
+$ nslookup linkedin.com
+...
+Name:   linkedin.com
+Address: <span class="m">95</span>.213.158.61
+
+<span class="c1"># это после настройки</span>
+$ nslookup linkedin.com
+...
+Name:   linkedin.com
+Address: <span class="m">13</span>.107.42.14
+Name:   linkedin.com
+Address: <span class="m">2620</span>:1ec:21::14
+</code></pre></div>
+
+</li>
+</ol>
+<p>Обратите внимание, что адреса возвращаются разные:
+до настройки DoH — неправильный, это результат подмены адресов провайдером,
+а после — правильный. Можно считать это маленькой победой!</p>
+<p>По умолчанию используются DNS-over-HTTPS сервера от Google и Cloudflare —
+очень разумный выбор, потому что на этих двух компаниях держится добрая половина
+глобального интернета, и их блокировка наверняка приведёт к катастрофическим
+последствиям, так что блокировать их, надеюсь, никто не будет.
+Если же хочется сменить используемые сервера, то сделать это теперь можно
+через веб-интерфейс: <code>Services &gt; DNS HTTPS Proxy</code>.</p>
+<p><img alt="OpenWRT LuCI DoH settings" src="https://semakin.dev/static/openwrt_luci_doh_settings.png"></p>
+<p>Сам по себе обход блокировок по DNS вряд ли даст ожидаемый эффект, потому что,
+как правило, в довесок к доменному имени, ресурс блокируется еще и по IP-адресам
+— видимо, для надежности. Это следующий тип блокировок, которые нужно победить.</p>
+<p>Стоит упомянуть про побочные эффекты от такой настройки — могут стать недоступными
+различные внутренние ресурсы провайдера. Например, когда у меня кончается интернет
+и я забываю его оплатить, провайдер просто не может меня переадресовать на
+страницу, куда он обычно направляет своих забывчивых абонентов. Для меня выглядит
+это всё так, будто интернет просто пропал, без каких-либо объяснений. Я даже первый
+раз из-за этого чуть не поругался с тех.поддержкой, а оказалось, что это я сам дурак.
+Что ж, просто приходится платить заранее.</p>
+<blockquote>
+<p>Если нравится статья, то
+<a href="https://semakin.dev/pages/subscribe/">подпишитесь на уведомления</a>
+о новых постах в блоге, чтобы ничего не пропустить!
+А ещё читайте другие мои посты!</p>
+</blockquote>
+<h2>Шаг 2. Настройка VPN WireGuard</h2>
+<p>Для того, чтобы обходить блокировки по IP-адресам, придётся настроить VPN —
+другого способа нет. В качестве протокола предлагаю использовать WireGuard —
+легковесный VPN-протокол, который довольно легко настраивать.</p>
+<p>Всё описанное дальше вдохновлено и по сути является пересказом вот
+<a href="https://habr.com/ru/post/440030/">этой замечательной статьи</a>
+на Хабре с некоторыми (минимальными) дополнениями от меня.</p>
+<p>VPN — это клиент-серверный протокол. Наш роутер будет клиентом, но также нам
+обязательно нужен сервер. Можно либо поднять свой VPN-сервер самостоятельно
+(смотрите инструкцию в статье по ссылке выше, это не сложно), либо оформить
+подписку на какой-нибудь готовый VPN-сервис. Я пробовал оба варианта, но
+поддерживать свой VPN-сервер оказалось достаточно трудозатратно, и это тоже,
+как ни странно, стоит денег. Сложнее всего найти хостинг для своего VPN с
+незаруиненной репутацией. Проблема, с которой я столкнулся, заключалась в
+том, что все дешевые хостинги уже имеют плохую репутацию (спасибо вам,
+господа спамеры), и некоторые ресурсы, типа Пикабу, сразу же заранее отвечают
+ошибкой 403. Намного проще купить готовый VPN, и пусть лучше кто-то другой за меня
+беспокоится о том, чтобы мне были доступны все нужные мне сайты.</p>
+<p>В последнее время появляется очень много VPN-сервисов, которые работают по
+протоколу WireGuard — это нынче горячая тема. Недавно
+<a href="https://www.opennet.ru/opennews/art.shtml?num=52275">поддержка WireGuard была добавлена основной состав ядра Linux</a>.
+Погуглите, выбор сервисов действительно есть. Сейчас я пользуюсь
+<a href="https://www.azirevpn.com/">AzireVPN</a>, и меня пока что всё устраивает.</p>
+<p><strong>Бонус для читателей</strong>: при регистрации
+<a href="https://www.azirevpn.com/ref/30ePwqelRO">по этой ссылке</a> вам накинут бесплатных
+дней обслуживания при оплате определенного периода сразу — +4 дня к месяцу,
++15 дней к трём месяцам. За оплату большего периода дают пропорционально ещё
+больше бесплатных дней.</p>
+<p>Дальше буду описывать процесс для AzireVPN, но, думаю, для других подобных сервисов
+процесс должен быть похожим.</p>
+<ol>
+<li>
+<p>Переходим <a href="https://www.azirevpn.com/cfg/wireguard">в раздел "Конфигурации"</a>,
+    авторизуемся и скачиваем конфиги.</p>
+</li>
+<li>
+<p>Из получившегося ZIP-архива выколупываем конфиг для страны, через которую хотим
+    пускать свой трафик. Я обычно выбираю какую-нибудь европейскую страну, чтобы пинг
+    был приемлемым. В этот раз возьму Норвегию.</p>
+</li>
+<li>
+<p>Переключимся на роутер и установим там нужную зависимость:</p>
+<div class="highlight"><pre><span></span><code>opkg install wireguard
+</code></pre></div>
+
+</li>
+<li>
+<p>Дальше нужно настроить сеть. Это происходит в файле <code>/etc/config/network</code>.
+Открываем его при помощи <code>vi</code> и дописываем в конец две секции вот такого содержания:</p>
+<div class="highlight"><pre><span></span><code>config interface &#39;wg0&#39;
+    option private_key &#39;private_key_goes_here&#39;
+    list addresses &#39;10.0.25.230/19&#39;
+    option listen_port &#39;51820&#39;
+    option proto &#39;wireguard&#39;
+
+config wireguard_wg0
+    option public_key &#39;public_key_goes_here&#39;
+    option allowed_ips &#39;0.0.0.0/0&#39;
+    option route_allowed_ips &#39;0&#39;
+    option persistent_keepalive &#39;25&#39;
+    option endpoint_host &#39;no1.wg.azirevpn.net&#39;
+    option endpoint_port &#39;51820&#39;
+</code></pre></div>
+
+<p>Приватный и публичный ключи замените соответствующими значениями из конфига.
+Поле <code>list addresses</code> заполняется IPv4-адресом из строчки <code>Address</code> в конфиге,
+а IPv6 адрес мы просто игнорируем — позже станет понятно почему.
+Поле <code>Endpoint</code> из конфига WireGuard распадается, соответственно,
+в поля <code>endpoint_host</code> и <code>endpoint_port</code> в конфиге OpenWRT.
+Остальные поля статичные.</p>
+</li>
+<li>
+<p>Перезапустим сеть на роутере:</p>
+<div class="highlight"><pre><span></span><code>/etc/init.d/network restart
+</code></pre></div>
+
+</li>
+<li>
+<p>Проверим VPN:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># wg show</span>
+interface: wg0
+public key: Kxn5CpI6wu+U5+ChMCNY/5Xs9DfoZ691G6OSX2V4HSU<span class="o">=</span>
+private key: <span class="o">(</span>hidden<span class="o">)</span>
+listening port: <span class="m">51820</span>
+
+peer: OsswT7RVN/M8jpDoARlsPshjtIr0R/1g3NAyCTl/4BY<span class="o">=</span>
+endpoint: <span class="m">194</span>.32.146.82:51820
+allowed ips: <span class="m">0</span>.0.0.0/0
+latest handshake: <span class="m">44</span> seconds ago
+transfer: <span class="m">1012</span> B received, <span class="m">3</span>.53 KiB sent
+persistent keepalive: every <span class="m">25</span> seconds
+</code></pre></div>
+
+<p>Если команда <code>wg show</code> выводит что-то подобное, то всё идёт хорошо.</p>
+</li>
+</ol>
+<h2>Шаг 3. Скрипт для сбора списков заблокированных адресов</h2>
+<p>Это возможно благодаря крутейшему сервису
+<a href="https://antifilter.download/">antifilter.download</a>, который обрабатывает выгрузки
+Роскомнадзора и отдает их в виде списков IP-адресов в машиночитаемых форматах.
+Мы настроим периодическую выгрузку списков заблокированных адресов с antifilter.download,
+чтобы всегда иметь актуальную информацию о блокировках.
+По моему опыту обновлять этот список раз в сутки (например, ночью) вполне достаточно.</p>
+<p>Кроме того, нам нужно настроить файрволл роутера, чтобы он помечал пакеты,
+которые направляются к заблокированным адресам, специальным маркером.
+Такие маркированные пакеты должны маршрутизироваться роутером через VPN.</p>
+<p><img alt="вот так будут бегать пакетики" src="https://habrastorage.org/webt/vy/rc/ji/vyrcjihaaozo-vzf1nkm9nlxpl0.gif"></p>
+<p>Начнём со скрипта, который реализует эту логику по обновлению списков заблокированных адресов.</p>
+<ol>
+<li>
+<p>Установим зависимости:</p>
+<div class="highlight"><pre><span></span><code>opkg install ipset curl
+</code></pre></div>
+
+</li>
+<li>
+<p>Создадим файл <code>/etc/init.d/hirkn</code> со скриптом следующего содержания:</p>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/sh</span>
+<span class="nv">START</span><span class="o">=</span><span class="m">99</span>
+<span class="nv">dir</span><span class="o">=</span>/tmp/lst
+mkdir -p <span class="nv">$dir</span>
+<span class="nb">echo</span> <span class="s2">&quot;Downloading lists of blocked addresses...&quot;</span>
+curl -z <span class="nv">$dir</span>/subnet.lst https://antifilter.download/list/subnet.lst --output <span class="nv">$dir</span>/subnet.lst
+curl -z <span class="nv">$dir</span>/ipsum.lst https://antifilter.download/list/ipsum.lst --output <span class="nv">$dir</span>/ipsum.lst
+<span class="nb">echo</span> <span class="s2">&quot;Restarting firewall...&quot;</span>
+/etc/init.d/firewall restart
+</code></pre></div>
+
+<p>Этот скрипт скачивает два списка заблокированных адресов — один в виде сетей
+(иногда РКН блокирует адреса целыми подсетями), другой — обобщенный список
+отдельных заблокированных адресов. За счёт обобщения в небольшие подсети он содержит
+не миллионы строк, а всего лишь что-то около 15 тысяч.
+Нам нужны оба списка, они не пересекаются между собой. Файлы сохраняются
+в каталог <code>/tmp</code>, который в OpenWRT хранится в оперативной памяти — это должно
+работать быстро. В конце скрипт перезапускает файлволл.
+Настройка файлволла будет происходит позже.</p>
+</li>
+<li>
+<p>Добавим этому скрипту права на выполнение:</p>
+<p><div class="highlight"><pre><span></span><code>chmod +x /etc/init.d/hirkn
+</code></pre></div>
+4. Добавим скрипт в "автозапуск", чтобы он выполнялся при включении роутера после
+всех остальных скриптов:</p>
+<div class="highlight"><pre><span></span><code>ln -s /etc/init.d/hirkn /etc/rc.d/S99hirkn
+</code></pre></div>
+
+</li>
+<li>
+<p>Через <code>cron</code> запланируем выполнение этого скрипта раз в сутки:</p>
+<div class="highlight"><pre><span></span><code>crontab -e
+</code></pre></div>
+
+<p>В открывшемся редакторе нужно добавить на новой строке:</p>
+<div class="highlight"><pre><span></span><code>0 4 * * * /etc/init.d/hirkn
+</code></pre></div>
+
+<p>На <a href="https://crontab.guru/#0_4_*_*_*">crontab.guru</a> можно посмотреть объяснение этой
+строчки.</p>
+</li>
+<li>
+<p>Включим <code>cron</code>, потому что по умолчанию в OpenWRT он выключен:</p>
+<div class="highlight"><pre><span></span><code>/etc/init.d/cron <span class="nb">enable</span>
+/etc/init.d/cron start
+</code></pre></div>
+
+</li>
+<li>
+<p>Убедимся, что скрипт работает.</p>
+<p>Запустим его:</p>
+<div class="highlight"><pre><span></span><code>/etc/init.d/hirkn
+</code></pre></div>
+
+<p>Если файлы со списками заблокированных адресов появились, то всё ок:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># ls -lh /tmp/lst/</span>
+-rw-r--r--    <span class="m">1</span> root     root      <span class="m">270</span>.4K Dec  <span class="m">7</span> <span class="m">07</span>:18 ipsum.lst
+-rw-r--r--    <span class="m">1</span> root     root         <span class="m">132</span> Dec  <span class="m">7</span> <span class="m">07</span>:18 subnet.lst
+</code></pre></div>
+
+</li>
+</ol>
+<h2>Шаг 4. Дальнейшая настройка</h2>
+<p>Теперь осталось настроить роутер так, чтобы он правильно маршрутизировал
+пакеты через VPN-туннель.</p>
+<ol>
+<li>
+<p>Создадим таблицу маршрутизации для VPN, добавив в файл
+    <code>/etc/iproute2/rt_tables</code> строчку следующего вида:</p>
+<div class="highlight"><pre><span></span><code>99      vpn
+</code></pre></div>
+
+</li>
+<li>
+<p>Добавим дефолтный маршрут для VPN через туннельный интерфейс:</p>
+<div class="highlight"><pre><span></span><code>ip route add table vpn default dev wg0
+</code></pre></div>
+
+<p>Чтобы сделать это изменение постоянным, чтобы оно переживало перезагрузки роутера,
+создадим файл <code>/etc/hotplug.d/iface/30-rknroute</code> с вот таким содержимым:</p>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/sh</span>
+ip route add table vpn default dev wg0
+</code></pre></div>
+
+</li>
+<li>
+<p>В файл <code>/etc/config/network</code>, который мы уже редактировали в процессе настройки
+    WireGuard, добавим правило, которое будет перенаправлять маркированные пакеты
+    в таблицу маршрутизации VPN:</p>
+<div class="highlight"><pre><span></span><code>config rule
+    option priority &#39;100&#39;
+    option lookup &#39;vpn&#39;
+    option mark &#39;0x1&#39;
+</code></pre></div>
+
+</li>
+<li>
+<p>Теперь приступим к настройке файрволла. Это самая важная часть логики, которая
+    просматривает списки заблокированных адресов, и маркирует пакеты.
+    В файл <code>/etc/config/firewall</code> допишем несколько абзацев:</p>
+<div class="highlight"><pre><span></span><code>config zone
+    option name &#39;wg&#39;
+    option family &#39;ipv4&#39;
+    option masq &#39;1&#39;
+    option output &#39;ACCEPT&#39;
+    option forward &#39;REJECT&#39;
+    option input &#39;REJECT&#39;
+    option mtu_fix &#39;1&#39;
+    option network &#39;wg0&#39;
+
+config forwarding
+    option src &#39;lan&#39;
+    option dest &#39;wg&#39;
+
+config ipset
+    option name &#39;vpn_subnets&#39;
+    option storage &#39;hash&#39;
+    option loadfile &#39;/tmp/lst/subnet.lst&#39;
+    option match &#39;dst_net&#39;
+
+config ipset
+    option name &#39;vpn_ipsum&#39;
+    option storage &#39;hash&#39;
+    option loadfile &#39;/tmp/lst/ipsum.lst&#39;
+    option match &#39;dst_net&#39;
+
+config rule
+    option name &#39;mark_subnet&#39;
+    option src &#39;lan&#39;
+    option proto &#39;all&#39;
+    option ipset &#39;vpn_subnets&#39;
+    option set_mark &#39;0x1&#39;
+    option target &#39;MARK&#39;
+
+config rule
+    option name &#39;mark_ipsum&#39;
+    option src &#39;lan&#39;
+    option proto &#39;all&#39;
+    option ipset &#39;vpn_ipsum&#39;
+    option set_mark &#39;0x1&#39;
+    option target &#39;MARK&#39;
+</code></pre></div>
+
+<p>Первый из них настраивает зону для VPN — из неё разрешён лишь выход пакетов
+и включён маскарадинг.</p>
+<p>Второй абзац разрешает переход из зоны <code>lan</code>, где по умолчанию находятся все
+устройства, подключенные к роутеру, в зону для VPN.</p>
+<p>Третий и четвертый абзацы заставляют файрволл загрузить файлы со списками
+заблокированных адресов и распихать по
+<a href="https://ru.wikipedia.org/wiki/%D0%A5%D0%B5%D1%88-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0">хеш-таблицам</a>.
+Как известно, поиск по хеш-таблице происходит за константное время, так что
+роутер сможет эффективно определять направляется ли пакет к заблокированному
+адресу или к обычному.</p>
+<p>Пятый и шестой абзацы отвечают за маркировку пакетов: "если пакет направляется
+на заблокированный адрес, то добавим ему пометку <code>0x1</code>".</p>
+</li>
+<li>
+<p>Перезапустим сеть:</p>
+<div class="highlight"><pre><span></span><code>/etc/init.d/network restart
+</code></pre></div>
+
+<p>И запустим наш скрипт:</p>
+<div class="highlight"><pre><span></span><code>/etc/init.d/hirkn
+</code></pre></div>
+
+</li>
+<li>
+<p>После этого трафик к заблокированным сайтам должен побежать через VPN.
+    Честно говоря, мне ещё почему-то после этого пришлось перезапустить роутер.</p>
+</li>
+</ol>
+<h2>Шаг 5. Отключаем IPv6</h2>
+<p>Этот шаг мой самый нелюбимый, потому что я за всё новое и против всего старого.
+По моему глубокому убеждению IPv4 уже давно должен умереть и быть вытеснен шестой
+версией протокола. К сожалению,
+<a href="https://www.google.com/intl/en/ipv6/statistics.html#tab=ipv6-adoption">дела у IPv6 пока идут не так гладко</a>,
+как хотелось бы (сейчас он занимает всего около 30% процентов трафика).</p>
+<p>Проблема в том, что antifilter.download выдаёт только заблокированные IPv4 адреса.
+Это значит, что наш обход блокировок не будет работать по IPv6.
+Если разрешить вашему роутеру работать по IPv6, то многие ваши устройства предпочтут
+открывать сайты по IPv6 либо напарываясь на страницы с блокировками от провайдеров,
+либо просто получая ошибки подключения по таймауту.</p>
+<p>Отключаем IPv6 (команды взяты <a href="https://superuser.com/a/1532705/993215">отсюда</a>):</p>
+<div class="highlight"><pre><span></span><code>uci <span class="nb">set</span> <span class="s1">&#39;network.lan.ipv6=off&#39;</span>
+uci <span class="nb">set</span> <span class="s1">&#39;network.wan.ipv6=off&#39;</span>
+uci <span class="nb">set</span> <span class="s1">&#39;dhcp.lan.dhcpv6=disabled&#39;</span>
+/etc/init.d/odhcpd disable
+uci commit
+</code></pre></div>
+
+<p>После этого может потребоваться ещё одна перезагрузка роутера, чтобы он перестал
+раздавать вновь подключенным устройствам IPv6-адреса.</p>
+<h1>Заключение</h1>
+<p>Вот как-то так можно при помощи несложных (ладно, сложных) манипуляций настроить
+свой роутер на точечный обход блокировок. Все незаблокированные сайты работают как обычно,
+а заблокированные — через VPN. С такой конфигурацией можно полностью забыть
+про мелкие пакости от Роскомнадзора и начать, наконец, жить :)</p>
+<p><img alt="Добро пожаловать в Интернет" src="https://semakin.dev/static/welcome_to_the_internet_meme.jpg"></p>
+    </article>
+
+        <div class="tags">
+            <p>тэги: <a href="https://semakin.dev/tag/network.html">network</a>, <a href="https://semakin.dev/tag/vpn.html">vpn</a>, <a href="https://semakin.dev/tag/wiregurad.html">wiregurad</a>, <a href="https://semakin.dev/tag/openwrt.html">openwrt</a></p>
+        </div>
+
+    <hr>
+
+
+        <script
+            src="https://utteranc.es/client.js"
+            repo="and-semakin/and-semakin.github.io"
+            issue-term="pathname"
+            label="comments"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+        </script>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="/feeds/all.atom.xml">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://t.me/pythonic_attacks">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-telegram fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">        &copy; 2020 Андрей Семакин
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="https://semakin.dev/theme/js/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="https://semakin.dev/theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="https://semakin.dev/theme/js/clean-blog.min.js"></script>
+
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript" >
+   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+   m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+   ym(62079343, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true
+   });
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/62079343" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+</body>
+
+</html>

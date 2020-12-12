@@ -1,5 +1,520 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Питонические атаки</title><link href="https://semakin.dev/" rel="alternate"></link><link href="https://semakin.dev/feeds/all.atom.xml" rel="self"></link><id>https://semakin.dev/</id><updated>2020-07-06T13:46:41+05:00</updated><subtitle>Про разработку в целом и про Python в частности</subtitle><entry><title>Эффективный обход словарей в цикле в Python</title><link href="https://semakin.dev/2020/07/iterate_over_dict/" rel="alternate"></link><published>2020-07-06T13:46:41+05:00</published><updated>2020-07-06T13:46:41+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-07-06:/2020/07/iterate_over_dict/</id><summary type="html">&lt;p&gt;Расскажу как правильно обойти словарь (dict) в цикле, чтобы получить ключи, значения или и ключи, и значения одновременно, при этом не получив ничего лишнего.&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Эффективный обход словарей в цикле в Python&lt;/h1&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Питонические атаки</title><link href="https://semakin.dev/" rel="alternate"></link><link href="https://semakin.dev/feeds/all.atom.xml" rel="self"></link><id>https://semakin.dev/</id><updated>2020-12-12T21:17:11+05:00</updated><subtitle>Про разработку в целом и про Python в частности</subtitle><entry><title>Настройка точечного обхода блокировок на роутере с OpenWRT</title><link href="https://semakin.dev/2020/12/openwrt_vpn_rkn/" rel="alternate"></link><published>2020-12-12T21:17:11+05:00</published><updated>2020-12-12T21:17:11+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-12-12:/2020/12/openwrt_vpn_rkn/</id><summary type="html">&lt;p&gt;Как перестать думать о блокировках сайтов и начать жить&lt;/p&gt;</summary><content type="html">&lt;p&gt;Думаю, не стоит объяснять, почему проблема блокировок в рунете стоит настолько остро.
+И дело даже не в пресловутых сериалах на торрентах. Если не обходить
+блокировки, то банально сложно работать: то &lt;a href="https://bugs.python.org"&gt;bugs.python.org&lt;/a&gt;
+заблокирован, то документация по нужному тебе сервису недоступна, то какой-нибудь
+репозиторий с пакетами отвалился, из-за чего у тебя внезапно перестают собираться
+контейнеры, то &lt;a href="https://linkedin.com/"&gt;LinkedIn&lt;/a&gt; пишет письма на почту,
+а зайти на него ты не можешь. Например, вот
+&lt;a href="https://web.archive.org/web/20200623061842/https://wiki.opennet.ru/BlockedRKN"&gt;здесь&lt;/a&gt;
+можно найти список опенсорс-проектов, которые были заблокированы Роскомнадзором.
+Это всё тянется еще с тех времён в 2018 году, когда
+&lt;a href="https://roskomsvoboda.org/38434/"&gt;Роскомнадзор пытался накрыть Telegram ковровыми блокировками&lt;/a&gt;, блокируя без разбора всех направо и налево.
+Какое-то время я пытался с этим жить, игнорируя проблему, но однажды мое терпение
+лопнуло, во мне пробудился
+&lt;a href="https://usher2.club/articles/msg-digitalresistance/"&gt;дух цифрового сопротивления&lt;/a&gt;,
+и я решил настроить себе VPN — да так, чтобы это работало на всех моих устройствах сразу.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Resistance Dog Good Boy" src="https://semakin.dev/static/resistance_dog.png"&gt;&lt;/p&gt;
+&lt;p&gt;На данный момент случайно заблокированных сайтов уже стало сильно меньше,
+чем пару лет назад, но мне так понравилось не думать об этих блокировках вообще,
+что я и дальше буду этим пользоваться. Пожалуй, всегда.
+Не питаю никакого оптимизма по поводу людей, которые управляют этим рубильником,
+и не хочу зависеть от их спонтанных капризов.&lt;/p&gt;
+&lt;p&gt;Так как большая часть моего трафика всё-таки ходит к незаблокированной части
+интернета, то логично пускать через VPN лишь тот трафик, который в этом нуждается.
+Ну нет ведь смысла гонять через VPN просмотр видео на YouTube или какую-нибудь игру?
+В итоге получится просто более медленный доступ, а профита никакого.&lt;/p&gt;
+&lt;p&gt;Стоит отметить, что если вам нужен обход блокировок только на одном компьютере,
+там вам намного проще будет настроить VPN именно на нём. У многих провайдеров
+VPN есть программы-клиенты, которые в несколько кликов по красивым кнопкам настроят
+вам всё, что нужно — просто погуглите, сравните цены и условия.
+Ещё можете посмотреть в сторону таких бесплатных проектов, как
+&lt;a href="https://antizapret.prostovpn.org/"&gt;АнтиЗапрет&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Опишу свой процесс настройки роутера на OpenWRT с точечным обходом блокировок.
+Мне уже приходилось делать это пару раз (то переезд со сменой провайдера, то смена
+роутера), и вот на третий раз я решил наконец задокументировать этот процесс,
+чтобы в следующие разы было легче. Может и ещё кому пригодится.&lt;/p&gt;
+&lt;h2&gt;Роутер и прошивка&lt;/h2&gt;
+&lt;p&gt;&lt;a href="https://openwrt.org/"&gt;OpenWRT&lt;/a&gt; — это опенсорсный проект, который разрабатывает
+прошивки для роутеров на основе Linux. В той или иной мере, пожалуй,
+&lt;a href="https://openwrt.org/supported_devices"&gt;поддерживаются&lt;/a&gt; все существующие девайсы.
+Внутри есть даже свой собственный пакетный менеджер.
+Так как роутер с OpenWRT — это почти настоящая линукс-машина, то открывается
+огромное поле для различных извращений — файловые шары, торрент-клиенты,
+блокировка рекламы на уровне роутера, VPN — да что угодно.&lt;/p&gt;
+&lt;p&gt;Мой нынешний роутер — это Xiaomi Mi WiFi Router 3G. Выбрал его, потому что в
+нём достаточно мощи, чтобы на нём хорошо работала OpenWRT. Да и вообще,
+Mir3G — это, похоже, один из самых популярных девайсов в тусовке людей, которые
+занимаются дрессировкой роутеров, так что в сети по нему уже есть
+&lt;a href="https://4pda.ru/forum/index.php?showtopic=837667"&gt;много мануалов и обсуждений на форумах&lt;/a&gt;.
+Если захотите купить такой же, то будьте аккуратны с конкретной моделью — их две
+под одним названием, а хорошая только
+&lt;a href="https://4pda.ru/forum/index.php?showtopic=837667&amp;amp;st=14800#entry89639151"&gt;та, у которой есть порт USB3&lt;/a&gt;.
+Такой роутер должно быть несложно купить на Авито или других досках объявлений.&lt;/p&gt;
+&lt;p&gt;У меня на данный момент установлена почти последняя версия прошивки:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;OpenWrt 19.07.3, r11063-85e04e9f46
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Прошивка OpenWRT и базовая настройка роутера выходит за рамки этой статьи.
+Поищите мануалы для вашего роутера. Далее предполагается, что у вас уже есть роутер с
+OpenWRT, подключенный к интернету, и к нему
+&lt;a href="https://openwrt.org/docs/guide-quick-start/sshadministration"&gt;настроен доступ по SSH&lt;/a&gt;.&lt;/p&gt;
+&lt;h2&gt;Блокировки&lt;/h2&gt;
+&lt;p&gt;Грубо говоря, существует два типа блокировок:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;по доменным именам;&lt;/li&gt;
+&lt;li&gt;по IP-адресам.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Нам нужно победить оба. Разберёмся с каждым из них по порядку.&lt;/p&gt;
+&lt;h2&gt;Шаг 1. Шифрованный DNS&lt;/h2&gt;
+&lt;p&gt;&lt;a href="https://ru.wikipedia.org/wiki/DNS"&gt;DNS (Domain Name System)&lt;/a&gt; — это распределенная
+система (нет, это не сеть магазинов), состоящая из множества серверов по всему
+миру, которая позволяет вашему компьютеру преобразовать человекочитаемое имя сайта
+в машиночитаемый
+&lt;a href="https://ru.wikipedia.org/wiki/IP-%D0%B0%D0%B4%D1%80%D0%B5%D1%81"&gt;IP-адрес&lt;/a&gt;,
+например, из &lt;code&gt;github.com&lt;/code&gt; получить &lt;code&gt;140.82.121.3&lt;/code&gt;.
+Этот процесс называется "разрешением" или "резолвингом" доменного имени.&lt;/p&gt;
+&lt;p&gt;Блокировка по доменным именам зачастую реализуется провайдером следующим образом:
+ваш роутер по умолчанию использует DNS-сервер, который контролируется провайдером
+и для заблокированных доменных имён возвращает специальный адрес сайта-заглушки.
+Именно это происходит, когда вы видите в браузере
+"доступ к ресурсу ограничен в соответствии со 149-ФЗ".&lt;/p&gt;
+&lt;p&gt;Кажется, что решение очевидно — просто не пользоваться DNS-сервером провайдера,
+а использовать, например,
+&lt;a href="https://ru.wikipedia.org/wiki/Google_Public_DNS"&gt;Google DNS&lt;/a&gt;, IP-адреса которого
+уже стоит знать наизусть — &lt;code&gt;8.8.8.8, 8.8.4.4&lt;/code&gt;. Раньше это действительно, но сегодня
+провайдеры уже не дадут вам так просто себя обмануть.&lt;/p&gt;
+&lt;p&gt;Поскольку DNS — это очень старый протокол, в котором никак не было предусмотрено
+шифрование от слова "вообще", у провайдеров есть возможность перехватывать ваши
+запросы и подменять ответы, вставляя свой сайт-заглушку, даже если запрос шёл,
+например, к Google DNS. Именно этим они и занимаются. По сути, провайдер
+проводит против вас атаку &lt;a href="https://ru.wikipedia.org/wiki/DNS_hijacking"&gt;DNS hijacking&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Вот как это работает, если всё хорошо. В таком сценарии можно даже не заметить этого
+&lt;a href="https://ru.wikipedia.org/wiki/%D0%90%D1%82%D0%B0%D0%BA%D0%B0_%D0%BF%D0%BE%D1%81%D1%80%D0%B5%D0%B4%D0%BD%D0%B8%D0%BA%D0%B0"&gt;"человека посередине"&lt;/a&gt;
+в лице вашего провайдера:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="DNS-запрос к незаблокированному домену" src="https://semakin.dev/static/dns_blocking_1.png"&gt;&lt;/p&gt;
+&lt;p&gt;А вот так это работает, когда всё плохо.
+Провайдер наверняка даже не отправляет запрос к DNS-серверу, которому он предназначался,
+а просто сразу же возвращает ответ, подставляя адрес своей заглушки:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="DNS-запрос к заблокированному домену" src="https://semakin.dev/static/dns_blocking_2.png"&gt;&lt;/p&gt;
+&lt;p&gt;Но по-настоящему эффективное решение есть. Если провайдер не сможет увидеть, к
+какому домену происходит обращение, то не сможет и подменить ответ. А ещё лучше,
+если он вообще не будет знать, что происходит резолвинг имени. Этого можно достичь
+шифрованием.&lt;/p&gt;
+&lt;p&gt;Совсем недавно стали появляться шифрованные версии протокола DNS —
+&lt;a href="https://en.wikipedia.org/wiki/DNSCrypt"&gt;DNSCrypt&lt;/a&gt;,
+&lt;a href="https://ru.wikipedia.org/wiki/DNS_%D0%BF%D0%BE%D0%B2%D0%B5%D1%80%D1%85_TLS"&gt;DoT (DNS-over-TLS)&lt;/a&gt;
+и &lt;a href="https://ru.wikipedia.org/wiki/DNS_%D0%BF%D0%BE%D0%B2%D0%B5%D1%80%D1%85_HTTPS"&gt;DoH (DNS-over-HTTPS)&lt;/a&gt;.
+Судя по всему, именно последний из них (DoH) получит наибольшую популярность.
+При использовании этого протокола DNS-запрос складывается внутрь HTTPS-запроса,
+который, само собой, зашифрован. Для человека посередине, который перехватит
+такой трафик, это будет выглядеть как просто один из миллиарда шифрованных
+HTTP-запрос к Google или Cloudflare.&lt;/p&gt;
+&lt;p&gt;Именно DNS-over-HTTPS мы и собираемся настроить в первую очередь.
+Ничего принципиально нового я не скажу, вся информация взята с
+&lt;a href="https://openwrt.org/docs/guide-user/services/dns/doh_dnsmasq_https-dns-proxy"&gt;соответствующей страницы вики OpenWRT&lt;/a&gt;.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href="https://openwrt.org/ru/docs/guide-quick-start/sshadministration"&gt;Подключимся к роутеру по SSH&lt;/a&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~ $ ssh root@192.168.1.1
+root@192.168.1.1&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;s password:
+BusyBox v1.30.1 &lt;span class="o"&gt;()&lt;/span&gt; built-in shell &lt;span class="o"&gt;(&lt;/span&gt;ash&lt;span class="o"&gt;)&lt;/span&gt;
+_______                     ________        __
+&lt;span class="p"&gt;|&lt;/span&gt;       &lt;span class="p"&gt;|&lt;/span&gt;.-----.-----.-----.&lt;span class="p"&gt;|&lt;/span&gt;  &lt;span class="p"&gt;|&lt;/span&gt;  &lt;span class="p"&gt;|&lt;/span&gt;  &lt;span class="p"&gt;|&lt;/span&gt;.----.&lt;span class="p"&gt;|&lt;/span&gt;  &lt;span class="p"&gt;|&lt;/span&gt;_
+&lt;span class="p"&gt;|&lt;/span&gt;   -   &lt;span class="o"&gt;||&lt;/span&gt;  _  &lt;span class="p"&gt;|&lt;/span&gt;  -__&lt;span class="p"&gt;|&lt;/span&gt;     &lt;span class="o"&gt;||&lt;/span&gt;  &lt;span class="p"&gt;|&lt;/span&gt;  &lt;span class="p"&gt;|&lt;/span&gt;  &lt;span class="o"&gt;||&lt;/span&gt;   _&lt;span class="o"&gt;||&lt;/span&gt;   _&lt;span class="p"&gt;|&lt;/span&gt;
+&lt;span class="p"&gt;|&lt;/span&gt;_______&lt;span class="o"&gt;||&lt;/span&gt;   __&lt;span class="p"&gt;|&lt;/span&gt;_____&lt;span class="p"&gt;|&lt;/span&gt;__&lt;span class="p"&gt;|&lt;/span&gt;__&lt;span class="o"&gt;||&lt;/span&gt;________&lt;span class="o"&gt;||&lt;/span&gt;__&lt;span class="p"&gt;|&lt;/span&gt;  &lt;span class="p"&gt;|&lt;/span&gt;____&lt;span class="p"&gt;|&lt;/span&gt;
+        &lt;span class="p"&gt;|&lt;/span&gt;__&lt;span class="p"&gt;|&lt;/span&gt; W I R E L E S S   F R E E D O M
+-----------------------------------------------------
+OpenWrt &lt;span class="m"&gt;19&lt;/span&gt;.07.3, r11063-85e04e9f46
+-----------------------------------------------------
+root@OpenWrt:~#
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Обновим список пакетов. Эту команду нужно выполнять после каждой перезагрузки роутера
+перед установкой пакетов:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;opkg update
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Установим необходимые зависимости, которые в связке позволят принимать DNS-запросы
+от клиентов в локальной сети и отправлять их во внешний интернет,
+замаскированными под HTTPS-запросы. Третий пакет — это просто плагин для веб-интерфейса
+OpenWRT LuCI, чтобы можно было через GUI настраивать поведение DoH:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;opkg install dnsmasq https-dns-proxy luci-app-https-dns-proxy
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Чтобы плагин для LuCI заработал, нужно сделать выполнить вот такую команду:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;/etc/init.d/rpcd restart
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Готово! Теперь на компьютере, подключенном к роутеру,
+можно проверить как это работает:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# это было до настройки&lt;/span&gt;
+$ nslookup linkedin.com
+...
+Name:   linkedin.com
+Address: &lt;span class="m"&gt;95&lt;/span&gt;.213.158.61
+
+&lt;span class="c1"&gt;# это после настройки&lt;/span&gt;
+$ nslookup linkedin.com
+...
+Name:   linkedin.com
+Address: &lt;span class="m"&gt;13&lt;/span&gt;.107.42.14
+Name:   linkedin.com
+Address: &lt;span class="m"&gt;2620&lt;/span&gt;:1ec:21::14
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Обратите внимание, что адреса возвращаются разные:
+до настройки DoH — неправильный, это результат подмены адресов провайдером,
+а после — правильный. Можно считать это маленькой победой!&lt;/p&gt;
+&lt;p&gt;По умолчанию используются DNS-over-HTTPS сервера от Google и Cloudflare —
+очень разумный выбор, потому что на этих двух компаниях держится добрая половина
+глобального интернета, и их блокировка наверняка приведёт к катастрофическим
+последствиям, так что блокировать их, надеюсь, никто не будет.
+Если же хочется сменить используемые сервера, то сделать это теперь можно
+через веб-интерфейс: &lt;code&gt;Services &amp;gt; DNS HTTPS Proxy&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="OpenWRT LuCI DoH settings" src="https://semakin.dev/static/openwrt_luci_doh_settings.png"&gt;&lt;/p&gt;
+&lt;p&gt;Сам по себе обход блокировок по DNS вряд ли даст ожидаемый эффект, потому что,
+как правило, в довесок к доменному имени, ресурс блокируется еще и по IP-адресам
+— видимо, для надежности. Это следующий тип блокировок, которые нужно победить.&lt;/p&gt;
+&lt;p&gt;Стоит упомянуть про побочные эффекты от такой настройки — могут стать недоступными
+различные внутренние ресурсы провайдера. Например, когда у меня кончается интернет
+и я забываю его оплатить, провайдер просто не может меня переадресовать на
+страницу, куда он обычно направляет своих забывчивых абонентов. Для меня выглядит
+это всё так, будто интернет просто пропал, без каких-либо объяснений. Я даже первый
+раз из-за этого чуть не поругался с тех.поддержкой, а оказалось, что это я сам дурак.
+Что ж, просто приходится платить заранее.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Если нравится статья, то
+&lt;a href="https://semakin.dev/pages/subscribe/"&gt;подпишитесь на уведомления&lt;/a&gt;
+о новых постах в блоге, чтобы ничего не пропустить!
+А ещё читайте другие мои посты!&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;Шаг 2. Настройка VPN WireGuard&lt;/h2&gt;
+&lt;p&gt;Для того, чтобы обходить блокировки по IP-адресам, придётся настроить VPN —
+другого способа нет. В качестве протокола предлагаю использовать WireGuard —
+легковесный VPN-протокол, который довольно легко настраивать.&lt;/p&gt;
+&lt;p&gt;Всё описанное дальше вдохновлено и по сути является пересказом вот
+&lt;a href="https://habr.com/ru/post/440030/"&gt;этой замечательной статьи&lt;/a&gt;
+на Хабре с некоторыми (минимальными) дополнениями от меня.&lt;/p&gt;
+&lt;p&gt;VPN — это клиент-серверный протокол. Наш роутер будет клиентом, но также нам
+обязательно нужен сервер. Можно либо поднять свой VPN-сервер самостоятельно
+(смотрите инструкцию в статье по ссылке выше, это не сложно), либо оформить
+подписку на какой-нибудь готовый VPN-сервис. Я пробовал оба варианта, но
+поддерживать свой VPN-сервер оказалось достаточно трудозатратно, и это тоже,
+как ни странно, стоит денег. Сложнее всего найти хостинг для своего VPN с
+незаруиненной репутацией. Проблема, с которой я столкнулся, заключалась в
+том, что все дешевые хостинги уже имеют плохую репутацию (спасибо вам,
+господа спамеры), и некоторые ресурсы, типа Пикабу, сразу же заранее отвечают
+ошибкой 403. Намного проще купить готовый VPN, и пусть лучше кто-то другой за меня
+беспокоится о том, чтобы мне были доступны все нужные мне сайты.&lt;/p&gt;
+&lt;p&gt;В последнее время появляется очень много VPN-сервисов, которые работают по
+протоколу WireGuard — это нынче горячая тема. Недавно
+&lt;a href="https://www.opennet.ru/opennews/art.shtml?num=52275"&gt;поддержка WireGuard была добавлена основной состав ядра Linux&lt;/a&gt;.
+Погуглите, выбор сервисов действительно есть. Сейчас я пользуюсь
+&lt;a href="https://www.azirevpn.com/"&gt;AzireVPN&lt;/a&gt;, и меня пока что всё устраивает.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Бонус для читателей&lt;/strong&gt;: при регистрации
+&lt;a href="https://www.azirevpn.com/ref/30ePwqelRO"&gt;по этой ссылке&lt;/a&gt; вам накинут бесплатных
+дней обслуживания при оплате определенного периода сразу — +4 дня к месяцу,
++15 дней к трём месяцам. За оплату большего периода дают пропорционально ещё
+больше бесплатных дней.&lt;/p&gt;
+&lt;p&gt;Дальше буду описывать процесс для AzireVPN, но, думаю, для других подобных сервисов
+процесс должен быть похожим.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Переходим &lt;a href="https://www.azirevpn.com/cfg/wireguard"&gt;в раздел "Конфигурации"&lt;/a&gt;,
+    авторизуемся и скачиваем конфиги.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Из получившегося ZIP-архива выколупываем конфиг для страны, через которую хотим
+    пускать свой трафик. Я обычно выбираю какую-нибудь европейскую страну, чтобы пинг
+    был приемлемым. В этот раз возьму Норвегию.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Переключимся на роутер и установим там нужную зависимость:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;opkg install wireguard
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Дальше нужно настроить сеть. Это происходит в файле &lt;code&gt;/etc/config/network&lt;/code&gt;.
+Открываем его при помощи &lt;code&gt;vi&lt;/code&gt; и дописываем в конец две секции вот такого содержания:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;config interface &amp;#39;wg0&amp;#39;
+    option private_key &amp;#39;private_key_goes_here&amp;#39;
+    list addresses &amp;#39;10.0.25.230/19&amp;#39;
+    option listen_port &amp;#39;51820&amp;#39;
+    option proto &amp;#39;wireguard&amp;#39;
+
+config wireguard_wg0
+    option public_key &amp;#39;public_key_goes_here&amp;#39;
+    option allowed_ips &amp;#39;0.0.0.0/0&amp;#39;
+    option route_allowed_ips &amp;#39;0&amp;#39;
+    option persistent_keepalive &amp;#39;25&amp;#39;
+    option endpoint_host &amp;#39;no1.wg.azirevpn.net&amp;#39;
+    option endpoint_port &amp;#39;51820&amp;#39;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Приватный и публичный ключи замените соответствующими значениями из конфига.
+Поле &lt;code&gt;list addresses&lt;/code&gt; заполняется IPv4-адресом из строчки &lt;code&gt;Address&lt;/code&gt; в конфиге,
+а IPv6 адрес мы просто игнорируем — позже станет понятно почему.
+Поле &lt;code&gt;Endpoint&lt;/code&gt; из конфига WireGuard распадается, соответственно,
+в поля &lt;code&gt;endpoint_host&lt;/code&gt; и &lt;code&gt;endpoint_port&lt;/code&gt; в конфиге OpenWRT.
+Остальные поля статичные.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Перезапустим сеть на роутере:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;/etc/init.d/network restart
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Проверим VPN:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# wg show&lt;/span&gt;
+interface: wg0
+public key: Kxn5CpI6wu+U5+ChMCNY/5Xs9DfoZ691G6OSX2V4HSU&lt;span class="o"&gt;=&lt;/span&gt;
+private key: &lt;span class="o"&gt;(&lt;/span&gt;hidden&lt;span class="o"&gt;)&lt;/span&gt;
+listening port: &lt;span class="m"&gt;51820&lt;/span&gt;
+
+peer: OsswT7RVN/M8jpDoARlsPshjtIr0R/1g3NAyCTl/4BY&lt;span class="o"&gt;=&lt;/span&gt;
+endpoint: &lt;span class="m"&gt;194&lt;/span&gt;.32.146.82:51820
+allowed ips: &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0/0
+latest handshake: &lt;span class="m"&gt;44&lt;/span&gt; seconds ago
+transfer: &lt;span class="m"&gt;1012&lt;/span&gt; B received, &lt;span class="m"&gt;3&lt;/span&gt;.53 KiB sent
+persistent keepalive: every &lt;span class="m"&gt;25&lt;/span&gt; seconds
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Если команда &lt;code&gt;wg show&lt;/code&gt; выводит что-то подобное, то всё идёт хорошо.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;Шаг 3. Скрипт для сбора списков заблокированных адресов&lt;/h2&gt;
+&lt;p&gt;Это возможно благодаря крутейшему сервису
+&lt;a href="https://antifilter.download/"&gt;antifilter.download&lt;/a&gt;, который обрабатывает выгрузки
+Роскомнадзора и отдает их в виде списков IP-адресов в машиночитаемых форматах.
+Мы настроим периодическую выгрузку списков заблокированных адресов с antifilter.download,
+чтобы всегда иметь актуальную информацию о блокировках.
+По моему опыту обновлять этот список раз в сутки (например, ночью) вполне достаточно.&lt;/p&gt;
+&lt;p&gt;Кроме того, нам нужно настроить файрволл роутера, чтобы он помечал пакеты,
+которые направляются к заблокированным адресам, специальным маркером.
+Такие маркированные пакеты должны маршрутизироваться роутером через VPN.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="вот так будут бегать пакетики" src="https://habrastorage.org/webt/vy/rc/ji/vyrcjihaaozo-vzf1nkm9nlxpl0.gif"&gt;&lt;/p&gt;
+&lt;p&gt;Начнём со скрипта, который реализует эту логику по обновлению списков заблокированных адресов.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Установим зависимости:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;opkg install ipset curl
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Создадим файл &lt;code&gt;/etc/init.d/hirkn&lt;/code&gt; со скриптом следующего содержания:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#!/bin/sh&lt;/span&gt;
+&lt;span class="nv"&gt;START&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;99&lt;/span&gt;
+&lt;span class="nv"&gt;dir&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/tmp/lst
+mkdir -p &lt;span class="nv"&gt;$dir&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Downloading lists of blocked addresses...&amp;quot;&lt;/span&gt;
+curl -z &lt;span class="nv"&gt;$dir&lt;/span&gt;/subnet.lst https://antifilter.download/list/subnet.lst --output &lt;span class="nv"&gt;$dir&lt;/span&gt;/subnet.lst
+curl -z &lt;span class="nv"&gt;$dir&lt;/span&gt;/ipsum.lst https://antifilter.download/list/ipsum.lst --output &lt;span class="nv"&gt;$dir&lt;/span&gt;/ipsum.lst
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Restarting firewall...&amp;quot;&lt;/span&gt;
+/etc/init.d/firewall restart
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Этот скрипт скачивает два списка заблокированных адресов — один в виде сетей
+(иногда РКН блокирует адреса целыми подсетями), другой — обобщенный список
+отдельных заблокированных адресов. За счёт обобщения в небольшие подсети он содержит
+не миллионы строк, а всего лишь что-то около 15 тысяч.
+Нам нужны оба списка, они не пересекаются между собой. Файлы сохраняются
+в каталог &lt;code&gt;/tmp&lt;/code&gt;, который в OpenWRT хранится в оперативной памяти — это должно
+работать быстро. В конце скрипт перезапускает файлволл.
+Настройка файлволла будет происходит позже.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Добавим этому скрипту права на выполнение:&lt;/p&gt;
+&lt;p&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;chmod +x /etc/init.d/hirkn
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+4. Добавим скрипт в "автозапуск", чтобы он выполнялся при включении роутера после
+всех остальных скриптов:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;ln -s /etc/init.d/hirkn /etc/rc.d/S99hirkn
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Через &lt;code&gt;cron&lt;/code&gt; запланируем выполнение этого скрипта раз в сутки:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;crontab -e
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;В открывшемся редакторе нужно добавить на новой строке:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;0 4 * * * /etc/init.d/hirkn
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;На &lt;a href="https://crontab.guru/#0_4_*_*_*"&gt;crontab.guru&lt;/a&gt; можно посмотреть объяснение этой
+строчки.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Включим &lt;code&gt;cron&lt;/code&gt;, потому что по умолчанию в OpenWRT он выключен:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;/etc/init.d/cron &lt;span class="nb"&gt;enable&lt;/span&gt;
+/etc/init.d/cron start
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Убедимся, что скрипт работает.&lt;/p&gt;
+&lt;p&gt;Запустим его:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;/etc/init.d/hirkn
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Если файлы со списками заблокированных адресов появились, то всё ок:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# ls -lh /tmp/lst/&lt;/span&gt;
+-rw-r--r--    &lt;span class="m"&gt;1&lt;/span&gt; root     root      &lt;span class="m"&gt;270&lt;/span&gt;.4K Dec  &lt;span class="m"&gt;7&lt;/span&gt; &lt;span class="m"&gt;07&lt;/span&gt;:18 ipsum.lst
+-rw-r--r--    &lt;span class="m"&gt;1&lt;/span&gt; root     root         &lt;span class="m"&gt;132&lt;/span&gt; Dec  &lt;span class="m"&gt;7&lt;/span&gt; &lt;span class="m"&gt;07&lt;/span&gt;:18 subnet.lst
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;Шаг 4. Дальнейшая настройка&lt;/h2&gt;
+&lt;p&gt;Теперь осталось настроить роутер так, чтобы он правильно маршрутизировал
+пакеты через VPN-туннель.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Создадим таблицу маршрутизации для VPN, добавив в файл
+    &lt;code&gt;/etc/iproute2/rt_tables&lt;/code&gt; строчку следующего вида:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;99      vpn
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Добавим дефолтный маршрут для VPN через туннельный интерфейс:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;ip route add table vpn default dev wg0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Чтобы сделать это изменение постоянным, чтобы оно переживало перезагрузки роутера,
+создадим файл &lt;code&gt;/etc/hotplug.d/iface/30-rknroute&lt;/code&gt; с вот таким содержимым:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#!/bin/sh&lt;/span&gt;
+ip route add table vpn default dev wg0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;В файл &lt;code&gt;/etc/config/network&lt;/code&gt;, который мы уже редактировали в процессе настройки
+    WireGuard, добавим правило, которое будет перенаправлять маркированные пакеты
+    в таблицу маршрутизации VPN:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;config rule
+    option priority &amp;#39;100&amp;#39;
+    option lookup &amp;#39;vpn&amp;#39;
+    option mark &amp;#39;0x1&amp;#39;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Теперь приступим к настройке файрволла. Это самая важная часть логики, которая
+    просматривает списки заблокированных адресов, и маркирует пакеты.
+    В файл &lt;code&gt;/etc/config/firewall&lt;/code&gt; допишем несколько абзацев:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;config zone
+    option name &amp;#39;wg&amp;#39;
+    option family &amp;#39;ipv4&amp;#39;
+    option masq &amp;#39;1&amp;#39;
+    option output &amp;#39;ACCEPT&amp;#39;
+    option forward &amp;#39;REJECT&amp;#39;
+    option input &amp;#39;REJECT&amp;#39;
+    option mtu_fix &amp;#39;1&amp;#39;
+    option network &amp;#39;wg0&amp;#39;
+
+config forwarding
+    option src &amp;#39;lan&amp;#39;
+    option dest &amp;#39;wg&amp;#39;
+
+config ipset
+    option name &amp;#39;vpn_subnets&amp;#39;
+    option storage &amp;#39;hash&amp;#39;
+    option loadfile &amp;#39;/tmp/lst/subnet.lst&amp;#39;
+    option match &amp;#39;dst_net&amp;#39;
+
+config ipset
+    option name &amp;#39;vpn_ipsum&amp;#39;
+    option storage &amp;#39;hash&amp;#39;
+    option loadfile &amp;#39;/tmp/lst/ipsum.lst&amp;#39;
+    option match &amp;#39;dst_net&amp;#39;
+
+config rule
+    option name &amp;#39;mark_subnet&amp;#39;
+    option src &amp;#39;lan&amp;#39;
+    option proto &amp;#39;all&amp;#39;
+    option ipset &amp;#39;vpn_subnets&amp;#39;
+    option set_mark &amp;#39;0x1&amp;#39;
+    option target &amp;#39;MARK&amp;#39;
+
+config rule
+    option name &amp;#39;mark_ipsum&amp;#39;
+    option src &amp;#39;lan&amp;#39;
+    option proto &amp;#39;all&amp;#39;
+    option ipset &amp;#39;vpn_ipsum&amp;#39;
+    option set_mark &amp;#39;0x1&amp;#39;
+    option target &amp;#39;MARK&amp;#39;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Первый из них настраивает зону для VPN — из неё разрешён лишь выход пакетов
+и включён маскарадинг.&lt;/p&gt;
+&lt;p&gt;Второй абзац разрешает переход из зоны &lt;code&gt;lan&lt;/code&gt;, где по умолчанию находятся все
+устройства, подключенные к роутеру, в зону для VPN.&lt;/p&gt;
+&lt;p&gt;Третий и четвертый абзацы заставляют файрволл загрузить файлы со списками
+заблокированных адресов и распихать по
+&lt;a href="https://ru.wikipedia.org/wiki/%D0%A5%D0%B5%D1%88-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0"&gt;хеш-таблицам&lt;/a&gt;.
+Как известно, поиск по хеш-таблице происходит за константное время, так что
+роутер сможет эффективно определять направляется ли пакет к заблокированному
+адресу или к обычному.&lt;/p&gt;
+&lt;p&gt;Пятый и шестой абзацы отвечают за маркировку пакетов: "если пакет направляется
+на заблокированный адрес, то добавим ему пометку &lt;code&gt;0x1&lt;/code&gt;".&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Перезапустим сеть:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;/etc/init.d/network restart
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;И запустим наш скрипт:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;/etc/init.d/hirkn
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;После этого трафик к заблокированным сайтам должен побежать через VPN.
+    Честно говоря, мне ещё почему-то после этого пришлось перезапустить роутер.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;Шаг 5. Отключаем IPv6&lt;/h2&gt;
+&lt;p&gt;Этот шаг мой самый нелюбимый, потому что я за всё новое и против всего старого.
+По моему глубокому убеждению IPv4 уже давно должен умереть и быть вытеснен шестой
+версией протокола. К сожалению,
+&lt;a href="https://www.google.com/intl/en/ipv6/statistics.html#tab=ipv6-adoption"&gt;дела у IPv6 пока идут не так гладко&lt;/a&gt;,
+как хотелось бы (сейчас он занимает всего около 30% процентов трафика).&lt;/p&gt;
+&lt;p&gt;Проблема в том, что antifilter.download выдаёт только заблокированные IPv4 адреса.
+Это значит, что наш обход блокировок не будет работать по IPv6.
+Если разрешить вашему роутеру работать по IPv6, то многие ваши устройства предпочтут
+открывать сайты по IPv6 либо напарываясь на страницы с блокировками от провайдеров,
+либо просто получая ошибки подключения по таймауту.&lt;/p&gt;
+&lt;p&gt;Отключаем IPv6 (команды взяты &lt;a href="https://superuser.com/a/1532705/993215"&gt;отсюда&lt;/a&gt;):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;uci &lt;span class="nb"&gt;set&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;network.lan.ipv6=off&amp;#39;&lt;/span&gt;
+uci &lt;span class="nb"&gt;set&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;network.wan.ipv6=off&amp;#39;&lt;/span&gt;
+uci &lt;span class="nb"&gt;set&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;dhcp.lan.dhcpv6=disabled&amp;#39;&lt;/span&gt;
+/etc/init.d/odhcpd disable
+uci commit
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;После этого может потребоваться ещё одна перезагрузка роутера, чтобы он перестал
+раздавать вновь подключенным устройствам IPv6-адреса.&lt;/p&gt;
+&lt;h1&gt;Заключение&lt;/h1&gt;
+&lt;p&gt;Вот как-то так можно при помощи несложных (ладно, сложных) манипуляций настроить
+свой роутер на точечный обход блокировок. Все незаблокированные сайты работают как обычно,
+а заблокированные — через VPN. С такой конфигурацией можно полностью забыть
+про мелкие пакости от Роскомнадзора и начать, наконец, жить :)&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Добро пожаловать в Интернет" src="https://semakin.dev/static/welcome_to_the_internet_meme.jpg"&gt;&lt;/p&gt;</content><category term="blog"></category><category term="network"></category><category term="vpn"></category><category term="wiregurad"></category><category term="openwrt"></category></entry><entry><title>Эффективный обход словарей в цикле в Python</title><link href="https://semakin.dev/2020/07/iterate_over_dict/" rel="alternate"></link><published>2020-07-06T13:46:41+05:00</published><updated>2020-07-06T13:46:41+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-07-06:/2020/07/iterate_over_dict/</id><summary type="html">&lt;p&gt;Расскажу как правильно обойти словарь (dict) в цикле, чтобы получить ключи, значения или и ключи, и значения одновременно, при этом не получив ничего лишнего.&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Эффективный обход словарей в цикле в Python&lt;/h1&gt;
 &lt;p&gt;Словарь (dictionary, dict) — это  ассоциативный массив, который позволяет
 сохранять значения по ключам.&lt;/p&gt;
 &lt;p&gt;Это очень важная, даже можно сказать основополагающая структура данных,
@@ -26,14 +541,12 @@
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;currencies&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;rub&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;usd&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;69.78&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;eur&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;78.28&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Самый очевидный вариант обхода словаря — это попытаться напрямую запустить
 цикл &lt;code&gt;for&lt;/code&gt; по объекту словаря, так же как мы делаем это со списками,
 кортежами, строками и любыми другими итерируемыми объектами.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;something&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;currencies&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;something&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Словарь и правда поддерживает протокол итераций, но словарь не так прост,
 как другие объекты, которые мы упомянули выше. Словарь состоит из нескольких
@@ -46,7 +559,6 @@
 usd
 eur
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;То есть обход словаря в цикле будет возвращать только &lt;strong&gt;ключи&lt;/strong&gt; этого словаря.&lt;/p&gt;
 &lt;p&gt;Пожалуй, задать такое поведение по умолчанию — это очень логичное решение со
@@ -85,14 +597,12 @@ eur
 &lt;span class="c1"&gt;# dict_keys([&amp;#39;rub&amp;#39;, &amp;#39;usd&amp;#39;, &amp;#39;eur&amp;#39;])&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Давайте добавим новый ключ в словарь:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;currencies&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;jpy&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mf"&gt;0.65&lt;/span&gt;
 
 &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;dict_keys&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="c1"&gt;# dict_keys([&amp;#39;rub&amp;#39;, &amp;#39;usd&amp;#39;, &amp;#39;eur&amp;#39;, &amp;#39;jpy&amp;#39;])&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Как видите, созданное ранее представление словаря обновилось автоматически,
 когда обновился его словарь.&lt;/p&gt;
@@ -105,7 +615,6 @@ eur
 &lt;span class="c1"&gt;# TypeError: &amp;#39;dict_keys&amp;#39; object is not subscriptable&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Зато представление словаря является итерируемым объектом и его без проблем
 можно обходить при помощи цикла:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;key&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;currencies&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;keys&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
@@ -115,7 +624,6 @@ eur
 &lt;span class="c1"&gt;# eur&lt;/span&gt;
 &lt;span class="c1"&gt;# jpy&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Результат тот же самый, что и в предыдущем способе обхода словаря, но в
 этот раз явно видно, что в цикле будут обрабатываться только ключи словаря.&lt;/p&gt;
@@ -137,7 +645,6 @@ eur
 &lt;span class="c1"&gt;# 78.28&lt;/span&gt;
 &lt;span class="c1"&gt;# 0.65&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;По значениям словаря уже невозможно получить ключи
 (ну, вообще можно попытаться, но для этого потребуется полный перебор словаря,
@@ -165,7 +672,6 @@ eur
 &lt;span class="c1"&gt;# jpy 0.65&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;В Python есть возможность распаковывать итерируемые объекты, такие как кортежи,
 в различные переменные. Давайте на примере посмотрим как это работает:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;point&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -178,7 +684,6 @@ eur
 &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;z&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="c1"&gt;# 3&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Таким образом можно распаковывать последовательности любого размера.
 Это намного проще, чем извлекать значения по индексам и присваивать в
@@ -193,7 +698,6 @@ eur
 &lt;span class="c1"&gt;# eur 78.28&lt;/span&gt;
 &lt;span class="c1"&gt;# jpy 0.65&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;h1&gt;Заключение&lt;/h1&gt;
 &lt;p&gt;При обходе словаря стоит руководствоваться следующей логикой:&lt;/p&gt;
@@ -309,7 +813,6 @@ Python развивается семимильными шагами.&lt;/p&gt;
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Hello, &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Типы параметров, принимаемых функцией, записываются после имени параметра
 через знак двоеточия, но перед значением по умолчанию, если оно присутствует.
 Возвращаемое значение функции записывается после знака “стрелки”.&lt;/p&gt;
@@ -327,7 +830,6 @@ Python развивается семимильными шагами.&lt;/p&gt;
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;weight&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="n"&gt;height&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;А вот так функцию, которая принимает строку и булевый аргумент, но ничего не
 возвращает:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;print_hello&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;upper&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;bool&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;False&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
@@ -335,7 +837,6 @@ Python развивается семимильными шагами.&lt;/p&gt;
         &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;upper&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
     &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Hello,&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Вот так можно аннотировать любые переменные в любом месте кода (Python 3.6+):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Andrey&amp;quot;&lt;/span&gt;
@@ -347,7 +848,6 @@ Python развивается семимильными шагами.&lt;/p&gt;
 &lt;span class="n"&gt;foo&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Если мы создадим свой класс, то его тоже можно использовать для аннотаций:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Example&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="k"&gt;pass&lt;/span&gt;
@@ -355,7 +855,6 @@ Python развивается семимильными шагами.&lt;/p&gt;
 &lt;span class="c1"&gt;# довольно бессмысленно, но для примера пойдет&lt;/span&gt;
 &lt;span class="n"&gt;example_instance&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Example&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Example&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;h1&gt;Контейнерные типы и дженерики&lt;/h1&gt;
 &lt;p&gt;Перейдем к более сложным типам, таким как списки, кортежи, словари и множества.
@@ -365,7 +864,6 @@ Python развивается семимильными шагами.&lt;/p&gt;
 &lt;span class="n"&gt;stock_prices&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;dict&lt;/span&gt;
 &lt;span class="n"&gt;valid_answers&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;set&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Это не слишком информативно, потому что кроме самого типа контейнера было бы
 ещё полезно знать, какие данные он в себе содержит. Что такое &lt;code&gt;person_info&lt;/code&gt;?
@@ -389,7 +887,6 @@ Python развивается семимильными шагами.&lt;/p&gt;
 &lt;span class="n"&gt;valid_answers&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Set&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Начиная с Python 3.9 можно использовать стандартные классы в точно таких же
 целях, ничего ниоткуда не импортируя:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# будет работать только начиная с Python 3.9!&lt;/span&gt;
@@ -406,7 +903,6 @@ Python развивается семимильными шагами.&lt;/p&gt;
 &lt;span class="c1"&gt;# тип всех элементов множества&lt;/span&gt;
 &lt;span class="n"&gt;valid_answers&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;set&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Согласитесь, так намного понятнее. Сразу видно, какой тип данных лежит
 внутри контейнера. Такие типы называются обобщёнными (generic types).&lt;/p&gt;
@@ -432,7 +928,6 @@ Python развивается семимильными шагами.&lt;/p&gt;
 &lt;span class="n"&gt;months&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Tuple&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;h1&gt;Составные типы&lt;/h1&gt;
 &lt;p&gt;Часто случаются ситуации, когда нужно объединить несколько типов, например,
 для того, чтобы указать, что функция может принимать и строки, и числа.
@@ -442,7 +937,6 @@ Python развивается семимильными шагами.&lt;/p&gt;
 &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;add_or_concatenate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Union&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Union&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;]):&lt;/span&gt;
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Также очень часто возникает ситуация, когда возможно либо значение определенного
 типа, либо &lt;code&gt;None&lt;/code&gt;. Это настолько частая ситуация, что для этого даже сделали
@@ -454,7 +948,6 @@ Python развивается семимильными шагами.&lt;/p&gt;
 &lt;span class="n"&gt;phone&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Union&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Также может возникнуть ситуация, когда не получается указать какой-либо
 конкретный тип, потому что, например, функция может принимать на вход абсолютно
 что угодно. Для этих случаев тоже есть специальный объект &lt;code&gt;typing.Any&lt;/code&gt;:&lt;/p&gt;
@@ -463,7 +956,6 @@ Python развивается семимильными шагами.&lt;/p&gt;
 &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Any&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;Any&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;arg&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Можно считать, что &lt;code&gt;Any&lt;/code&gt; неявно подставляется везде, где не указан более
 конкретный тип. Очень соблазнительно везде вставлять этот тип, но
@@ -487,17 +979,14 @@ Python развивается семимильными шагами.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install mypy
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Для &lt;code&gt;pipenv&lt;/code&gt; и &lt;code&gt;poetry&lt;/code&gt; соответственно вот так:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv install --dev mypy
 $ poetry add --dev mypy
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Давайте напишем самый тривиальный пример программы с ошибкой:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;qwerty&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;При выполнении, очевидно, программа завершится ошибкой:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ python example.py
@@ -507,13 +996,11 @@ Traceback &lt;span class="o"&gt;(&lt;/span&gt;most recent call last&lt;span clas
 TypeError: can only concatenate str &lt;span class="o"&gt;(&lt;/span&gt;not &lt;span class="s2"&gt;&amp;quot;int&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; to str
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Давайте посмотрим, сможет ли тайп-чекер обнаружить эту проблему:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ mypy example.py
 example.py:1: error: Unsupported operand types &lt;span class="k"&gt;for&lt;/span&gt; + &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;str&amp;quot;&lt;/span&gt; and &lt;span class="s2"&gt;&amp;quot;int&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
 Found &lt;span class="m"&gt;1&lt;/span&gt; error in &lt;span class="m"&gt;1&lt;/span&gt; file &lt;span class="o"&gt;(&lt;/span&gt;checked &lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="nb"&gt;source&lt;/span&gt; file&lt;span class="o"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Отлично! Не исполняя программу, &lt;code&gt;mypy&lt;/code&gt; смог понять, что в ней присутствует ошибка.
 Давайте запрячем эту же самую ошибку чуть глубже, используя функцию:&lt;/p&gt;
@@ -526,13 +1013,11 @@ Found &lt;span class="m"&gt;1&lt;/span&gt; error in &lt;span class="m"&gt;1&lt;/
 &lt;span class="n"&gt;greet&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Проверим типы в этой программе:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ mypy example2.py
 example2.py:9: error: Argument &lt;span class="m"&gt;1&lt;/span&gt; to &lt;span class="s2"&gt;&amp;quot;greet&amp;quot;&lt;/span&gt; has incompatible &lt;span class="nb"&gt;type&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;int&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; expected &lt;span class="s2"&gt;&amp;quot;str&amp;quot;&lt;/span&gt;
 Found &lt;span class="m"&gt;1&lt;/span&gt; error in &lt;span class="m"&gt;1&lt;/span&gt; file &lt;span class="o"&gt;(&lt;/span&gt;checked &lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="nb"&gt;source&lt;/span&gt; file&lt;span class="o"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Тайп-чекер пропустил правильный вызов функции, но обнаружил вызов функции
 с ошибкой.&lt;/p&gt;
@@ -566,7 +1051,6 @@ Git-хуки и CI.&lt;/p&gt;
 можно заметить следующий вывод:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;\ No newline at end of file
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Или на GitHub в интерфейсе для просмотра диффов:&lt;/p&gt;
 &lt;p&gt;&lt;img alt="GitHub &amp;quot;now newline at end of file&amp;quot; warning" src="https://semakin.dev/static/github_no_newline_at_end_of_file.jpg"&gt;&lt;/p&gt;
@@ -669,13 +1153,11 @@ Git-хуки и CI.&lt;/p&gt;
     &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;zxc&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Сколько по-вашему в этом файле строк? Три? Давайте посмотрим, что об этом файле
 думает утилита &lt;code&gt;wc&lt;/code&gt;, которая с флагом &lt;code&gt;-l&lt;/code&gt; умеет считать количество строк в файле:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ wc -l broken.txt 
 &lt;span class="m"&gt;2&lt;/span&gt; broken.txt
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Упс! &lt;code&gt;wc&lt;/code&gt; нашла только 2 строки!&lt;/p&gt;
 &lt;p&gt;Давайте создадим еще один файл:&lt;/p&gt;
@@ -685,7 +1167,6 @@ Git-хуки и CI.&lt;/p&gt;
     &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;vbn&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;И попробуем теперь склеить два созданных файла при помощи утилиты &lt;code&gt;cat&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ cat broken.txt broken2.txt 
 qwe
@@ -694,7 +1175,6 @@ zxcrty
 fgh
 vbn
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;blockquote&gt;
 &lt;p&gt;Название &lt;code&gt;cat&lt;/code&gt; — это сокращение от "конкатенация", и никак не связано
@@ -799,7 +1279,6 @@ vbn
 $ &lt;span class="nb"&gt;cd&lt;/span&gt; git_hooks_example/
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Git уже заботливо создал для нас шаблоны для написания хуков,
 которые лежат в специальной служебной директории:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ ls -l .git/hooks/
@@ -817,7 +1296,6 @@ total &lt;span class="m"&gt;56&lt;/span&gt;
 -rwxr-xr-x. &lt;span class="m"&gt;1&lt;/span&gt; br0ke br0ke  &lt;span class="m"&gt;548&lt;/span&gt; May &lt;span class="m"&gt;30&lt;/span&gt; &lt;span class="m"&gt;21&lt;/span&gt;:36 pre-receive.sample*
 -rwxr-xr-x. &lt;span class="m"&gt;1&lt;/span&gt; br0ke br0ke &lt;span class="m"&gt;3639&lt;/span&gt; May &lt;span class="m"&gt;30&lt;/span&gt; &lt;span class="m"&gt;21&lt;/span&gt;:36 update.sample*
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Можно, например, просто переименовать файл &lt;code&gt;pre-commit.sample&lt;/code&gt; в &lt;code&gt;pre-commit&lt;/code&gt;,
 и этот хук вступит в силу. В моём случае там на &lt;code&gt;bash&lt;/code&gt; реализована
@@ -850,12 +1328,10 @@ black --check &lt;span class="nv"&gt;$CHANGED_PYTHON_FILES&lt;/span&gt;
 &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;All checks successfully passed.&amp;quot;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Этот файл должен быть сохранён по пути &lt;code&gt;.git/hooks/pre-commit&lt;/code&gt;.
 Файл нужно сделать исполняемым, иначе Git не сможет его запустить:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ chmod a+x .git/hooks/pre-commit
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Теперь давайте создадим какой-нибудь файл, который точно не пройдет этих
 проверок. Обратите внимание на лишние пробелы рядом со скобками,
@@ -864,14 +1340,12 @@ black --check &lt;span class="nv"&gt;$CHANGED_PYTHON_FILES&lt;/span&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Hello world!&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Попытаемся его закоммитить:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ git add example.py
 $ git commit -v
 example.py:1:7: E201 whitespace after &lt;span class="s1"&gt;&amp;#39;(&amp;#39;&lt;/span&gt;
 example.py:1:22: E202 whitespace before &lt;span class="s1"&gt;&amp;#39;)&amp;#39;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Наш умный хук выполнился и запустил &lt;code&gt;flake8&lt;/code&gt;, который нашел ошибки.
 Давайте удалим лишние пробелы и попытаемся закоммитить ещё раз:&lt;/p&gt;
@@ -882,7 +1356,6 @@ Oh no! 💥 💔 💥
 &lt;span class="m"&gt;1&lt;/span&gt; file would be reformatted.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;В этот раз &lt;code&gt;flake8&lt;/code&gt; не нашёл ошибок, но операция всё равно завершилась
 ошибкой из-за &lt;code&gt;black&lt;/code&gt;. Давайте отформатируем файл и наконец закоммитим его:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ black .
@@ -890,13 +1363,11 @@ $ git add example.py
 $ git commit -v
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;На этот раз всё срабатывает успешно.&lt;/p&gt;
 &lt;p&gt;Чтобы закоммитить, игнорируя хуки, можно было передать в
 команду флаг &lt;code&gt;--no-verify&lt;/code&gt; или &lt;code&gt;-n&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;git commit -v -n
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Как видите, писать git-хуки самостоятельно не так уж и сложно.
 Не обязательно использовать &lt;code&gt;bash&lt;/code&gt;, хуки можно писать на чём угодно —
@@ -933,12 +1404,10 @@ Git-хуками.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install --user pre-commit
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Проверим установку:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pre-commit --version
 pre-commit &lt;span class="m"&gt;2&lt;/span&gt;.4.0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;h2&gt;Настройка&lt;/h2&gt;
 &lt;p&gt;&lt;code&gt;pre-commit&lt;/code&gt; спроектирован с прицелом на удобное использование сторонних
@@ -954,7 +1423,6 @@ pre-commit &lt;span class="m"&gt;2&lt;/span&gt;.4.0
 Давайте сгенерируем базовый конфиг:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pre-commit sample-config &amp;gt; .pre-commit-config.yaml
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;И допилим примерно до такого состояния:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# See https://pre-commit.com for more information&lt;/span&gt;
@@ -983,11 +1451,9 @@ pre-commit &lt;span class="m"&gt;2&lt;/span&gt;.4.0
       &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="nt"&gt;id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;black&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Теперь включим &lt;code&gt;pre-commit&lt;/code&gt; в текущем репозитории.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pre-commit install
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Рекомендую добавить эту команду в документацию для разработчиков. Это всё,
 что нужно будет сделать вашим коллегам, чтобы хуки заработали и у них тоже.&lt;/p&gt;
@@ -998,19 +1464,16 @@ pre-commit &lt;span class="m"&gt;2&lt;/span&gt;.4.0
 ...
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;При этом старый хук был переименован в &lt;code&gt;pre-commit.legacy&lt;/code&gt;.
 Умный &lt;code&gt;pre-commit&lt;/code&gt; будет запускать и его тоже, чтобы не сломать текущее поведение.
 Если это не желательно, то проще всего удалить этот старый файл:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ rm .git/hooks/pre-commit.legacy
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Проверим, что конфигурационный файл валиден, а заодно и что всё нынешнее
 содержимое репозитория удовлетворяет описанными правилам:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pre-commit run --all-files
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;При первом запуске &lt;code&gt;pre-commit&lt;/code&gt; скачает и закэширует все файлы, необходимые
 для выполнения проверок. Для проверок, которые написаны на Python,
@@ -1023,7 +1486,6 @@ pre-commit &lt;span class="m"&gt;2&lt;/span&gt;.4.0
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ git add .pre-commit-config.yaml
 $ git commit -m “Add pre-commit configuration”
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;h2&gt;Плагины/зависимости для проверок&lt;/h2&gt;
 &lt;p&gt;Из-за того, что для проверок, написанных на Python, создаются отдельные
@@ -1040,7 +1502,6 @@ $ git commit -m “Add pre-commit configuration”
         &lt;span class="nt"&gt;additional_dependencies&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
           &lt;span class="p p-Indicator"&gt;-&lt;/span&gt; &lt;span class="l l-Scalar l-Scalar-Plain"&gt;flake8-bugbear&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;При следующем запуске &lt;code&gt;pre-commit&lt;/code&gt; обнаружит новую зависимость и установит её
 в то же виртуальное окружение, что и &lt;code&gt;flake8&lt;/code&gt;. Теперь перед коммитом будет
@@ -1070,7 +1531,6 @@ reformatted example.py
 All &lt;span class="k"&gt;done&lt;/span&gt;! ✨ 🍰 ✨
 &lt;span class="m"&gt;1&lt;/span&gt; file reformatted.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Ожидаемо, операция прервалась, но в этот раз мы получили все нужные
 сообщения об ошибках. Кроме того, файл даже был автоматически отформатирован
@@ -1196,7 +1656,6 @@ All &lt;span class="k"&gt;done&lt;/span&gt;! ✨ 🍰 ✨
 &lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;У меня был опыт попытки выработать в команде конвенцию, и это не так просто.
 Не потому что люди плохие или упрямые, просто у каждого своё понимание
 красоты и удобства. Наверняка, начнётся борьба вкусов и мнений.
@@ -1223,19 +1682,16 @@ Collecting &lt;span class="nv"&gt;black&lt;/span&gt;&lt;span class="o"&gt;==&lt;
 ERROR: No matching distribution found &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="nv"&gt;black&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Команда завершится ошибкой, но выведет список доступных версий.
 Найдем последнюю доступную версию и запомним её.&lt;/p&gt;
 &lt;p&gt;Внутри виртуального окружения нужно выполнить, заменив версию на последнюю:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install &lt;span class="nv"&gt;black&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="m"&gt;19&lt;/span&gt;.10b0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;А если вы используете &lt;code&gt;pipenv&lt;/code&gt; или &lt;code&gt;poetry&lt;/code&gt;, то вот так:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv install --dev &lt;span class="nv"&gt;black&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="m"&gt;19&lt;/span&gt;.10b0
 $ poetry add --dev &lt;span class="nv"&gt;black&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="m"&gt;19&lt;/span&gt;.10b0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Обратите внимание, что при установке &lt;code&gt;black&lt;/code&gt; через &lt;code&gt;pipenv&lt;/code&gt; обязательно нужно
 указывать конкретную версию. Я описал, что произойдёт, если этого не сделать,
@@ -1253,7 +1709,6 @@ All &lt;span class="k"&gt;done&lt;/span&gt;! ✨ 🍰 ✨
 &lt;span class="m"&gt;50&lt;/span&gt; files reformatted, &lt;span class="m"&gt;11&lt;/span&gt; files left unchanged.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;И это практически единственная команда, которую вам нужно запомнить.&lt;/p&gt;
 &lt;p&gt;А вот так можно отформатировать один конкретный файл:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ black setup.py 
@@ -1261,7 +1716,6 @@ reformatted setup.py
 All &lt;span class="k"&gt;done&lt;/span&gt;! ✨ 🍰 ✨
 &lt;span class="m"&gt;1&lt;/span&gt; file reformatted.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;h2&gt;Интеграция с редактором/IDE&lt;/h2&gt;
 &lt;p&gt;Очень удобно, когда форматтер запускается прямо из редактора кода автоматически,
@@ -1277,7 +1731,6 @@ All &lt;span class="k"&gt;done&lt;/span&gt;! ✨ 🍰 ✨
 в которых содержится неотформатированный код.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ black --check .
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;В режиме “проверки” &lt;code&gt;black&lt;/code&gt; не будет форматировать файлы,
 а просто напечатает список неотформатированных файлов и завершится кодом ошибки,
@@ -1311,7 +1764,6 @@ All &lt;span class="k"&gt;done&lt;/span&gt;! ✨ 🍰 ✨
 &lt;span class="s"&gt;&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;h2&gt;Настройка &lt;code&gt;flake8&lt;/code&gt;, чтобы он не противоречил &lt;code&gt;black&lt;/code&gt;&lt;/h2&gt;
 &lt;p&gt;У &lt;code&gt;flake8&lt;/code&gt; своё мнение по поводу того, как должен быть отформатирован код,
 которое не всегда совпадает с мнением &lt;code&gt;black&lt;/code&gt;.
@@ -1329,7 +1781,6 @@ All &lt;span class="k"&gt;done&lt;/span&gt;! ✨ 🍰 ✨
       &lt;span class="n"&gt;datetime&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;datetime&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;now&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;isoformat&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Я специально сделал побольше аргументов в функцию &lt;code&gt;print()&lt;/code&gt;,
 чтобы вызов функции стал достаточно длинным, чтобы &lt;code&gt;black&lt;/code&gt;
 разнёс его на несколько строк. Обратите внимание на
@@ -1345,7 +1796,6 @@ All &lt;span class="k"&gt;done&lt;/span&gt;! ✨ 🍰 ✨
     &lt;span class="n"&gt;datetime&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;datetime&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;now&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;isoformat&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt;
 &lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Тернарный оператор затерялся среди других аргументов функции, его
 теперь очень трудно заметить. Чтобы исправить, давайте возьмём тернарный
@@ -1363,7 +1813,6 @@ All &lt;span class="k"&gt;done&lt;/span&gt;! ✨ 🍰 ✨
 &lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Теперь намного понятнее, не правда ли? Такое может произойти не только
 с тернарными операторами, но и с длинными арифметическими выражениями,
 и с длинными строками, которые разбиты на несколько частей:&lt;/p&gt;
@@ -1375,7 +1824,6 @@ All &lt;span class="k"&gt;done&lt;/span&gt;! ✨ 🍰 ✨
      &lt;span class="s2"&gt;&amp;quot;Sed dolor massa, mollis a commodo in, molestie in risus.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Эта функция имеет два аргумента — булевый и строковый. Отформатируем:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
     &lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
@@ -1383,7 +1831,6 @@ All &lt;span class="k"&gt;done&lt;/span&gt;! ✨ 🍰 ✨
     &lt;span class="s2"&gt;&amp;quot;Sed dolor massa, mollis a commodo in, molestie in risus.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
 &lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;&lt;code&gt;black&lt;/code&gt; опять не помог сделать код читаемее. Выглядит так, будто функция
 имеет три аргумента, хотя на самом деле их только два. Нужно хорошо
@@ -1397,7 +1844,6 @@ All &lt;span class="k"&gt;done&lt;/span&gt;! ✨ 🍰 ✨
     &lt;span class="p"&gt;),&lt;/span&gt;
 &lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Стало в сто раз лучше. Теперь всё очевидно.&lt;/p&gt;
 &lt;p&gt;Надеюсь, что когда-нибудь эту &lt;a href="https://github.com/psf/black/issues/620"&gt;шероховатость&lt;/a&gt;
@@ -1448,7 +1894,6 @@ All &lt;span class="k"&gt;done&lt;/span&gt;! ✨ 🍰 ✨
 &lt;span class="c1"&gt;# выводит: Hello world!&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Python 2:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# простое использование&lt;/span&gt;
 &lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Hello&amp;quot;&lt;/span&gt;
@@ -1475,7 +1920,6 @@ All &lt;span class="k"&gt;done&lt;/span&gt;! ✨ 🍰 ✨
 &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Hello&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;world!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="c1"&gt;# выводит: Hello world!&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Обычно инструкциями в Python являются только очень базовые вещи,
 такие как условия (&lt;code&gt;if&lt;/code&gt;), циклы (&lt;code&gt;for&lt;/code&gt;, &lt;code&gt;while&lt;/code&gt;),
@@ -1506,7 +1950,6 @@ All &lt;span class="k"&gt;done&lt;/span&gt;! ✨ 🍰 ✨
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;build_description&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;node&lt;/span&gt;&lt;span class="p"&gt;)[:&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Меня это удивило. Я даже
 &lt;a href="https://github.com/brandon-rhodes/logging_tree/pull/24"&gt;создал пулл-реквест&lt;/a&gt;,
 будучи уверен, что нашёл ошибку. После того, как автор возразил,
@@ -1518,7 +1961,6 @@ All &lt;span class="k"&gt;done&lt;/span&gt;! ✨ 🍰 ✨
 &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Hello&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="c1"&gt;# выводит: Hello&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Немного поразмыслив и почитав, я осознал, где тут собака зарыта.
 Хоть это и выглядит как вызов функции &lt;code&gt;print()&lt;/code&gt;, на самом деле это всё та же
@@ -1542,7 +1984,6 @@ All &lt;span class="k"&gt;done&lt;/span&gt;! ✨ 🍰 ✨
 &lt;span class="c1"&gt;# выводит: Hello&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Как выяснилось, в Python 2 &lt;code&gt;print&lt;/code&gt; и правда можно так, что со стороны это будет
 выглядеть как вызов функции, но для очень ограниченного множества случаев,
 а именно — должен быть только один позиционный аргумент.
@@ -1562,7 +2003,6 @@ All &lt;span class="k"&gt;done&lt;/span&gt;! ✨ 🍰 ✨
 &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nb"&gt;type&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;builtin_function_or_method&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Трюки из той же серии:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# условие со скобками как в C:&lt;/span&gt;
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
@@ -1577,7 +2017,6 @@ All &lt;span class="k"&gt;done&lt;/span&gt;! ✨ 🍰 ✨
 &lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;func&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;span class="kc"&gt;True&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Это код синтаксически верен, но просто обычно так не пишут. И правильно.&lt;/p&gt;
 &lt;h1&gt;Заключение&lt;/h1&gt;
@@ -1657,7 +2096,6 @@ Chocolatey имеет намного больше общего с
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;@&lt;span class="s2"&gt;&amp;quot;%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe&amp;quot;&lt;/span&gt; -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command &lt;span class="s2"&gt;&amp;quot; [System.Net.ServicePointManager]::SecurityProtocol = 3072; iex ((New-Object System.Net.WebClient).DownloadString(&amp;#39;https://chocolatey.org/install.ps1&amp;#39;))&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; SET &lt;span class="s2"&gt;&amp;quot;PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin&amp;quot;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;На всякий случай, если эта команда устареет и перестанет работать,
 или вы предпочитаете вставлять в администраторский терминал команды
 только из официальных источников (и правильно делаете), то документация
@@ -1669,7 +2107,6 @@ Chocolatey имеет намного больше общего с
 удобнее. Можно проверить установку:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;choco -?
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Если вы видите справку по команде, то установка прошла успешно.&lt;/p&gt;
 &lt;h2&gt;Установка программ&lt;/h2&gt;
@@ -1689,11 +2126,9 @@ Chocolatey имеет намного больше общего с
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;choco install -y googlechrome firefox
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Или текстовый редактор/IDE (удалите из команды ненужные названия):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;choco install -y notepadplusplus.install vscode
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Я являюсь заядлым пользователем PyCharm, который лучше всего устанавливать
 через &lt;a href="https://www.jetbrains.com/ru-ru/toolbox-app/"&gt;JetBrains Toolbox&lt;/a&gt;
@@ -1701,26 +2136,21 @@ Chocolatey имеет намного больше общего с
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;choco install -y jetbrainstoolbox
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Инструменты для разработки:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;choco install -y git python3 microsoft-windows-terminal postman
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Мессенджеры и видео-конференции:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;choco install -y telegram.install slack zoom 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Игры:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;choco install -y steam epicgameslauncher
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Всякое прочее-разное полезное:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;choco install -y 7zip vlc paint.net teamviewer qbittorrent thunderbird putty.install
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;И для установки даже не пришлось кликать мышью по кнопкам!&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://chocolatey.org/docs/commands-uninstall"&gt;Тут&lt;/a&gt; можете почитать
@@ -1730,7 +2160,6 @@ Chocolatey имеет намного больше общего с
 до актуальных версий:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;choco upgrade all -y
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;По-моему, это очень круто и удобно!&lt;/p&gt;
 &lt;h1&gt;Заключение&lt;/h1&gt;
@@ -1815,24 +2244,20 @@ Chocolatey имеет намного больше общего с
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install flake8
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Если вы пользуетесь &lt;code&gt;pipenv&lt;/code&gt;, то &lt;code&gt;flake8&lt;/code&gt; нужно устанавливать
 как dev-зависимость (ведь для работы программы линтер не нужен,
 он нужен только для разработчика):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv install --dev flake8
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Аналогично с &lt;code&gt;poetry&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ poetry add --dev flake8
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Проверим установку:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ flake8 --version
 &lt;span class="m"&gt;3&lt;/span&gt;.8.1 &lt;span class="o"&gt;(&lt;/span&gt;mccabe: &lt;span class="m"&gt;0&lt;/span&gt;.6.1, pycodestyle: &lt;span class="m"&gt;2&lt;/span&gt;.6.0, pyflakes: &lt;span class="m"&gt;2&lt;/span&gt;.2.0&lt;span class="o"&gt;)&lt;/span&gt; CPython &lt;span class="m"&gt;3&lt;/span&gt;.8.2 on Linux
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;h3&gt;Использование&lt;/h3&gt;
 &lt;p&gt;Для работы &lt;code&gt;flake8&lt;/code&gt; нужно просто указать файл или директорию, которые
@@ -1846,7 +2271,6 @@ $ flake8 src/
 &lt;span class="c1"&gt;# проверить текущую директорию рекурсивно&lt;/span&gt;
 $ flake8 .
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Давайте для демонстрации попытаемся написать программу с как можно большим
 количеством “плохих практик”:&lt;/p&gt;
@@ -1894,7 +2318,6 @@ bad_code.py:16:5: E722 &lt;span class="k"&gt;do&lt;/span&gt; not use bare &lt;sp
 bad_code.py:17:1: E101 indentation contains mixed spaces and tabs
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Как видите, &lt;code&gt;flake8&lt;/code&gt; нашёл кучу ошибок. Для каждой ошибки указана строка
 и номер символа в строке (не всегда точный), где произошла ошибка.
 Также у каждой категории ошибок есть свой код: &lt;code&gt;E101&lt;/code&gt;, &lt;code&gt;W291&lt;/code&gt; и т.д.
@@ -1915,13 +2338,11 @@ bad_code.py:17:1: E101 indentation contains mixed spaces and tabs
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install flake8-bugbear pep8-naming
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Давайте убедимся, что плагины действительно установились
 и &lt;code&gt;flake8&lt;/code&gt; может их найти:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ flake8 --version
 &lt;span class="m"&gt;3&lt;/span&gt;.8.1 &lt;span class="o"&gt;(&lt;/span&gt;flake8-bugbear: &lt;span class="m"&gt;20&lt;/span&gt;.1.4, mccabe: &lt;span class="m"&gt;0&lt;/span&gt;.6.1, naming: &lt;span class="m"&gt;0&lt;/span&gt;.10.0, pycodestyle: &lt;span class="m"&gt;2&lt;/span&gt;.6.0, pyflakes: &lt;span class="m"&gt;2&lt;/span&gt;.2.0&lt;span class="o"&gt;)&lt;/span&gt; CPython &lt;span class="m"&gt;3&lt;/span&gt;.8.2 on Linux
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Если вы видите в списке в скобках названия ваших плагинов, то всё хорошо.&lt;/p&gt;
 &lt;p&gt;Теперь снова проверим наш файл:&lt;/p&gt;
@@ -1956,7 +2377,6 @@ bad_code.py:16:5: E722 &lt;span class="k"&gt;do&lt;/span&gt; not use bare &lt;sp
 bad_code.py:16:5: B001 Do not use bare &lt;span class="sb"&gt;`&lt;/span&gt;except:&lt;span class="sb"&gt;`&lt;/span&gt;, it also catches unexpected events like memory errors, interrupts, system exit, and so on.  Prefer &lt;span class="sb"&gt;`&lt;/span&gt;except Exception:&lt;span class="sb"&gt;`&lt;/span&gt;.  If you&lt;span class="s1"&gt;&amp;#39;re sure what you&amp;#39;&lt;/span&gt;re doing, be explicit and write &lt;span class="sb"&gt;`&lt;/span&gt;except BaseException:&lt;span class="sb"&gt;`&lt;/span&gt;.
 bad_code.py:17:1: E101 indentation contains mixed spaces and tabs
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;В выводе появились новые категории ошибок (&lt;code&gt;N802&lt;/code&gt;, &lt;code&gt;B006&lt;/code&gt;)
 — они как раз добавлены плагинами. На этот раз, как мне кажется,
@@ -2012,7 +2432,6 @@ bad_code.py:17:1: E101 indentation contains mixed spaces and tabs
 &lt;span class="na"&gt;max-complexity&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;10&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;В конфигурации можно перечислить игнорируемые правила и директории,
 в которые &lt;code&gt;flake8&lt;/code&gt; заглядывать не будет, а также максимальную
 &lt;a href="https://ru.wikipedia.org/wiki/%D0%A6%D0%B8%D0%BA%D0%BB%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B0%D1%8F_%D1%81%D0%BB%D0%BE%D0%B6%D0%BD%D0%BE%D1%81%D1%82%D1%8C"&gt;цикломатическую сложность&lt;/a&gt;
@@ -2043,22 +2462,18 @@ bad_code.py:17:1: E101 indentation contains mixed spaces and tabs
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install pylint
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Для &lt;code&gt;pipenv&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv install --dev pylint
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Для &lt;code&gt;poetry&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ poetry add --dev pylint
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;h3&gt;Использование&lt;/h3&gt;
 &lt;p&gt;&lt;code&gt;pylint&lt;/code&gt; можно натравить на определённый файл:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pylint file.py
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;С директориями у &lt;code&gt;pylint&lt;/code&gt; дела обстоят чуть сложнее. Все директории он
 обрабатывает как питоновские модули, поэтому если в директории нет хотя бы
@@ -2103,7 +2518,6 @@ bad_code.py:2:0: W0611: Unused import itertools &lt;span class="o"&gt;(&lt;/span
 Your code has been rated at -41.43/10
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Я немного сократил вывод. Как видите, даже без плагинов &lt;code&gt;pylint&lt;/code&gt; нашёл
 все ожидаемые ошибки, и даже больше — например, он даже предлагает написать
 документацию.&lt;/p&gt;
@@ -2112,7 +2526,6 @@ Your code has been rated at -41.43/10
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pylint --help-msg&lt;span class="o"&gt;=&lt;/span&gt;missing-docstring
 $ pylint --help-msg&lt;span class="o"&gt;=&lt;/span&gt;R0902
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Вот какие ошибки &lt;code&gt;pylint&lt;/code&gt; находит для файла, который с точки зрения &lt;code&gt;flake8&lt;/code&gt;
 не содержит никаких ошибок:&lt;/p&gt;
@@ -2127,13 +2540,11 @@ not_so_bad_code.py:20:11: W0703: Catching too general exception Exception &lt;sp
 Your code has been rated at &lt;span class="m"&gt;6&lt;/span&gt;.67/10
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;А вот так в &lt;code&gt;pylint&lt;/code&gt; можно игнорировать отдельную ошибку на строке прямо в файлах
 с кодом:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;append_item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;l&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;None&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;  &lt;span class="c1"&gt;# pylint: disable=C0103&lt;/span&gt;
    &lt;span class="o"&gt;...&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Ещё &lt;code&gt;pylint&lt;/code&gt; умеет игнорировать ошибки в блоках кода:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
@@ -2142,17 +2553,14 @@ Your code has been rated at &lt;span class="m"&gt;6&lt;/span&gt;.67/10
     &lt;span class="o"&gt;...&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;И для файлов целиком. Вот так можно отключить все ошибки из категорий
 Warning, Convention и Refactor:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# pylint: disable=W,C,R&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;А можно не проверять файл вообще:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# pylint: skip-file&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Подробнее о правилах управления сообщениями
 &lt;a href="http://pylint.pycqa.org/en/latest/user_guide/message-control.html"&gt;смотрите в документации&lt;/a&gt;.
@@ -2164,7 +2572,6 @@ Warning, Convention и Refactor:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pylint --generate-rcfile &amp;gt; .pylintrc
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Созданный файл содержит все поддерживаемые &lt;code&gt;pylint&lt;/code&gt; опции с довольно
 подробными комментариями, так что углубляться я не буду.&lt;/p&gt;
 &lt;h3&gt;Плагины&lt;/h3&gt;
@@ -2173,16 +2580,13 @@ Warning, Convention и Refactor:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install pylint-django
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Теперь запускать &lt;code&gt;pylint&lt;/code&gt; нужно вот так:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pylint --load-plugins pylint_django &lt;span class="o"&gt;[&lt;/span&gt;..other options..&lt;span class="o"&gt;]&lt;/span&gt; &amp;lt;path_to_your_sources&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;либо в &lt;code&gt;.pylintrc&lt;/code&gt; нужно исправить директиву &lt;code&gt;load-plugins&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;load-plugins=pylint_django
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;h2&gt;Интеграция линтера в проект&lt;/h2&gt;
 &lt;p&gt;Интегрировать линтер в проект можно на трёх уровнях.
@@ -2343,7 +2747,6 @@ Git-хуки можно настроить, написав несложный sh
 -- Rajinikanth
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Если вы видите этот девиз &lt;code&gt;asdf&lt;/code&gt; после справки по командам,
 то установка удалась, можно продолжать.
 Девиз в моём вольном переводе означает что-то типа
@@ -2358,7 +2761,6 @@ Git-хуки можно настроить, написав несложный sh
 Давайте запросим список доступных к установке плагинов:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf plugin list all
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;У меня вывелось аж 194 штуки.
 Список плагинов можно посмотреть и на сайте,
@@ -2393,13 +2795,11 @@ Git-хуки можно настроить, написав несложный sh
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf plugin add &amp;lt;имя плагина&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Рассмотрим работу с теми плагинами, с которыми мне доводилось работать.&lt;/p&gt;
 &lt;h2&gt;Плагин для Python&lt;/h2&gt;
 &lt;p&gt;Установим плагин для Python:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf plugin add python
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;&lt;code&gt;asdf&lt;/code&gt; имеет очень логично организованный интерфейс командной строки.
 Запомните одно правило: если хотите просмотреть только установленные
@@ -2433,7 +2833,6 @@ Git-хуки можно настроить, написав несложный sh
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf plugin list
 python
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Отлично, плагин установлен! Давайте попросим &lt;code&gt;asdf&lt;/code&gt; показать
 список доступных версий (хотим вообще все, поэтому &lt;code&gt;list all&lt;/code&gt;)
@@ -2469,7 +2868,6 @@ python
 …
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Список я подсократил, но поверьте — он длинный.
 Там есть как все версии эталонного интерпретатора CPython,
 начиная с 2.1.3, так и альтернативные реализации Python
@@ -2488,13 +2886,11 @@ python
 $ asdf install python &lt;span class="m"&gt;3&lt;/span&gt;.8.2
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Давайте запросим список &lt;em&gt;установленных&lt;/em&gt; версий (&lt;code&gt;list&lt;/code&gt;):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf list python
   &lt;span class="m"&gt;3&lt;/span&gt;.7.7
   &lt;span class="m"&gt;3&lt;/span&gt;.8.2
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Давайте назначим глобальной ту версию Python, которую собираемся
 использовать чаще всего. Она будет использоваться по умолчанию, когда
@@ -2506,12 +2902,10 @@ $ python -V
 Python &lt;span class="m"&gt;3&lt;/span&gt;.8.2
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Если вам интересно, как работает &lt;code&gt;asdf&lt;/code&gt;, то:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ which python
 /home/br0ke/.asdf/shims/python
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Опять же, он использует тот же принцип, что и &lt;code&gt;pyenv&lt;/code&gt;
 — создает небольшие исполняемые файлы (shims) для всех команд,
@@ -2525,20 +2919,17 @@ Python &lt;span class="m"&gt;3&lt;/span&gt;.8.2
 $ &lt;span class="nb"&gt;cd&lt;/span&gt; my_project
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Установим локальную версию:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf &lt;span class="nb"&gt;local&lt;/span&gt; python &lt;span class="m"&gt;3&lt;/span&gt;.7.7
 $ python -V
 Python &lt;span class="m"&gt;3&lt;/span&gt;.7.7
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;В этой директории &lt;code&gt;asdf&lt;/code&gt; создал специальный файл &lt;code&gt;.tool-versions&lt;/code&gt;
 (аналог &lt;code&gt;.python-version&lt;/code&gt; из &lt;code&gt;pyenv&lt;/code&gt;):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ cat .tool-versions
 python &lt;span class="m"&gt;3&lt;/span&gt;.7.7
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Этот файл содержит версии всех утилит, которые мы настроили для директории,
 т.е. потенциально тут может быть не только Python.
@@ -2554,14 +2945,12 @@ python &lt;span class="m"&gt;3&lt;/span&gt;.7.7
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;legacy_version_file = yes
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;При выходе из директории локально настроенная версия перестанет действовать
 и версия вернётся на глобальную:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ &lt;span class="nb"&gt;cd&lt;/span&gt; ..
 $ python -V
 Python &lt;span class="m"&gt;3&lt;/span&gt;.8.2
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;По-моему, это очень удобно.
 В целом &lt;code&gt;asdf&lt;/code&gt; работает так же как &lt;code&gt;pyenv&lt;/code&gt; и многие другие менеджеры версий
@@ -2570,7 +2959,6 @@ Python &lt;span class="m"&gt;3&lt;/span&gt;.8.2
 &lt;p&gt;Допустим, что нужда прижала вас установить IPython:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install ipython
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Чтобы IPython можно было запускать, нужно попросить &lt;code&gt;asdf&lt;/code&gt; пересоздать шимы:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf reshim
@@ -2582,12 +2970,10 @@ IPython &lt;span class="m"&gt;7&lt;/span&gt;.14.0 -- An enhanced Interactive Pyt
 In &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;: print&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;asdf is awesome!&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;h2&gt;Плагин для Node.js&lt;/h2&gt;
 &lt;p&gt;Установим плагин для Node.js:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf plugin add nodejs
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Запросим список доступных версий:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf list all nodejs
@@ -2615,7 +3001,6 @@ In &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;s
 &lt;span class="m"&gt;14&lt;/span&gt;.2.0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Все инструменты устанавливаются по-разному, и плагины это учитывают. Например,
 Python собирался из исходников, а Node.js устанавливается простым
 скачиванием бинарника, так что никакие зависимости для сборки не нужны.&lt;/p&gt;
@@ -2627,11 +3012,9 @@ Python собирался из исходников, а Node.js устанавл
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Теперь установим последнюю на данный момент версию Node.js:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf install nodejs &lt;span class="m"&gt;14&lt;/span&gt;.2.0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Назначим её глобальной и проверим работу:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ asdf global nodejs &lt;span class="m"&gt;14&lt;/span&gt;.2.0
@@ -2643,20 +3026,17 @@ asdf is super awesome!
 undefined
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Давайте вернемся в директорию из предыдущего примера и
 добавим там ещё и локальную версию Node.js:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ &lt;span class="nb"&gt;cd&lt;/span&gt; my_project
 $ asdf &lt;span class="nb"&gt;local&lt;/span&gt; nodejs &lt;span class="m"&gt;14&lt;/span&gt;.2.0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Теперь в &lt;code&gt;.tool-versions&lt;/code&gt; лежит следующее содержимое:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ cat .tool-versions 
 python &lt;span class="m"&gt;3&lt;/span&gt;.7.7
 nodejs &lt;span class="m"&gt;14&lt;/span&gt;.2.0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;h1&gt;Заключение&lt;/h1&gt;
 &lt;p&gt;&lt;code&gt;asdf&lt;/code&gt; незаменим, если вы программируете более чем на одном языке.
@@ -2873,7 +3253,6 @@ pyenv &lt;span class="m"&gt;1&lt;/span&gt;.2.18
 ...
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Список довольно длинный, поэтому я его подсократил. Обычно вас будут
 интересовать такие версии, как &lt;code&gt;3.8.2&lt;/code&gt; или &lt;code&gt;3.7.7&lt;/code&gt; — это версии самой
 распространённой реализации интерпретатора CPython. Но если
@@ -2887,7 +3266,6 @@ Downloading Python-3.8.2.tar.xz...
 Installing Python-3.8.2...
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Через пару минут ожидания ваш новоиспечённый Python будет готов.&lt;/p&gt;
 &lt;p&gt;Можно сразу же назначить эту версию глобальной:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pyenv global &lt;span class="m"&gt;3&lt;/span&gt;.8.2
@@ -2895,12 +3273,10 @@ $ python -V
 Python &lt;span class="m"&gt;3&lt;/span&gt;.8.2
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Давайте в целях демонстрации установим ещё парочку интерпретаторов:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pyenv install &lt;span class="m"&gt;2&lt;/span&gt;.7.18
 $ pyenv install &lt;span class="m"&gt;3&lt;/span&gt;.9.0a6
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Получим список установленных версий интерпретатора:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pyenv versions
@@ -2909,12 +3285,10 @@ $ pyenv install &lt;span class="m"&gt;3&lt;/span&gt;.9.0a6
   &lt;span class="m"&gt;3&lt;/span&gt;.9.0a6
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Кстати, если нужно, то можно делать активными сразу несколько
 версий одновременно:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pyenv global &lt;span class="m"&gt;3&lt;/span&gt;.8.2 &lt;span class="m"&gt;2&lt;/span&gt;.7.18
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Теперь вывод версий покажет следующее:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pyenv versions
@@ -2922,7 +3296,6 @@ $ pyenv install &lt;span class="m"&gt;3&lt;/span&gt;.9.0a6
 * &lt;span class="m"&gt;3&lt;/span&gt;.8.2 &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;set&lt;/span&gt; by /home/br0ke/.pyenv/version&lt;span class="o"&gt;)&lt;/span&gt;
   &lt;span class="m"&gt;3&lt;/span&gt;.9.0a6
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;А работать это будет вот таким образом:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ python -V
@@ -2932,7 +3305,6 @@ Python &lt;span class="m"&gt;3&lt;/span&gt;.8.2
 $ python2 -V
 Python &lt;span class="m"&gt;2&lt;/span&gt;.7.18
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Грубо говоря, та версия, которая указана первой (3.8.2),
 имеет приоритет и занимает все нужные ей имена. Следующие версии (2.7.18)
@@ -2945,13 +3317,11 @@ Python &lt;span class="m"&gt;2&lt;/span&gt;.7.18
 &lt;span class="m"&gt;2&lt;/span&gt;.7.18
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;h3&gt;Локальная версия&lt;/h3&gt;
 &lt;p&gt;Давайте создадим директорию и войдём в неё:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ mkdir my_project
 $ &lt;span class="nb"&gt;cd&lt;/span&gt; my_project
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Представим, что в этой директории мы будем разрабатывать некий
 проект, на котором мы хотим опробовать фишки нового Python 3.9.
@@ -2959,12 +3329,10 @@ $ &lt;span class="nb"&gt;cd&lt;/span&gt; my_project
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pyenv &lt;span class="nb"&gt;local&lt;/span&gt; &lt;span class="m"&gt;3&lt;/span&gt;.9.0a
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;В директории появился файл &lt;code&gt;.python-version&lt;/code&gt; со следующим содержимым:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ cat .python-version
 &lt;span class="m"&gt;3&lt;/span&gt;.9.0a6
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;На данный момент список версий показывает следующее (удобно использовать
 эту команду, чтобы понять какую версию и почему &lt;code&gt;pyenv&lt;/code&gt; активирует):&lt;/p&gt;
@@ -2974,19 +3342,16 @@ $ &lt;span class="nb"&gt;cd&lt;/span&gt; my_project
 * &lt;span class="m"&gt;3&lt;/span&gt;.9.0a6 &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;set&lt;/span&gt; by /home/br0ke/my_project/.python-version&lt;span class="o"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Изменения немедленно вступили в силу:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ python -V
 Python &lt;span class="m"&gt;3&lt;/span&gt;.9.0a6
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Но эта конфигурация никак не влияет на работу &lt;code&gt;pyenv&lt;/code&gt; вне директории проекта:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ &lt;span class="nb"&gt;cd&lt;/span&gt; ..
 $ python -V
 &lt;span class="m"&gt;3&lt;/span&gt;.8.2
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Как и в случае с глобальной конфигурацией, можно локально активировать
 сразу несколько версий интерпретатора.&lt;/p&gt;
@@ -2999,7 +3364,6 @@ $ python -V
 $ pip install ipython
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Запустим:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ ipython
 Python &lt;span class="m"&gt;3&lt;/span&gt;.9.0a6 &lt;span class="o"&gt;(&lt;/span&gt;default, May  &lt;span class="m"&gt;3&lt;/span&gt; &lt;span class="m"&gt;2020&lt;/span&gt;, &lt;span class="m"&gt;16&lt;/span&gt;:58:20&lt;span class="o"&gt;)&lt;/span&gt;
@@ -3009,13 +3373,11 @@ IPython &lt;span class="m"&gt;7&lt;/span&gt;.14.0 -- An enhanced Interactive Pyt
 In &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;:
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Программа сразу доступна, благодаря тому, что &lt;code&gt;pyenv&lt;/code&gt; очень умный и
 создал новый файл-прослойку (shim) автоматически:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ which ipython
 /home/br0ke/.pyenv/shims/ipython
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Вне директории с проектом &lt;code&gt;ipython&lt;/code&gt; будет недоступен, ведь он же установлен
 в локальный интерпретатор &lt;code&gt;3.9.0a6&lt;/code&gt;, а снаружи активирован другой
@@ -3027,11 +3389,9 @@ $ ipython
 No such file or directory
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Не беда! Можно попросить &lt;code&gt;pyenv&lt;/code&gt; пересоздать их все заново:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pyenv rehash
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;И всё работает снова:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ ipython
@@ -3041,7 +3401,6 @@ IPython &lt;span class="m"&gt;7&lt;/span&gt;.14.0 -- An enhanced Interactive Pyt
 
 In &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;:
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Можно вообще добавить команду &lt;code&gt;pyenv rehash&lt;/code&gt; в свой &lt;code&gt;~/.bashrc&lt;/code&gt; (или аналог),
 чтобы при запуске шелла гарантированно иметь рабочие файлы-прослойки (shims).&lt;/p&gt;
@@ -3118,11 +3477,9 @@ In &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;s
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ brew install pipenv
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;А на Fedora Linux вот так:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sudo dnf install pipenv
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;На Ubuntu можно установить &lt;code&gt;pipenv&lt;/code&gt; из &lt;a href="https://launchpad.net/~pypa/+archive/ubuntu/ppa"&gt;специального PPA&lt;/a&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sudo apt install software-properties-common python-software-properties
@@ -3131,19 +3488,16 @@ $ sudo apt update
 $ sudo apt install pipenv
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Во всех остальных случаях, в частности на Windows, самый простой способ — это установка
 в домашнюю директорию пользователя
 (опять же, см. &lt;a href="https://semakin.dev/2020/04/python_virtualenv/"&gt;пост про виртуальные окружения&lt;/a&gt;):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install --user pipenv
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Теперь проверим установку:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv --version
 pipenv, version &lt;span class="m"&gt;2018&lt;/span&gt;.11.26
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Если вы получили похожий вывод, значит, всё в порядке.&lt;/p&gt;
 &lt;p&gt;При возникновении проблем с установкой, обратитесь к
@@ -3180,11 +3534,9 @@ pipenv, version &lt;span class="m"&gt;2018&lt;/span&gt;.11.26
 $ &lt;span class="nb"&gt;cd&lt;/span&gt; pipenv_demo
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Создать новый проект, использующий конкретную версию Python можно вот такой командой:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv --python &lt;span class="m"&gt;3&lt;/span&gt;.8
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Если же вам не нужно указывать версию так конкретно, то есть шорткаты:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# Создает проект с Python 3, версию выберет автоматически.&lt;/span&gt;
@@ -3194,7 +3546,6 @@ $ pipenv --three
 &lt;span class="c1"&gt;# В 2020 году эта опция противопоказана.&lt;/span&gt;
 $ pipenv --two
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;После выполнения одной из этих команд, &lt;code&gt;pipenv&lt;/code&gt; создал файл &lt;code&gt;Pipfile&lt;/code&gt; и
 виртуальное окружение где-то в заранее определенной директории
@@ -3213,7 +3564,6 @@ $ pipenv --two
 &lt;span class="nv"&gt;python_version&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;3.8&amp;quot;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Это минимальный образец &lt;code&gt;Pipfile&lt;/code&gt;. В секции &lt;code&gt;[[source]]&lt;/code&gt; перечисляются
 индексы пакетов — сейчас тут только PyPI, но может быть и ваш
 собственный индекс пакетов. В секциях &lt;code&gt;[packages]&lt;/code&gt; и &lt;code&gt;[dev-packages]&lt;/code&gt;
@@ -3231,13 +3581,11 @@ $ pipenv --two
 /Users/and-semakin/.local/share/virtualenvs/pipenv_demo-1dgGUSFy/bin/python
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;h3&gt;Управление зависимостями через &lt;code&gt;pipenv&lt;/code&gt;&lt;/h3&gt;
 &lt;p&gt;Теперь давайте установим в проект первую зависимость. Делается
 это при помощи команды &lt;code&gt;pipenv install&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv install requests
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Давайте посмотрим, что поменялось в &lt;code&gt;Pipfile&lt;/code&gt; (здесь и дальше я
 буду сокращать вывод команд или содержимое файлов при помощи &lt;code&gt;...&lt;/code&gt;):&lt;/p&gt;
@@ -3249,7 +3597,6 @@ $ pipenv --two
 
 ...
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;В секцию &lt;code&gt;[packages]&lt;/code&gt; добавилась зависимость &lt;code&gt;requests&lt;/code&gt; с версией &lt;code&gt;*&lt;/code&gt;
 (версия не фиксирована).&lt;/p&gt;
@@ -3267,7 +3614,6 @@ $ cat Pipfile
 ...
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Теперь можно увидеть всё дерево зависимостей проекта при помощи команды
 &lt;code&gt;pipenv graph&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv graph
@@ -3283,7 +3629,6 @@ $ cat Pipfile
   - urllib3 &lt;span class="o"&gt;[&lt;/span&gt;required: &amp;gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;.21.1,&amp;lt;&lt;span class="m"&gt;1&lt;/span&gt;.26,!&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;.25.1,!&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;.25.0, installed: &lt;span class="m"&gt;1&lt;/span&gt;.25.9&lt;span class="o"&gt;]&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Это бывает полезно, чтобы узнать, что от чего зависит, или почему в вашем
 виртуальном окружении есть определённый пакет.&lt;/p&gt;
 &lt;p&gt;Также, пока мы устанавливали пакеты, &lt;code&gt;pipenv&lt;/code&gt; создал &lt;code&gt;Pipfile.lock&lt;/code&gt;,
@@ -3296,19 +3641,16 @@ $ cat Pipfile
 $ pipenv update --help
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;h3&gt;Управление виртуальными окружениями&lt;/h3&gt;
 &lt;p&gt;Давайте удалим созданное виртуальное окружение:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv --rm
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;И представим себя в роли другого разработчика, который только присоединился
 к вашему проекту. Чтобы создать виртуальное окружение и установить
 в него зависимости нужно выполнить следующую команду:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv sync --dev
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Эта команда на основе &lt;code&gt;Pipfile.lock&lt;/code&gt; воссоздаст точно то же самое виртуальное
 окружение, что и у других разработчиков проекта.&lt;/p&gt;
@@ -3317,12 +3659,10 @@ $ pipenv update --help
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv sync
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Чтобы "войти" внутрь виртуального окружения, нужно выполнить:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv shell
 &lt;span class="o"&gt;(&lt;/span&gt;pipenv_demo&lt;span class="o"&gt;)&lt;/span&gt; $
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;В этом режиме будут доступны все установленные пакеты, а имена &lt;code&gt;python&lt;/code&gt; и &lt;code&gt;pip&lt;/code&gt;
 будут указывать на соответствующие программы внутри виртуального окружения.&lt;/p&gt;
@@ -3338,7 +3678,6 @@ $ pipenv run python script.py
 $ pipenv run pip freeze
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;h3&gt;Переменные окружения&lt;/h3&gt;
 &lt;p&gt;Согласно идеологии 12-факторных приложений, конфигурацию принято хранить
 отдельно от кода, а &lt;a href="https://12factor.net/ru/config"&gt;лучше всего конфигурацию вообще
@@ -3353,7 +3692,6 @@ $ pipenv run pip freeze
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;SECRET_VALUE=hello pipenv!
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;&lt;strong&gt;ВАЖНО:&lt;/strong&gt; файл &lt;code&gt;.env&lt;/code&gt; может содержать пароли для подключения к СУБД
 или токены для доступа к внешним сервисам. Такие данные &lt;strong&gt;никогда&lt;/strong&gt; не должны
 попадать в git.&lt;/p&gt;
@@ -3364,12 +3702,10 @@ $ pipenv run pip freeze
 &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Secret value:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;environ&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;SECRET_VALUE&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Попробуем запустить его без использования &lt;code&gt;pipenv&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ python script.py
 Secret value: None
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Скрипт вместо секретного значения вывел &lt;code&gt;None&lt;/code&gt;, потому что переменная
 окружения так и осталась просто лежать в файле, и никак не повлияла на
@@ -3378,7 +3714,6 @@ Secret value: None
 Loading .env environment variables…
 Secret value: hello pipenv!
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;&lt;code&gt;pipenv&lt;/code&gt; увидел файл &lt;code&gt;.env&lt;/code&gt; и автоматически загрузил переменные из него.
 Скрипт вывел то значение, которое мы и ожидали увидеть. Команда
@@ -3399,18 +3734,15 @@ Secret value: hello pipenv!
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ flake8 --exclude&lt;span class="o"&gt;=&lt;/span&gt;tests --ignore&lt;span class="o"&gt;=&lt;/span&gt;E121 .
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Отредактируем &lt;code&gt;Pipfile&lt;/code&gt;, создав там секцию &lt;code&gt;[scripts]&lt;/code&gt; со следующим
 содержимым:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;[scripts]&lt;/span&gt;
 &lt;span class="n"&gt;lint&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;flake8 --exclude=tests --ignore=E121 .&amp;quot;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Теперь тот же самый скрипт можно запустить при помощи команды:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv run lint
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;В качестве бонуса &lt;code&gt;pipenv&lt;/code&gt; автоматически подгрузит переменные окружения,
 так что таким же образом можно выполнять и скрипты, которые зависят от
@@ -3437,7 +3769,6 @@ Secret value: hello pipenv!
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv --rm &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; pipenv sync --dev
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;h3&gt;Пререлизные зависимости&lt;/h3&gt;
 &lt;p&gt;По умолчанию &lt;code&gt;pipenv&lt;/code&gt; игнорирует нестабильные альфа- и бета-версии пакетов,
 и устанавливает только стабильные. Может случиться так, что вам нужно
@@ -3451,7 +3782,6 @@ Skipped pre-versions: &lt;span class="m"&gt;18&lt;/span&gt;.3a0, &lt;span class=
 There are incompatible versions in the resolved dependencies.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Команда завершилась ошибкой, но &lt;code&gt;pipenv&lt;/code&gt; предлагает воспользоваться опцией
 &lt;code&gt;--pre&lt;/code&gt;, чтобы установить пререлизную зависимость. &lt;strong&gt;Избегайте искушения
 сделать так.&lt;/strong&gt;&lt;/p&gt;
@@ -3461,14 +3791,12 @@ There are incompatible versions in the resolved dependencies.
 ✔ Installation Succeeded
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;На первый взгляд, всё хорошо. Но давайте заглянем в &lt;code&gt;Pipfile&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ cat Pipfile
 ...
 &lt;span class="o"&gt;[&lt;/span&gt;pipenv&lt;span class="o"&gt;]&lt;/span&gt;
 &lt;span class="nv"&gt;allow_prereleases&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;true&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Там появилась директива &lt;code&gt;allow_prereleases = true&lt;/code&gt;, которая глобально меняет
 поведение &lt;code&gt;pipenv&lt;/code&gt; и разрешает ему устанавливать пререлизные версии
@@ -3481,7 +3809,6 @@ There are incompatible versions in the resolved dependencies.
 конкретную версию:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv install --dev &lt;span class="nv"&gt;black&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="m"&gt;19&lt;/span&gt;.10b0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Если же вы уже попались в эту ловушку &lt;code&gt;pipenv&lt;/code&gt;, то просто отредактируйте
 &lt;code&gt;Pipfile&lt;/code&gt; и либо удалите оттуда директиву &lt;code&gt;allow_prereleases&lt;/code&gt; вообще,
@@ -3497,7 +3824,6 @@ There are incompatible versions in the resolved dependencies.
 json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes: line &lt;span class="m"&gt;3&lt;/span&gt; column &lt;span class="m"&gt;8&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;char &lt;span class="m"&gt;24&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;План выхода из такой ситуации следующий:
 1. Не пытайтесь осознанно решать конфликты в &lt;code&gt;Pipfile.lock&lt;/code&gt; вручную, всё равно
 не сможете; &lt;code&gt;pipenv&lt;/code&gt; сам создал этот файл, вот пусть сам и разбирается.
@@ -3506,7 +3832,6 @@ json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes:
 3. Пересоздайте &lt;code&gt;Pipfile.lock&lt;/code&gt; заново:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pipenv lock --keep-outdated
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Флаг &lt;code&gt;--keep-outdated&lt;/code&gt; позволяет избежать лишних обновлений версий — вы
 ведь просто хотите разрешить конфликты, а не обновить все пакеты, верно?
@@ -3532,7 +3857,6 @@ json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes:
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install --user --upgrade pipenv
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Проект будет жить!&lt;/p&gt;
 &lt;h2&gt;Заключение&lt;/h2&gt;
 &lt;p&gt;Вместо заключения оставлю вас поразмышлять над вот этой программой:&lt;/p&gt;
@@ -3553,7 +3877,6 @@ json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes:
     &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;wtf&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
     &lt;span class="n"&gt;use_pip&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;h2&gt;Дополнительное чтение&lt;/h2&gt;
 &lt;ul&gt;
@@ -3588,12 +3911,11 @@ json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes:
 &lt;p&gt;Скрипт получился настолько хорош, что вы хотите поделиться
 им со всеми своими друзьями. К сожалению, друзья при попытке
 запустить вашу программу получают следующую ошибку:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;Traceback&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;most&lt;/span&gt; &lt;span class="n"&gt;recent&lt;/span&gt; &lt;span class="n"&gt;call&lt;/span&gt; &lt;span class="n"&gt;last&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-  &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;weather.py&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;module&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
-    &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pyowm&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;OWM&lt;/span&gt;
-&lt;span class="n"&gt;ModuleNotFoundError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;No&lt;/span&gt; &lt;span class="n"&gt;module&lt;/span&gt; &lt;span class="n"&gt;named&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;pyowm&amp;#39;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Traceback (most recent call last):
+  File &amp;quot;weather.py&amp;quot;, line 3, in &amp;lt;module&amp;gt;
+    from pyowm import OWM
+ModuleNotFoundError: No module named &amp;#39;pyowm&amp;#39;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Кажется, что скинуть только код недостаточно.&lt;/p&gt;
 &lt;p&gt;Или, допустим, что вы сами через полгода-год попытаетесь
@@ -3640,13 +3962,11 @@ json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes:
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;pyowm
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Если бы было несколько зависимостей, то файл выглядел бы так:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;numpy
 requests
 pytest
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Можно указать конкретную версию зависимости. Если версия не указана, то
 считается, что нужна последняя доступная:&lt;/p&gt;
@@ -3654,14 +3974,12 @@ pytest
 requests==2.23.0  # нужна конкретная версия
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Можно указывать диапазоны и другие более сложные &lt;a href="https://www.python.org/dev/peps/pep-0440/#version-specifiers"&gt;"спецификаторы версий"&lt;/a&gt;.
 В целом, в &lt;code&gt;requirements.txt&lt;/code&gt; можно писать любые "запросы", которые понимает команда
 &lt;code&gt;pip install&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;requests&amp;gt;=2.20.0,&amp;lt;2.23.0  # подойдет любая версия между 2.20.0 и 2.23.0
 numpy!=1.0  # подойдет любая версия, кроме 1.0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;h2&gt;Как пользоваться&lt;/h2&gt;
 &lt;p&gt;Команда &lt;code&gt;pip install&lt;/code&gt; умеет читать такие файлы, если передать специальный флаг:&lt;/p&gt;
@@ -3672,7 +3990,6 @@ Install Options:
 ...
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Таким образом, если &lt;code&gt;requirements.txt&lt;/code&gt; будет иметь вот такое содержимое:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;pytest
 flake8
@@ -3680,13 +3997,11 @@ black
 isort
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;То следующие две команды будут иметь одинаковое действие:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install -r requirements.txt
 
 $ pip install pytest flake8 black isort
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Преимущества использования &lt;code&gt;requirements.txt&lt;/code&gt;:&lt;/p&gt;
 &lt;ul&gt;
@@ -3728,7 +4043,6 @@ $ pip install pytest flake8 black isort
 &lt;span class="nv"&gt;urllib3&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;.25.9
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Команда &lt;code&gt;pip freeze&lt;/code&gt; выводит все установленные в интерпретатор сторонние пакеты.
 Заметьте, что в список попали не только прямые зависимости (&lt;code&gt;pyowm&lt;/code&gt;), но
 и подзависимости — это даже лучше, потому что вы сможете более
@@ -3738,7 +4052,6 @@ $ pip install pytest flake8 black isort
 (работает и на Windows), и получить валидный файл &lt;code&gt;requirements.txt&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;(&lt;/span&gt;env&lt;span class="o"&gt;)&lt;/span&gt; $ pip freeze &amp;gt; requirements.txt
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Обратите внимание, что &lt;code&gt;pip freeze&lt;/code&gt; выведет список пакетов в том окружении,
 в котором он запущен. Не забудьте активировать виртуальное окружение перед
@@ -3836,11 +4149,9 @@ $ pip install pytest flake8 black isort
 удобнее. Если у вас возникла потребность в какой-то функциональности, то
 почти наверняка кто-то уже написал для этого библиотеку, и нужно просто погуглить.&lt;/p&gt;
 &lt;h2&gt;Установка сторонней библиотеки&lt;/h2&gt;
-&lt;p&gt;Каждый начинающий программист знает, как установить библиотеку. Набираем&lt;/p&gt;
+&lt;p&gt;Каждый начинающий программист знает, как установить библиотеку. Набираем
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install requests
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;и понеслась! Множество библиотек в своих инструкциях по установке именно так
 и предлагают их устанавливать. Это и правда работает, это и правда так просто,
 &lt;em&gt;но есть нюансы&lt;/em&gt;. В этом месте закопаны очень популярные грабли, по которым
@@ -3877,7 +4188,6 @@ USER_SITE: &lt;span class="s1"&gt;&amp;#39;/Users/and-semakin/.local/lib/python3
 ENABLE_USER_SITE: False
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;В списке &lt;code&gt;sys.path&lt;/code&gt; можно увидеть директорию &lt;code&gt;site-packages&lt;/code&gt; — именно туда
 и будет установлена библиотека. Давайте в этом убедимся.&lt;/p&gt;
 &lt;p&gt;До установки пакета:&lt;/p&gt;
@@ -3892,11 +4202,9 @@ drwxr-xr-x  &lt;span class="m"&gt;42&lt;/span&gt; and-semakin  awesome  &lt;span
 drwxr-xr-x  &lt;span class="m"&gt;11&lt;/span&gt; and-semakin  awesome   &lt;span class="m"&gt;352&lt;/span&gt; Apr &lt;span class="m"&gt;18&lt;/span&gt; &lt;span class="m"&gt;17&lt;/span&gt;:39 setuptools-41.2.0.dist-info
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Установим пакет:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install requests
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;После установки пакета:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ ls -l /Users/and-semakin/env/lib/python3.8/site-packages
@@ -3919,7 +4227,6 @@ drwxr-xr-x  &lt;span class="m"&gt;11&lt;/span&gt; and-semakin  awesome   &lt;spa
 drwxr-xr-x  &lt;span class="m"&gt;16&lt;/span&gt; and-semakin  awesome   &lt;span class="m"&gt;512&lt;/span&gt; Apr &lt;span class="m"&gt;18&lt;/span&gt; &lt;span class="m"&gt;17&lt;/span&gt;:41 urllib3
 drwxr-xr-x   &lt;span class="m"&gt;8&lt;/span&gt; and-semakin  awesome   &lt;span class="m"&gt;256&lt;/span&gt; Apr &lt;span class="m"&gt;18&lt;/span&gt; &lt;span class="m"&gt;17&lt;/span&gt;:41 urllib3-1.25.9.dist-info
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Как видим, в директорию &lt;code&gt;site-packages&lt;/code&gt; добавилась библиотека &lt;code&gt;requests&lt;/code&gt; вместе
 со всеми своими зависимостями.&lt;/p&gt;
@@ -3944,13 +4251,10 @@ drwxr-xr-x   &lt;span class="m"&gt;8&lt;/span&gt; and-semakin  awesome   &lt;spa
 requests==2.23.0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
-&lt;p&gt;Проект Б:&lt;/p&gt;
+&lt;p&gt;Проект Б:
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# requirements.txt
 requests==1.2.3
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
 &lt;p&gt;Вы просто не сможете работать над такими проектами одновременно. Установка
 зависимостей одного проекта сломает другой, и наоборот. При переключении между
 проектами придётся каждый раз устанавливать зависимости нужного проекта, что
@@ -3983,7 +4287,6 @@ requests==1.2.3
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ python -m venv &amp;lt;путь к виртуальному окружению&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Например, допустим, что мы работаем над проектом &lt;code&gt;blog_source&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# заходим в директорию с проектом&lt;/span&gt;
 $ &lt;span class="nb"&gt;cd&lt;/span&gt; src/blog_source
@@ -3991,7 +4294,6 @@ $ &lt;span class="nb"&gt;cd&lt;/span&gt; src/blog_source
 &lt;span class="c1"&gt;# создаем виртуальное окружение прямо рядом с кодом в директории env&lt;/span&gt;
 $ python -m venv env
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Создавать виртуальное окружения рядом с кодом — это распространённая практика,
 так проще ничего не перепутать, но вообще виртуальное окружение может быть
@@ -4005,13 +4307,10 @@ $ python -m venv env
 Python &lt;span class="m"&gt;3&lt;/span&gt;.8.2
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
-&lt;p&gt;то в виртуальном окружении будет та же самая версия:&lt;/p&gt;
+&lt;p&gt;то в виртуальном окружении будет та же самая версия:
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ env/bin/python -V
 Python &lt;span class="m"&gt;3&lt;/span&gt;.8.2
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
 &lt;h3&gt;Активируем окружение&lt;/h3&gt;
 &lt;p&gt;Посмотрим, что внутри директории &lt;code&gt;env&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ ls -l env/
@@ -4036,7 +4335,6 @@ lrwxr-xr-x  &lt;span class="m"&gt;1&lt;/span&gt; and-semakin  awesome    &lt;spa
 lrwxr-xr-x  &lt;span class="m"&gt;1&lt;/span&gt; and-semakin  awesome     &lt;span class="m"&gt;6&lt;/span&gt; Apr &lt;span class="m"&gt;18&lt;/span&gt; &lt;span class="m"&gt;18&lt;/span&gt;:55 python3 -&amp;gt; python
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Обратите внимание, что в директории &lt;code&gt;bin&lt;/code&gt; есть некий файл &lt;code&gt;activate&lt;/code&gt; в
 нескольких вариантах для разных шеллов. Это и есть "точка входа" в виртуальное
 окружение. Просто создать виртуальное окружение мало, нужно его активировать.
@@ -4048,13 +4346,11 @@ $ which pip
 /Users/and-semakin/.asdf/shims/pip
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Это мой обычный Python, вне виртуального окружения, назовём его глобальным.
 Теперь активируем виртуальное окружение:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ &lt;span class="nb"&gt;source&lt;/span&gt; env/bin/activate
 &lt;span class="o"&gt;(&lt;/span&gt;env&lt;span class="o"&gt;)&lt;/span&gt; $
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Для Windows процесс активации будет отличаться (допустим, что виртуальное окружение
 создано в &lt;code&gt;C:\src\blog_source&lt;/code&gt;):&lt;/p&gt;
@@ -4065,7 +4361,6 @@ C:&lt;span class="se"&gt;\s&lt;/span&gt;rc&lt;span class="se"&gt;\b&lt;/span&gt;
 PS C:&lt;span class="se"&gt;\s&lt;/span&gt;rc&lt;span class="se"&gt;\b&lt;/span&gt;log_source&lt;span class="se"&gt;\&amp;gt;&lt;/span&gt; env&lt;span class="se"&gt;\S&lt;/span&gt;cripts&lt;span class="se"&gt;\A&lt;/span&gt;ctivate.ps1
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Обратите внимание, что приветствие шелла изменилось (добавилось &lt;code&gt;(env)&lt;/code&gt;), чтобы
 показать, что мы "внутри" виртуального окружения под названием &lt;code&gt;env&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;Теперь проверим еще раз, какие &lt;code&gt;python&lt;/code&gt; и &lt;code&gt;pip&lt;/code&gt; используются:&lt;/p&gt;
@@ -4075,19 +4370,16 @@ PS C:&lt;span class="se"&gt;\s&lt;/span&gt;rc&lt;span class="se"&gt;\b&lt;/span&
 /Users/and-semakin/src/blog_source/env/bin/pip
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Посмотрите на пути — мы внутри виртуального окружения! Теперь можно смело
 устанавливать любые пакеты, и это никак не повлияет на глобальный Python или
 на другие виртуальные окружения:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;(&lt;/span&gt;env&lt;span class="o"&gt;)&lt;/span&gt; $ pip install requests flask whatever-you-need
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Можно запускать любые файлы, и они будут иметь доступ к установленным пакетам:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="o"&gt;(&lt;/span&gt;env&lt;span class="o"&gt;)&lt;/span&gt; $ python make_money.py
 Done! You are rich!
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;IDE тоже нужно настроить, указав путь к &lt;code&gt;bin/python&lt;/code&gt; внутри виртуального
 окружения, тогда редактор сможет лучше вам помогать.&lt;/p&gt;
@@ -4098,7 +4390,6 @@ $ which python
 /Users/and-semakin/.asdf/shims/python
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;И мы видим, что команда &lt;code&gt;python&lt;/code&gt; снова вызывает глобальный интерпретатор.
 При этом виртуальное окружение осталось в своей директории, оно просто не
 активно. В следующий раз, когда будет нужно поработать с виртуальным
@@ -4107,7 +4398,6 @@ $ which python
 нужным:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ rm -r env/
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;В идеале, у вас должна быть возможность в любой момент удалить и пересоздать
 виртуальное окружение заново, для этого храните список зависимостей проекта и
@@ -4133,12 +4423,10 @@ $ which python
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install poetry
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Установка начинается, прогресс-бары заполняются, но в итоге всё завершается
 чем-то типа такого:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;error&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;could&lt;/span&gt; &lt;span class="n"&gt;not&lt;/span&gt; &lt;span class="n"&gt;create&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;/lib/python2.7/site-packages/poetry&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Permission&lt;/span&gt; &lt;span class="n"&gt;denied&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;error: could not create &amp;#39;/lib/python2.7/site-packages/poetry&amp;#39;: Permission denied
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Можно попробовать установить, используя &lt;code&gt;sudo&lt;/code&gt;, и это сработает, но это
 считается &lt;a href="https://ru.stackoverflow.com/q/651860/340643"&gt;очень плохой практикой&lt;/a&gt;,
@@ -4171,7 +4459,9 @@ $ which python
 &lt;li&gt;
 &lt;p&gt;сказать &lt;code&gt;pip&lt;/code&gt;, чтобы он установил пакет не в директорию &lt;code&gt;site-packages&lt;/code&gt;, а в
 домашнюю директорию пользователя при помощи флага &lt;code&gt;--user&lt;/code&gt;:&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;$ pip install --user poetry  # без sudo!&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ pip install --user poetry  # без sudo!
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
 &lt;p&gt;Обязательно нужно убедиться, что директория, куда установится пакет,
 перечислена в переменной &lt;code&gt;$PATH&lt;/code&gt;. Путь к директории можно получить при помощи
 следующей команды:&lt;/p&gt;
@@ -4188,7 +4478,9 @@ $ which python
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;установить программу через пакетный менеджер ОС, например:&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;$ sudo dnf install python-poetry&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sudo dnf install python-poetry
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
 &lt;p&gt;Часто мейнтейнеры ОС создают обёртки для пакетов из PyPI, которые можно
 установить при помощи системного пакетного менеджера. Как правило, такие
 обёртки называются &lt;code&gt;python-&amp;lt;имя пакета&amp;gt;&lt;/code&gt; или &lt;code&gt;python3-&amp;lt;имя пакета&amp;gt;&lt;/code&gt;.

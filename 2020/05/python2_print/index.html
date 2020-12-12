@@ -133,7 +133,6 @@
 <span class="c1"># выводит: Hello world!</span>
 </code></pre></div>
 
-
 <p>Python 2:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># простое использование</span>
 <span class="nb">print</span> <span class="s2">&quot;Hello&quot;</span>
@@ -160,7 +159,6 @@
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello&quot;</span><span class="p">,</span> <span class="s2">&quot;world!&quot;</span><span class="p">)</span>
 <span class="c1"># выводит: Hello world!</span>
 </code></pre></div>
-
 
 <p>Обычно инструкциями в Python являются только очень базовые вещи,
 такие как условия (<code>if</code>), циклы (<code>for</code>, <code>while</code>),
@@ -191,7 +189,6 @@
 <div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">build_description</span><span class="p">(</span><span class="n">node</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 </code></pre></div>
 
-
 <p>Меня это удивило. Я даже
 <a href="https://github.com/brandon-rhodes/logging_tree/pull/24">создал пулл-реквест</a>,
 будучи уверен, что нашёл ошибку. После того, как автор возразил,
@@ -203,7 +200,6 @@
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello&quot;</span><span class="p">)</span>
 <span class="c1"># выводит: Hello</span>
 </code></pre></div>
-
 
 <p>Немного поразмыслив и почитав, я осознал, где тут собака зарыта.
 Хоть это и выглядит как вызов функции <code>print()</code>, на самом деле это всё та же
@@ -227,7 +223,6 @@
 <span class="c1"># выводит: Hello</span>
 </code></pre></div>
 
-
 <p>Как выяснилось, в Python 2 <code>print</code> и правда можно так, что со стороны это будет
 выглядеть как вызов функции, но для очень ограниченного множества случаев,
 а именно — должен быть только один позиционный аргумент.
@@ -247,7 +242,6 @@
 <span class="o">&lt;</span><span class="nb">type</span> <span class="s1">&#39;builtin_function_or_method&#39;</span><span class="o">&gt;</span>
 </code></pre></div>
 
-
 <p>Трюки из той же серии:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># условие со скобками как в C:</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="k">if</span><span class="p">(</span><span class="mi">1</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
@@ -262,7 +256,6 @@
 <span class="o">&gt;&gt;&gt;</span> <span class="n">func</span><span class="p">()</span>
 <span class="kc">True</span>
 </code></pre></div>
-
 
 <p>Это код синтаксически верен, но просто обычно так не пишут. И правильно.</p>
 <h1>Заключение</h1>

@@ -140,14 +140,12 @@
 <div class="highlight"><pre><span></span><code><span class="n">currencies</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;rub&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;usd&quot;</span><span class="p">:</span> <span class="mf">69.78</span><span class="p">,</span> <span class="s2">&quot;eur&quot;</span><span class="p">:</span> <span class="mf">78.28</span><span class="p">}</span>
 </code></pre></div>
 
-
 <p>Самый очевидный вариант обхода словаря — это попытаться напрямую запустить
 цикл <code>for</code> по объекту словаря, так же как мы делаем это со списками,
 кортежами, строками и любыми другими итерируемыми объектами.</p>
 <div class="highlight"><pre><span></span><code><span class="k">for</span> <span class="n">something</span> <span class="ow">in</span> <span class="n">currencies</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">something</span><span class="p">)</span>
 </code></pre></div>
-
 
 <p>Словарь и правда поддерживает протокол итераций, но словарь не так прост,
 как другие объекты, которые мы упомянули выше. Словарь состоит из нескольких
@@ -160,7 +158,6 @@
 usd
 eur
 </code></pre></div>
-
 
 <p>То есть обход словаря в цикле будет возвращать только <strong>ключи</strong> этого словаря.</p>
 <p>Пожалуй, задать такое поведение по умолчанию — это очень логичное решение со
@@ -199,14 +196,12 @@ eur
 <span class="c1"># dict_keys([&#39;rub&#39;, &#39;usd&#39;, &#39;eur&#39;])</span>
 </code></pre></div>
 
-
 <p>Давайте добавим новый ключ в словарь:</p>
 <div class="highlight"><pre><span></span><code><span class="n">currencies</span><span class="p">[</span><span class="s2">&quot;jpy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.65</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">dict_keys</span><span class="p">)</span>
 <span class="c1"># dict_keys([&#39;rub&#39;, &#39;usd&#39;, &#39;eur&#39;, &#39;jpy&#39;])</span>
 </code></pre></div>
-
 
 <p>Как видите, созданное ранее представление словаря обновилось автоматически,
 когда обновился его словарь.</p>
@@ -219,7 +214,6 @@ eur
 <span class="c1"># TypeError: &#39;dict_keys&#39; object is not subscriptable</span>
 </code></pre></div>
 
-
 <p>Зато представление словаря является итерируемым объектом и его без проблем
 можно обходить при помощи цикла:</p>
 <div class="highlight"><pre><span></span><code><span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">currencies</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
@@ -229,7 +223,6 @@ eur
 <span class="c1"># eur</span>
 <span class="c1"># jpy</span>
 </code></pre></div>
-
 
 <p>Результат тот же самый, что и в предыдущем способе обхода словаря, но в
 этот раз явно видно, что в цикле будут обрабатываться только ключи словаря.</p>
@@ -251,7 +244,6 @@ eur
 <span class="c1"># 78.28</span>
 <span class="c1"># 0.65</span>
 </code></pre></div>
-
 
 <p>По значениям словаря уже невозможно получить ключи
 (ну, вообще можно попытаться, но для этого потребуется полный перебор словаря,
@@ -279,7 +271,6 @@ eur
 <span class="c1"># jpy 0.65</span>
 </code></pre></div>
 
-
 <p>В Python есть возможность распаковывать итерируемые объекты, такие как кортежи,
 в различные переменные. Давайте на примере посмотрим как это работает:</p>
 <div class="highlight"><pre><span></span><code><span class="n">point</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
@@ -292,7 +283,6 @@ eur
 <span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
 <span class="c1"># 3</span>
 </code></pre></div>
-
 
 <p>Таким образом можно распаковывать последовательности любого размера.
 Это намного проще, чем извлекать значения по индексам и присваивать в
@@ -307,7 +297,6 @@ eur
 <span class="c1"># eur 78.28</span>
 <span class="c1"># jpy 0.65</span>
 </code></pre></div>
-
 
 <h1>Заключение</h1>
 <p>При обходе словаря стоит руководствоваться следующей логикой:</p>

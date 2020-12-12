@@ -198,7 +198,6 @@ Python развивается семимильными шагами.</p>
     <span class="k">return</span> <span class="s2">&quot;Hello, &quot;</span> <span class="o">+</span> <span class="n">name</span>
 </code></pre></div>
 
-
 <p>Типы параметров, принимаемых функцией, записываются после имени параметра
 через знак двоеточия, но перед значением по умолчанию, если оно присутствует.
 Возвращаемое значение функции записывается после знака “стрелки”.</p>
@@ -216,7 +215,6 @@ Python развивается семимильными шагами.</p>
     <span class="k">return</span> <span class="n">weight</span> <span class="o">/</span> <span class="n">height</span> <span class="o">**</span> <span class="mi">2</span>
 </code></pre></div>
 
-
 <p>А вот так функцию, которая принимает строку и булевый аргумент, но ничего не
 возвращает:</p>
 <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">print_hello</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">upper</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -224,7 +222,6 @@ Python развивается семимильными шагами.</p>
         <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello,&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 </code></pre></div>
-
 
 <p>Вот так можно аннотировать любые переменные в любом месте кода (Python 3.6+):</p>
 <div class="highlight"><pre><span></span><code><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Andrey&quot;</span>
@@ -236,7 +233,6 @@ Python развивается семимильными шагами.</p>
 <span class="n">foo</span><span class="p">:</span> <span class="nb">str</span>
 </code></pre></div>
 
-
 <p>Если мы создадим свой класс, то его тоже можно использовать для аннотаций:</p>
 <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Example</span><span class="p">:</span>
     <span class="k">pass</span>
@@ -244,7 +240,6 @@ Python развивается семимильными шагами.</p>
 <span class="c1"># довольно бессмысленно, но для примера пойдет</span>
 <span class="n">example_instance</span><span class="p">:</span> <span class="n">Example</span> <span class="o">=</span> <span class="n">Example</span><span class="p">()</span>
 </code></pre></div>
-
 
 <h1>Контейнерные типы и дженерики</h1>
 <p>Перейдем к более сложным типам, таким как списки, кортежи, словари и множества.
@@ -254,7 +249,6 @@ Python развивается семимильными шагами.</p>
 <span class="n">stock_prices</span><span class="p">:</span> <span class="nb">dict</span>
 <span class="n">valid_answers</span><span class="p">:</span> <span class="nb">set</span>
 </code></pre></div>
-
 
 <p>Это не слишком информативно, потому что кроме самого типа контейнера было бы
 ещё полезно знать, какие данные он в себе содержит. Что такое <code>person_info</code>?
@@ -278,7 +272,6 @@ Python развивается семимильными шагами.</p>
 <span class="n">valid_answers</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
 </code></pre></div>
 
-
 <p>Начиная с Python 3.9 можно использовать стандартные классы в точно таких же
 целях, ничего ниоткуда не импортируя:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># будет работать только начиная с Python 3.9!</span>
@@ -295,7 +288,6 @@ Python развивается семимильными шагами.</p>
 <span class="c1"># тип всех элементов множества</span>
 <span class="n">valid_answers</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
 </code></pre></div>
-
 
 <p>Согласитесь, так намного понятнее. Сразу видно, какой тип данных лежит
 внутри контейнера. Такие типы называются обобщёнными (generic types).</p>
@@ -321,7 +313,6 @@ Python развивается семимильными шагами.</p>
 <span class="n">months</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
 </code></pre></div>
 
-
 <h1>Составные типы</h1>
 <p>Часто случаются ситуации, когда нужно объединить несколько типов, например,
 для того, чтобы указать, что функция может принимать и строки, и числа.
@@ -331,7 +322,6 @@ Python развивается семимильными шагами.</p>
 <span class="k">def</span> <span class="nf">add_or_concatenate</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">b</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
     <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
 </code></pre></div>
-
 
 <p>Также очень часто возникает ситуация, когда возможно либо значение определенного
 типа, либо <code>None</code>. Это настолько частая ситуация, что для этого даже сделали
@@ -343,7 +333,6 @@ Python развивается семимильными шагами.</p>
 <span class="n">phone</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
 </code></pre></div>
 
-
 <p>Также может возникнуть ситуация, когда не получается указать какой-либо
 конкретный тип, потому что, например, функция может принимать на вход абсолютно
 что угодно. Для этих случаев тоже есть специальный объект <code>typing.Any</code>:</p>
@@ -352,7 +341,6 @@ Python развивается семимильными шагами.</p>
 <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">arg</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">arg</span>
 </code></pre></div>
-
 
 <p>Можно считать, что <code>Any</code> неявно подставляется везде, где не указан более
 конкретный тип. Очень соблазнительно везде вставлять этот тип, но
@@ -376,17 +364,14 @@ Python развивается семимильными шагами.</p>
 <div class="highlight"><pre><span></span><code>$ pip install mypy
 </code></pre></div>
 
-
 <p>Для <code>pipenv</code> и <code>poetry</code> соответственно вот так:</p>
 <div class="highlight"><pre><span></span><code>$ pipenv install --dev mypy
 $ poetry add --dev mypy
 </code></pre></div>
 
-
 <p>Давайте напишем самый тривиальный пример программы с ошибкой:</p>
 <div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;qwerty&quot;</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 </code></pre></div>
-
 
 <p>При выполнении, очевидно, программа завершится ошибкой:</p>
 <div class="highlight"><pre><span></span><code>$ python example.py
@@ -396,13 +381,11 @@ Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
 TypeError: can only concatenate str <span class="o">(</span>not <span class="s2">&quot;int&quot;</span><span class="o">)</span> to str
 </code></pre></div>
 
-
 <p>Давайте посмотрим, сможет ли тайп-чекер обнаружить эту проблему:</p>
 <div class="highlight"><pre><span></span><code>$ mypy example.py
 example.py:1: error: Unsupported operand types <span class="k">for</span> + <span class="o">(</span><span class="s2">&quot;str&quot;</span> and <span class="s2">&quot;int&quot;</span><span class="o">)</span>
 Found <span class="m">1</span> error in <span class="m">1</span> file <span class="o">(</span>checked <span class="m">1</span> <span class="nb">source</span> file<span class="o">)</span>
 </code></pre></div>
-
 
 <p>Отлично! Не исполняя программу, <code>mypy</code> смог понять, что в ней присутствует ошибка.
 Давайте запрячем эту же самую ошибку чуть глубже, используя функцию:</p>
@@ -415,13 +398,11 @@ Found <span class="m">1</span> error in <span class="m">1</span> file <span clas
 <span class="n">greet</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </code></pre></div>
 
-
 <p>Проверим типы в этой программе:</p>
 <div class="highlight"><pre><span></span><code>$ mypy example2.py
 example2.py:9: error: Argument <span class="m">1</span> to <span class="s2">&quot;greet&quot;</span> has incompatible <span class="nb">type</span> <span class="s2">&quot;int&quot;</span><span class="p">;</span> expected <span class="s2">&quot;str&quot;</span>
 Found <span class="m">1</span> error in <span class="m">1</span> file <span class="o">(</span>checked <span class="m">1</span> <span class="nb">source</span> file<span class="o">)</span>
 </code></pre></div>
-
 
 <p>Тайп-чекер пропустил правильный вызов функции, но обнаружил вызов функции
 с ошибкой.</p>

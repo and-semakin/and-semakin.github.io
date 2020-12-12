@@ -178,24 +178,20 @@
 <div class="highlight"><pre><span></span><code>$ pip install flake8
 </code></pre></div>
 
-
 <p>Если вы пользуетесь <code>pipenv</code>, то <code>flake8</code> нужно устанавливать
 как dev-зависимость (ведь для работы программы линтер не нужен,
 он нужен только для разработчика):</p>
 <div class="highlight"><pre><span></span><code>$ pipenv install --dev flake8
 </code></pre></div>
 
-
 <p>Аналогично с <code>poetry</code>:</p>
 <div class="highlight"><pre><span></span><code>$ poetry add --dev flake8
 </code></pre></div>
-
 
 <p>Проверим установку:</p>
 <div class="highlight"><pre><span></span><code>$ flake8 --version
 <span class="m">3</span>.8.1 <span class="o">(</span>mccabe: <span class="m">0</span>.6.1, pycodestyle: <span class="m">2</span>.6.0, pyflakes: <span class="m">2</span>.2.0<span class="o">)</span> CPython <span class="m">3</span>.8.2 on Linux
 </code></pre></div>
-
 
 <h3>Использование</h3>
 <p>Для работы <code>flake8</code> нужно просто указать файл или директорию, которые
@@ -209,7 +205,6 @@ $ flake8 src/
 <span class="c1"># проверить текущую директорию рекурсивно</span>
 $ flake8 .
 </code></pre></div>
-
 
 <p>Давайте для демонстрации попытаемся написать программу с как можно большим
 количеством “плохих практик”:</p>
@@ -257,7 +252,6 @@ bad_code.py:16:5: E722 <span class="k">do</span> not use bare <span class="s1">&
 bad_code.py:17:1: E101 indentation contains mixed spaces and tabs
 </code></pre></div>
 
-
 <p>Как видите, <code>flake8</code> нашёл кучу ошибок. Для каждой ошибки указана строка
 и номер символа в строке (не всегда точный), где произошла ошибка.
 Также у каждой категории ошибок есть свой код: <code>E101</code>, <code>W291</code> и т.д.
@@ -278,13 +272,11 @@ bad_code.py:17:1: E101 indentation contains mixed spaces and tabs
 <div class="highlight"><pre><span></span><code>$ pip install flake8-bugbear pep8-naming
 </code></pre></div>
 
-
 <p>Давайте убедимся, что плагины действительно установились
 и <code>flake8</code> может их найти:</p>
 <div class="highlight"><pre><span></span><code>$ flake8 --version
 <span class="m">3</span>.8.1 <span class="o">(</span>flake8-bugbear: <span class="m">20</span>.1.4, mccabe: <span class="m">0</span>.6.1, naming: <span class="m">0</span>.10.0, pycodestyle: <span class="m">2</span>.6.0, pyflakes: <span class="m">2</span>.2.0<span class="o">)</span> CPython <span class="m">3</span>.8.2 on Linux
 </code></pre></div>
-
 
 <p>Если вы видите в списке в скобках названия ваших плагинов, то всё хорошо.</p>
 <p>Теперь снова проверим наш файл:</p>
@@ -319,7 +311,6 @@ bad_code.py:16:5: E722 <span class="k">do</span> not use bare <span class="s1">&
 bad_code.py:16:5: B001 Do not use bare <span class="sb">`</span>except:<span class="sb">`</span>, it also catches unexpected events like memory errors, interrupts, system exit, and so on.  Prefer <span class="sb">`</span>except Exception:<span class="sb">`</span>.  If you<span class="s1">&#39;re sure what you&#39;</span>re doing, be explicit and write <span class="sb">`</span>except BaseException:<span class="sb">`</span>.
 bad_code.py:17:1: E101 indentation contains mixed spaces and tabs
 </code></pre></div>
-
 
 <p>В выводе появились новые категории ошибок (<code>N802</code>, <code>B006</code>)
 — они как раз добавлены плагинами. На этот раз, как мне кажется,
@@ -375,7 +366,6 @@ bad_code.py:17:1: E101 indentation contains mixed spaces and tabs
 <span class="na">max-complexity</span> <span class="o">=</span> <span class="s">10</span>
 </code></pre></div>
 
-
 <p>В конфигурации можно перечислить игнорируемые правила и директории,
 в которые <code>flake8</code> заглядывать не будет, а также максимальную
 <a href="https://ru.wikipedia.org/wiki/%D0%A6%D0%B8%D0%BA%D0%BB%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B0%D1%8F_%D1%81%D0%BB%D0%BE%D0%B6%D0%BD%D0%BE%D1%81%D1%82%D1%8C">цикломатическую сложность</a>
@@ -406,22 +396,18 @@ bad_code.py:17:1: E101 indentation contains mixed spaces and tabs
 <div class="highlight"><pre><span></span><code>$ pip install pylint
 </code></pre></div>
 
-
 <p>Для <code>pipenv</code>:</p>
 <div class="highlight"><pre><span></span><code>$ pipenv install --dev pylint
 </code></pre></div>
-
 
 <p>Для <code>poetry</code>:</p>
 <div class="highlight"><pre><span></span><code>$ poetry add --dev pylint
 </code></pre></div>
 
-
 <h3>Использование</h3>
 <p><code>pylint</code> можно натравить на определённый файл:</p>
 <div class="highlight"><pre><span></span><code>$ pylint file.py
 </code></pre></div>
-
 
 <p>С директориями у <code>pylint</code> дела обстоят чуть сложнее. Все директории он
 обрабатывает как питоновские модули, поэтому если в директории нет хотя бы
@@ -466,7 +452,6 @@ bad_code.py:2:0: W0611: Unused import itertools <span class="o">(</span>unused-i
 Your code has been rated at -41.43/10
 </code></pre></div>
 
-
 <p>Я немного сократил вывод. Как видите, даже без плагинов <code>pylint</code> нашёл
 все ожидаемые ошибки, и даже больше — например, он даже предлагает написать
 документацию.</p>
@@ -475,7 +460,6 @@ Your code has been rated at -41.43/10
 <div class="highlight"><pre><span></span><code>$ pylint --help-msg<span class="o">=</span>missing-docstring
 $ pylint --help-msg<span class="o">=</span>R0902
 </code></pre></div>
-
 
 <p>Вот какие ошибки <code>pylint</code> находит для файла, который с точки зрения <code>flake8</code>
 не содержит никаких ошибок:</p>
@@ -490,13 +474,11 @@ not_so_bad_code.py:20:11: W0703: Catching too general exception Exception <span 
 Your code has been rated at <span class="m">6</span>.67/10
 </code></pre></div>
 
-
 <p>А вот так в <code>pylint</code> можно игнорировать отдельную ошибку на строке прямо в файлах
 с кодом:</p>
 <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">append_item</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># pylint: disable=C0103</span>
    <span class="o">...</span>
 </code></pre></div>
-
 
 <p>Ещё <code>pylint</code> умеет игнорировать ошибки в блоках кода:</p>
 <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">test</span><span class="p">():</span>
@@ -505,17 +487,14 @@ Your code has been rated at <span class="m">6</span>.67/10
     <span class="o">...</span>
 </code></pre></div>
 
-
 <p>И для файлов целиком. Вот так можно отключить все ошибки из категорий
 Warning, Convention и Refactor:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># pylint: disable=W,C,R</span>
 </code></pre></div>
 
-
 <p>А можно не проверять файл вообще:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># pylint: skip-file</span>
 </code></pre></div>
-
 
 <p>Подробнее о правилах управления сообщениями
 <a href="http://pylint.pycqa.org/en/latest/user_guide/message-control.html">смотрите в документации</a>.
@@ -527,7 +506,6 @@ Warning, Convention и Refactor:</p>
 <div class="highlight"><pre><span></span><code>$ pylint --generate-rcfile &gt; .pylintrc
 </code></pre></div>
 
-
 <p>Созданный файл содержит все поддерживаемые <code>pylint</code> опции с довольно
 подробными комментариями, так что углубляться я не буду.</p>
 <h3>Плагины</h3>
@@ -536,16 +514,13 @@ Warning, Convention и Refactor:</p>
 <div class="highlight"><pre><span></span><code>$ pip install pylint-django
 </code></pre></div>
 
-
 <p>Теперь запускать <code>pylint</code> нужно вот так:</p>
 <div class="highlight"><pre><span></span><code>$ pylint --load-plugins pylint_django <span class="o">[</span>..other options..<span class="o">]</span> &lt;path_to_your_sources&gt;
 </code></pre></div>
 
-
 <p>либо в <code>.pylintrc</code> нужно исправить директиву <code>load-plugins</code>:</p>
 <div class="highlight"><pre><span></span><code>load-plugins=pylint_django
 </code></pre></div>
-
 
 <h2>Интеграция линтера в проект</h2>
 <p>Интегрировать линтер в проект можно на трёх уровнях.

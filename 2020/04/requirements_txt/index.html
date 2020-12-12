@@ -129,12 +129,11 @@
 <p>Скрипт получился настолько хорош, что вы хотите поделиться
 им со всеми своими друзьями. К сожалению, друзья при попытке
 запустить вашу программу получают следующую ошибку:</p>
-<div class="highlight"><pre><span></span><code><span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
-  <span class="n">File</span> <span class="s2">&quot;weather.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">3</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-    <span class="kn">from</span> <span class="nn">pyowm</span> <span class="kn">import</span> <span class="n">OWM</span>
-<span class="n">ModuleNotFoundError</span><span class="p">:</span> <span class="n">No</span> <span class="n">module</span> <span class="n">named</span> <span class="s1">&#39;pyowm&#39;</span>
+<div class="highlight"><pre><span></span><code>Traceback (most recent call last):
+  File &quot;weather.py&quot;, line 3, in &lt;module&gt;
+    from pyowm import OWM
+ModuleNotFoundError: No module named &#39;pyowm&#39;
 </code></pre></div>
-
 
 <p>Кажется, что скинуть только код недостаточно.</p>
 <p>Или, допустим, что вы сами через полгода-год попытаетесь
@@ -181,13 +180,11 @@
 <div class="highlight"><pre><span></span><code>pyowm
 </code></pre></div>
 
-
 <p>Если бы было несколько зависимостей, то файл выглядел бы так:</p>
 <div class="highlight"><pre><span></span><code>numpy
 requests
 pytest
 </code></pre></div>
-
 
 <p>Можно указать конкретную версию зависимости. Если версия не указана, то
 считается, что нужна последняя доступная:</p>
@@ -195,14 +192,12 @@ pytest
 requests==2.23.0  # нужна конкретная версия
 </code></pre></div>
 
-
 <p>Можно указывать диапазоны и другие более сложные <a href="https://www.python.org/dev/peps/pep-0440/#version-specifiers">"спецификаторы версий"</a>.
 В целом, в <code>requirements.txt</code> можно писать любые "запросы", которые понимает команда
 <code>pip install</code>:</p>
 <div class="highlight"><pre><span></span><code>requests&gt;=2.20.0,&lt;2.23.0  # подойдет любая версия между 2.20.0 и 2.23.0
 numpy!=1.0  # подойдет любая версия, кроме 1.0
 </code></pre></div>
-
 
 <h2>Как пользоваться</h2>
 <p>Команда <code>pip install</code> умеет читать такие файлы, если передать специальный флаг:</p>
@@ -213,7 +208,6 @@ Install Options:
 ...
 </code></pre></div>
 
-
 <p>Таким образом, если <code>requirements.txt</code> будет иметь вот такое содержимое:</p>
 <div class="highlight"><pre><span></span><code>pytest
 flake8
@@ -221,13 +215,11 @@ black
 isort
 </code></pre></div>
 
-
 <p>То следующие две команды будут иметь одинаковое действие:</p>
 <div class="highlight"><pre><span></span><code>$ pip install -r requirements.txt
 
 $ pip install pytest flake8 black isort
 </code></pre></div>
-
 
 <p>Преимущества использования <code>requirements.txt</code>:</p>
 <ul>
@@ -269,7 +261,6 @@ $ pip install pytest flake8 black isort
 <span class="nv">urllib3</span><span class="o">==</span><span class="m">1</span>.25.9
 </code></pre></div>
 
-
 <p>Команда <code>pip freeze</code> выводит все установленные в интерпретатор сторонние пакеты.
 Заметьте, что в список попали не только прямые зависимости (<code>pyowm</code>), но
 и подзависимости — это даже лучше, потому что вы сможете более
@@ -279,7 +270,6 @@ $ pip install pytest flake8 black isort
 (работает и на Windows), и получить валидный файл <code>requirements.txt</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="o">(</span>env<span class="o">)</span> $ pip freeze &gt; requirements.txt
 </code></pre></div>
-
 
 <p>Обратите внимание, что <code>pip freeze</code> выведет список пакетов в том окружении,
 в котором он запущен. Не забудьте активировать виртуальное окружение перед

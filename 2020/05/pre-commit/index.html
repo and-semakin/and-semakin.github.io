@@ -162,7 +162,6 @@
 $ <span class="nb">cd</span> git_hooks_example/
 </code></pre></div>
 
-
 <p>Git уже заботливо создал для нас шаблоны для написания хуков,
 которые лежат в специальной служебной директории:</p>
 <div class="highlight"><pre><span></span><code>$ ls -l .git/hooks/
@@ -180,7 +179,6 @@ total <span class="m">56</span>
 -rwxr-xr-x. <span class="m">1</span> br0ke br0ke  <span class="m">548</span> May <span class="m">30</span> <span class="m">21</span>:36 pre-receive.sample*
 -rwxr-xr-x. <span class="m">1</span> br0ke br0ke <span class="m">3639</span> May <span class="m">30</span> <span class="m">21</span>:36 update.sample*
 </code></pre></div>
-
 
 <p>Можно, например, просто переименовать файл <code>pre-commit.sample</code> в <code>pre-commit</code>,
 и этот хук вступит в силу. В моём случае там на <code>bash</code> реализована
@@ -213,12 +211,10 @@ black --check <span class="nv">$CHANGED_PYTHON_FILES</span>
 <span class="nb">echo</span> <span class="s2">&quot;All checks successfully passed.&quot;</span>
 </code></pre></div>
 
-
 <p>Этот файл должен быть сохранён по пути <code>.git/hooks/pre-commit</code>.
 Файл нужно сделать исполняемым, иначе Git не сможет его запустить:</p>
 <div class="highlight"><pre><span></span><code>$ chmod a+x .git/hooks/pre-commit
 </code></pre></div>
-
 
 <p>Теперь давайте создадим какой-нибудь файл, который точно не пройдет этих
 проверок. Обратите внимание на лишние пробелы рядом со скобками,
@@ -227,14 +223,12 @@ black --check <span class="nv">$CHANGED_PYTHON_FILES</span>
 <div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span> <span class="s1">&#39;Hello world!&#39;</span> <span class="p">)</span>
 </code></pre></div>
 
-
 <p>Попытаемся его закоммитить:</p>
 <div class="highlight"><pre><span></span><code>$ git add example.py
 $ git commit -v
 example.py:1:7: E201 whitespace after <span class="s1">&#39;(&#39;</span>
 example.py:1:22: E202 whitespace before <span class="s1">&#39;)&#39;</span>
 </code></pre></div>
-
 
 <p>Наш умный хук выполнился и запустил <code>flake8</code>, который нашел ошибки.
 Давайте удалим лишние пробелы и попытаемся закоммитить ещё раз:</p>
@@ -245,7 +239,6 @@ Oh no! 💥 💔 💥
 <span class="m">1</span> file would be reformatted.
 </code></pre></div>
 
-
 <p>В этот раз <code>flake8</code> не нашёл ошибок, но операция всё равно завершилась
 ошибкой из-за <code>black</code>. Давайте отформатируем файл и наконец закоммитим его:</p>
 <div class="highlight"><pre><span></span><code>$ black .
@@ -253,13 +246,11 @@ $ git add example.py
 $ git commit -v
 </code></pre></div>
 
-
 <p>На этот раз всё срабатывает успешно.</p>
 <p>Чтобы закоммитить, игнорируя хуки, можно было передать в
 команду флаг <code>--no-verify</code> или <code>-n</code>:</p>
 <div class="highlight"><pre><span></span><code>git commit -v -n
 </code></pre></div>
-
 
 <p>Как видите, писать git-хуки самостоятельно не так уж и сложно.
 Не обязательно использовать <code>bash</code>, хуки можно писать на чём угодно —
@@ -296,12 +287,10 @@ Git-хуками.</p>
 <div class="highlight"><pre><span></span><code>$ pip install --user pre-commit
 </code></pre></div>
 
-
 <p>Проверим установку:</p>
 <div class="highlight"><pre><span></span><code>$ pre-commit --version
 pre-commit <span class="m">2</span>.4.0
 </code></pre></div>
-
 
 <h2>Настройка</h2>
 <p><code>pre-commit</code> спроектирован с прицелом на удобное использование сторонних
@@ -317,7 +306,6 @@ pre-commit <span class="m">2</span>.4.0
 Давайте сгенерируем базовый конфиг:</p>
 <div class="highlight"><pre><span></span><code>$ pre-commit sample-config &gt; .pre-commit-config.yaml
 </code></pre></div>
-
 
 <p>И допилим примерно до такого состояния:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># See https://pre-commit.com for more information</span>
@@ -346,11 +334,9 @@ pre-commit <span class="m">2</span>.4.0
       <span class="p p-Indicator">-</span> <span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">black</span>
 </code></pre></div>
 
-
 <p>Теперь включим <code>pre-commit</code> в текущем репозитории.</p>
 <div class="highlight"><pre><span></span><code>$ pre-commit install
 </code></pre></div>
-
 
 <p>Рекомендую добавить эту команду в документацию для разработчиков. Это всё,
 что нужно будет сделать вашим коллегам, чтобы хуки заработали и у них тоже.</p>
@@ -361,19 +347,16 @@ pre-commit <span class="m">2</span>.4.0
 ...
 </code></pre></div>
 
-
 <p>При этом старый хук был переименован в <code>pre-commit.legacy</code>.
 Умный <code>pre-commit</code> будет запускать и его тоже, чтобы не сломать текущее поведение.
 Если это не желательно, то проще всего удалить этот старый файл:</p>
 <div class="highlight"><pre><span></span><code>$ rm .git/hooks/pre-commit.legacy
 </code></pre></div>
 
-
 <p>Проверим, что конфигурационный файл валиден, а заодно и что всё нынешнее
 содержимое репозитория удовлетворяет описанными правилам:</p>
 <div class="highlight"><pre><span></span><code>$ pre-commit run --all-files
 </code></pre></div>
-
 
 <p>При первом запуске <code>pre-commit</code> скачает и закэширует все файлы, необходимые
 для выполнения проверок. Для проверок, которые написаны на Python,
@@ -386,7 +369,6 @@ pre-commit <span class="m">2</span>.4.0
 <div class="highlight"><pre><span></span><code>$ git add .pre-commit-config.yaml
 $ git commit -m “Add pre-commit configuration”
 </code></pre></div>
-
 
 <h2>Плагины/зависимости для проверок</h2>
 <p>Из-за того, что для проверок, написанных на Python, создаются отдельные
@@ -403,7 +385,6 @@ $ git commit -m “Add pre-commit configuration”
         <span class="nt">additional_dependencies</span><span class="p">:</span>
           <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">flake8-bugbear</span>
 </code></pre></div>
-
 
 <p>При следующем запуске <code>pre-commit</code> обнаружит новую зависимость и установит её
 в то же виртуальное окружение, что и <code>flake8</code>. Теперь перед коммитом будет
@@ -433,7 +414,6 @@ reformatted example.py
 All <span class="k">done</span>! ✨ 🍰 ✨
 <span class="m">1</span> file reformatted.
 </code></pre></div>
-
 
 <p>Ожидаемо, операция прервалась, но в этот раз мы получили все нужные
 сообщения об ошибках. Кроме того, файл даже был автоматически отформатирован

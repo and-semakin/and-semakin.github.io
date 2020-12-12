@@ -114,7 +114,6 @@
 <div class="highlight"><pre><span></span><code>\ No newline at end of file
 </code></pre></div>
 
-
 <p>Или на GitHub в интерфейсе для просмотра диффов:</p>
 <p><img alt="GitHub &quot;now newline at end of file&quot; warning" src="https://semakin.dev/static/github_no_newline_at_end_of_file.jpg"></p>
 <p>Почему это так важно, что Git и GitHub предупреждают нас об этом?
@@ -216,13 +215,11 @@
     <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;zxc&quot;</span><span class="p">)</span>
 </code></pre></div>
 
-
 <p>Сколько по-вашему в этом файле строк? Три? Давайте посмотрим, что об этом файле
 думает утилита <code>wc</code>, которая с флагом <code>-l</code> умеет считать количество строк в файле:</p>
 <div class="highlight"><pre><span></span><code>$ wc -l broken.txt 
 <span class="m">2</span> broken.txt
 </code></pre></div>
-
 
 <p>Упс! <code>wc</code> нашла только 2 строки!</p>
 <p>Давайте создадим еще один файл:</p>
@@ -232,7 +229,6 @@
     <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;vbn&quot;</span><span class="p">)</span>
 </code></pre></div>
 
-
 <p>И попробуем теперь склеить два созданных файла при помощи утилиты <code>cat</code>:</p>
 <div class="highlight"><pre><span></span><code>$ cat broken.txt broken2.txt 
 qwe
@@ -241,7 +237,6 @@ zxcrty
 fgh
 vbn
 </code></pre></div>
-
 
 <blockquote>
 <p>Название <code>cat</code> — это сокращение от "конкатенация", и никак не связано

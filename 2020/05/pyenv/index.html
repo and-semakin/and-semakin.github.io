@@ -309,7 +309,6 @@ pyenv <span class="m">1</span>.2.18
 ...
 </code></pre></div>
 
-
 <p>Список довольно длинный, поэтому я его подсократил. Обычно вас будут
 интересовать такие версии, как <code>3.8.2</code> или <code>3.7.7</code> — это версии самой
 распространённой реализации интерпретатора CPython. Но если
@@ -323,7 +322,6 @@ Downloading Python-3.8.2.tar.xz...
 Installing Python-3.8.2...
 </code></pre></div>
 
-
 <p>Через пару минут ожидания ваш новоиспечённый Python будет готов.</p>
 <p>Можно сразу же назначить эту версию глобальной:</p>
 <div class="highlight"><pre><span></span><code>$ pyenv global <span class="m">3</span>.8.2
@@ -331,12 +329,10 @@ $ python -V
 Python <span class="m">3</span>.8.2
 </code></pre></div>
 
-
 <p>Давайте в целях демонстрации установим ещё парочку интерпретаторов:</p>
 <div class="highlight"><pre><span></span><code>$ pyenv install <span class="m">2</span>.7.18
 $ pyenv install <span class="m">3</span>.9.0a6
 </code></pre></div>
-
 
 <p>Получим список установленных версий интерпретатора:</p>
 <div class="highlight"><pre><span></span><code>$ pyenv versions
@@ -345,12 +341,10 @@ $ pyenv install <span class="m">3</span>.9.0a6
   <span class="m">3</span>.9.0a6
 </code></pre></div>
 
-
 <p>Кстати, если нужно, то можно делать активными сразу несколько
 версий одновременно:</p>
 <div class="highlight"><pre><span></span><code>$ pyenv global <span class="m">3</span>.8.2 <span class="m">2</span>.7.18
 </code></pre></div>
-
 
 <p>Теперь вывод версий покажет следующее:</p>
 <div class="highlight"><pre><span></span><code>$ pyenv versions
@@ -358,7 +352,6 @@ $ pyenv install <span class="m">3</span>.9.0a6
 * <span class="m">3</span>.8.2 <span class="o">(</span><span class="nb">set</span> by /home/br0ke/.pyenv/version<span class="o">)</span>
   <span class="m">3</span>.9.0a6
 </code></pre></div>
-
 
 <p>А работать это будет вот таким образом:</p>
 <div class="highlight"><pre><span></span><code>$ python -V
@@ -368,7 +361,6 @@ Python <span class="m">3</span>.8.2
 $ python2 -V
 Python <span class="m">2</span>.7.18
 </code></pre></div>
-
 
 <p>Грубо говоря, та версия, которая указана первой (3.8.2),
 имеет приоритет и занимает все нужные ей имена. Следующие версии (2.7.18)
@@ -381,13 +373,11 @@ Python <span class="m">2</span>.7.18
 <span class="m">2</span>.7.18
 </code></pre></div>
 
-
 <h3>Локальная версия</h3>
 <p>Давайте создадим директорию и войдём в неё:</p>
 <div class="highlight"><pre><span></span><code>$ mkdir my_project
 $ <span class="nb">cd</span> my_project
 </code></pre></div>
-
 
 <p>Представим, что в этой директории мы будем разрабатывать некий
 проект, на котором мы хотим опробовать фишки нового Python 3.9.
@@ -395,12 +385,10 @@ $ <span class="nb">cd</span> my_project
 <div class="highlight"><pre><span></span><code>$ pyenv <span class="nb">local</span> <span class="m">3</span>.9.0a
 </code></pre></div>
 
-
 <p>В директории появился файл <code>.python-version</code> со следующим содержимым:</p>
 <div class="highlight"><pre><span></span><code>$ cat .python-version
 <span class="m">3</span>.9.0a6
 </code></pre></div>
-
 
 <p>На данный момент список версий показывает следующее (удобно использовать
 эту команду, чтобы понять какую версию и почему <code>pyenv</code> активирует):</p>
@@ -410,19 +398,16 @@ $ <span class="nb">cd</span> my_project
 * <span class="m">3</span>.9.0a6 <span class="o">(</span><span class="nb">set</span> by /home/br0ke/my_project/.python-version<span class="o">)</span>
 </code></pre></div>
 
-
 <p>Изменения немедленно вступили в силу:</p>
 <div class="highlight"><pre><span></span><code>$ python -V
 Python <span class="m">3</span>.9.0a6
 </code></pre></div>
-
 
 <p>Но эта конфигурация никак не влияет на работу <code>pyenv</code> вне директории проекта:</p>
 <div class="highlight"><pre><span></span><code>$ <span class="nb">cd</span> ..
 $ python -V
 <span class="m">3</span>.8.2
 </code></pre></div>
-
 
 <p>Как и в случае с глобальной конфигурацией, можно локально активировать
 сразу несколько версий интерпретатора.</p>
@@ -435,7 +420,6 @@ $ python -V
 $ pip install ipython
 </code></pre></div>
 
-
 <p>Запустим:</p>
 <div class="highlight"><pre><span></span><code>$ ipython
 Python <span class="m">3</span>.9.0a6 <span class="o">(</span>default, May  <span class="m">3</span> <span class="m">2020</span>, <span class="m">16</span>:58:20<span class="o">)</span>
@@ -445,13 +429,11 @@ IPython <span class="m">7</span>.14.0 -- An enhanced Interactive Python. Type <s
 In <span class="o">[</span><span class="m">1</span><span class="o">]</span>:
 </code></pre></div>
 
-
 <p>Программа сразу доступна, благодаря тому, что <code>pyenv</code> очень умный и
 создал новый файл-прослойку (shim) автоматически:</p>
 <div class="highlight"><pre><span></span><code>$ which ipython
 /home/br0ke/.pyenv/shims/ipython
 </code></pre></div>
-
 
 <p>Вне директории с проектом <code>ipython</code> будет недоступен, ведь он же установлен
 в локальный интерпретатор <code>3.9.0a6</code>, а снаружи активирован другой
@@ -463,11 +445,9 @@ $ ipython
 No such file or directory
 </code></pre></div>
 
-
 <p>Не беда! Можно попросить <code>pyenv</code> пересоздать их все заново:</p>
 <div class="highlight"><pre><span></span><code>$ pyenv rehash
 </code></pre></div>
-
 
 <p>И всё работает снова:</p>
 <div class="highlight"><pre><span></span><code>$ ipython
@@ -477,7 +457,6 @@ IPython <span class="m">7</span>.14.0 -- An enhanced Interactive Python. Type <s
 
 In <span class="o">[</span><span class="m">1</span><span class="o">]</span>:
 </code></pre></div>
-
 
 <p>Можно вообще добавить команду <code>pyenv rehash</code> в свой <code>~/.bashrc</code> (или аналог),
 чтобы при запуске шелла гарантированно иметь рабочие файлы-прослойки (shims).</p>
