@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Питонические атаки - blog</title><link href="https://semakin.dev/" rel="alternate"></link><link href="https://semakin.dev/feeds/blog.atom.xml" rel="self"></link><id>https://semakin.dev/</id><updated>2020-12-13T01:12:22+05:00</updated><subtitle>Про разработку в целом и про Python в частности</subtitle><entry><title>Настройка точечного обхода блокировок на роутере с OpenWRT</title><link href="https://semakin.dev/2020/12/openwrt_vpn_rkn/" rel="alternate"></link><published>2020-12-12T21:17:11+05:00</published><updated>2020-12-13T01:12:22+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-12-12:/2020/12/openwrt_vpn_rkn/</id><summary type="html">&lt;p&gt;Как перестать думать о блокировках сайтов и начать жить&lt;/p&gt;</summary><content type="html">&lt;p&gt;Думаю, не стоит объяснять, почему проблема блокировок в рунете стоит настолько остро.
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Питонические атаки - blog</title><link href="https://semakin.dev/" rel="alternate"></link><link href="https://semakin.dev/feeds/blog.atom.xml" rel="self"></link><id>https://semakin.dev/</id><updated>2021-05-23T00:19:20+05:00</updated><subtitle>Про разработку в целом и про Python в частности</subtitle><entry><title>Настройка точечного обхода блокировок на роутере с OpenWRT</title><link href="https://semakin.dev/2020/12/openwrt_vpn_rkn/" rel="alternate"></link><published>2020-12-12T21:17:11+05:00</published><updated>2021-05-23T00:19:20+05:00</updated><author><name>Андрей Семакин</name></author><id>tag:semakin.dev,2020-12-12:/2020/12/openwrt_vpn_rkn/</id><summary type="html">&lt;p&gt;Как перестать думать о блокировках сайтов и начать жить&lt;/p&gt;</summary><content type="html">&lt;p&gt;Думаю, не стоит объяснять, почему проблема блокировок в рунете стоит настолько остро.
 И дело даже не в пресловутых сериалах на торрентах. Если не обходить
 блокировки, то банально сложно работать: то &lt;a href="https://bugs.python.org"&gt;bugs.python.org&lt;/a&gt;
 заблокирован, то документация по нужному тебе сервису недоступна, то какой-нибудь
@@ -226,34 +226,30 @@ Address: &lt;span class="m"&gt;2620&lt;/span&gt;:1ec:21::14
 протоколу WireGuard — это нынче горячая тема. Недавно
 &lt;a href="https://www.opennet.ru/opennews/art.shtml?num=52275"&gt;поддержка WireGuard была добавлена в основной состав ядра Linux&lt;/a&gt;.
 Погуглите, выбор сервисов действительно есть. Сейчас я пользуюсь
-&lt;a href="https://www.azirevpn.com/"&gt;AzireVPN&lt;/a&gt;, и меня пока что всё устраивает.&lt;/p&gt;
+&lt;a href="https://redshieldvpn.com/?r=d4KqAm7U6rHB4kdEwuDD"&gt;RedShieldVPN&lt;/a&gt;, и меня пока
+что всё устраивает.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Бонус для читателей&lt;/strong&gt;: при регистрации
-&lt;a href="https://www.azirevpn.com/ref/30ePwqelRO"&gt;по этой ссылке&lt;/a&gt; вам накинут бесплатных
-дней обслуживания при оплате определенного периода сразу — +4 дня к месяцу,
-+15 дней к трём месяцам. За оплату большего периода дают пропорционально ещё
-больше бесплатных дней. Кстати, этот VPN можно использовать не только на роутере,
-у него есть клиенты и для всех основных платформ.&lt;/p&gt;
-&lt;p&gt;Дальше буду описывать процесс для AzireVPN, но, думаю, для других подобных сервисов
-процесс должен быть похожим.&lt;/p&gt;
+&lt;a href="https://redshieldvpn.com/?r=d4KqAm7U6rHB4kdEwuDD"&gt;по этой ссылке&lt;/a&gt; вам подарят
+месяц бесплатного VPN.&lt;/p&gt;
+&lt;p&gt;Дальше буду описывать процесс для RedShieldVPN, но, думаю, для других подобных
+сервисов процесс должен быть похожим.&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;
-&lt;p&gt;Переходим &lt;a href="https://www.azirevpn.com/cfg/wireguard"&gt;в раздел "Конфигурации"&lt;/a&gt;,
-    авторизуемся и скачиваем конфиги.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;Из получившегося ZIP-архива выколупываем конфиг для страны, через которую хотим
-    пускать свой трафик. Я обычно выбираю какую-нибудь европейскую страну, чтобы пинг
-    был приемлемым. В этот раз возьму Норвегию.&lt;/p&gt;
-&lt;p&gt;Вот такой файл конфигурации мы извлекли из архива (ключи я заменил):&lt;/p&gt;
+&lt;p&gt;Переходим &lt;a href="https://my.redshieldvpn.com/manual/wg"&gt;в раздел WireGuard&lt;/a&gt;,
+    авторизуемся, выбираем страну и скачиваем конфиг. Я обычно выбираю какую-нибудь
+    европейскую страну, чтобы пинг был приемлемым. В этот раз возьму Финляндию.&lt;/p&gt;
+&lt;p&gt;Вот примерно такой файл конфигурации скачался (ключи я заменил):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;[Interface]&lt;/span&gt;
+&lt;span class="na"&gt;Address&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;10.7.1.177/32, 6343:72e7:7ac3:e245:2675:1b79:4638:193a/128&lt;/span&gt;
 &lt;span class="na"&gt;PrivateKey&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;private_key_goes_here&lt;/span&gt;
-&lt;span class="na"&gt;Address&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;10.0.30.134/19, 2a0c:dd43:1:2000::1e87/64&lt;/span&gt;
-&lt;span class="na"&gt;DNS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;10.0.0.1, 2a0c:dd43:1:2000::1&lt;/span&gt;
+&lt;span class="na"&gt;DNS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;10.254.254.254&lt;/span&gt;
+&lt;span class="na"&gt;MTU&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;1412&lt;/span&gt;
 
 &lt;span class="k"&gt;[Peer]&lt;/span&gt;
 &lt;span class="na"&gt;PublicKey&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;public_key_goes_here&lt;/span&gt;
 &lt;span class="na"&gt;AllowedIPs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;0.0.0.0/0, ::/0&lt;/span&gt;
-&lt;span class="na"&gt;Endpoint&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;no1.wg.azirevpn.net:51820&lt;/span&gt;
+&lt;span class="na"&gt;Endpoint&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;fin.lopata.today:51820&lt;/span&gt;
+&lt;span class="na"&gt;PersistentKeepalive&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;10&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;/li&gt;
@@ -271,7 +267,7 @@ Address: &lt;span class="m"&gt;2620&lt;/span&gt;:1ec:21::14
 для подготовки психики) и дописываем в конец две секции вот такого содержания:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;config interface &amp;#39;wg0&amp;#39;
     option private_key &amp;#39;private_key_goes_here&amp;#39;
-    list addresses &amp;#39;10.0.25.230/19&amp;#39;
+    list addresses &amp;#39;10.7.1.177/32&amp;#39;
     option listen_port &amp;#39;51820&amp;#39;
     option proto &amp;#39;wireguard&amp;#39;
 
@@ -279,8 +275,8 @@ config wireguard_wg0
     option public_key &amp;#39;public_key_goes_here&amp;#39;
     option allowed_ips &amp;#39;0.0.0.0/0&amp;#39;
     option route_allowed_ips &amp;#39;0&amp;#39;
-    option persistent_keepalive &amp;#39;25&amp;#39;
-    option endpoint_host &amp;#39;no1.wg.azirevpn.net&amp;#39;
+    option persistent_keepalive &amp;#39;10&amp;#39;
+    option endpoint_host &amp;#39;fin.lopata.today&amp;#39;
     option endpoint_port &amp;#39;51820&amp;#39;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
@@ -301,16 +297,16 @@ config wireguard_wg0
 &lt;p&gt;Проверим VPN:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# wg show&lt;/span&gt;
 interface: wg0
-public key: Kxn5CpI6wu+U5+ChMCNY/5Xs9DfoZ691G6OSX2V4HSU&lt;span class="o"&gt;=&lt;/span&gt;
+public key: C4zR9CoziizrJcPFtcUg4yyyG1S6+a+/bAuGi2BpmlM&lt;span class="o"&gt;=&lt;/span&gt;
 private key: &lt;span class="o"&gt;(&lt;/span&gt;hidden&lt;span class="o"&gt;)&lt;/span&gt;
 listening port: &lt;span class="m"&gt;51820&lt;/span&gt;
 
-peer: OsswT7RVN/M8jpDoARlsPshjtIr0R/1g3NAyCTl/4BY&lt;span class="o"&gt;=&lt;/span&gt;
-endpoint: &lt;span class="m"&gt;194&lt;/span&gt;.32.146.82:51820
+peer: public_key_goes_here
+endpoint: &lt;span class="m"&gt;185&lt;/span&gt;.103.110.133:51820
 allowed ips: &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0/0
-latest handshake: &lt;span class="m"&gt;44&lt;/span&gt; seconds ago
+latest handshake: &lt;span class="m"&gt;33&lt;/span&gt; seconds ago
 transfer: &lt;span class="m"&gt;1012&lt;/span&gt; B received, &lt;span class="m"&gt;3&lt;/span&gt;.53 KiB sent
-persistent keepalive: every &lt;span class="m"&gt;25&lt;/span&gt; seconds
+persistent keepalive: every &lt;span class="m"&gt;10&lt;/span&gt; seconds
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Если команда &lt;code&gt;wg show&lt;/code&gt; выводит что-то подобное, то всё идёт хорошо.&lt;/p&gt;

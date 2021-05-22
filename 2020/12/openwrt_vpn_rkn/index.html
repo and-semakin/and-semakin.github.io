@@ -91,7 +91,7 @@
                             автор:
                                 <a href="https://semakin.dev/author/andrei-semakin.html">Андрей Семакин</a>
                         </span>
-                            <span class="meta">Обновлено: 13 декабря 2020, Вс</span>
+                            <span class="meta">Обновлено: 23 мая 2021, Вс</span>
                         
                             <span class="meta">
                                 <i class="fa fa-clock-o" aria-hidden="true"></i>
@@ -339,34 +339,30 @@ Address: <span class="m">2620</span>:1ec:21::14
 протоколу WireGuard — это нынче горячая тема. Недавно
 <a href="https://www.opennet.ru/opennews/art.shtml?num=52275">поддержка WireGuard была добавлена в основной состав ядра Linux</a>.
 Погуглите, выбор сервисов действительно есть. Сейчас я пользуюсь
-<a href="https://www.azirevpn.com/">AzireVPN</a>, и меня пока что всё устраивает.</p>
+<a href="https://redshieldvpn.com/?r=d4KqAm7U6rHB4kdEwuDD">RedShieldVPN</a>, и меня пока
+что всё устраивает.</p>
 <p><strong>Бонус для читателей</strong>: при регистрации
-<a href="https://www.azirevpn.com/ref/30ePwqelRO">по этой ссылке</a> вам накинут бесплатных
-дней обслуживания при оплате определенного периода сразу — +4 дня к месяцу,
-+15 дней к трём месяцам. За оплату большего периода дают пропорционально ещё
-больше бесплатных дней. Кстати, этот VPN можно использовать не только на роутере,
-у него есть клиенты и для всех основных платформ.</p>
-<p>Дальше буду описывать процесс для AzireVPN, но, думаю, для других подобных сервисов
-процесс должен быть похожим.</p>
+<a href="https://redshieldvpn.com/?r=d4KqAm7U6rHB4kdEwuDD">по этой ссылке</a> вам подарят
+месяц бесплатного VPN.</p>
+<p>Дальше буду описывать процесс для RedShieldVPN, но, думаю, для других подобных
+сервисов процесс должен быть похожим.</p>
 <ol>
 <li>
-<p>Переходим <a href="https://www.azirevpn.com/cfg/wireguard">в раздел "Конфигурации"</a>,
-    авторизуемся и скачиваем конфиги.</p>
-</li>
-<li>
-<p>Из получившегося ZIP-архива выколупываем конфиг для страны, через которую хотим
-    пускать свой трафик. Я обычно выбираю какую-нибудь европейскую страну, чтобы пинг
-    был приемлемым. В этот раз возьму Норвегию.</p>
-<p>Вот такой файл конфигурации мы извлекли из архива (ключи я заменил):</p>
+<p>Переходим <a href="https://my.redshieldvpn.com/manual/wg">в раздел WireGuard</a>,
+    авторизуемся, выбираем страну и скачиваем конфиг. Я обычно выбираю какую-нибудь
+    европейскую страну, чтобы пинг был приемлемым. В этот раз возьму Финляндию.</p>
+<p>Вот примерно такой файл конфигурации скачался (ключи я заменил):</p>
 <div class="highlight"><pre><span></span><code><span class="k">[Interface]</span>
+<span class="na">Address</span> <span class="o">=</span> <span class="s">10.7.1.177/32, 6343:72e7:7ac3:e245:2675:1b79:4638:193a/128</span>
 <span class="na">PrivateKey</span> <span class="o">=</span> <span class="s">private_key_goes_here</span>
-<span class="na">Address</span> <span class="o">=</span> <span class="s">10.0.30.134/19, 2a0c:dd43:1:2000::1e87/64</span>
-<span class="na">DNS</span> <span class="o">=</span> <span class="s">10.0.0.1, 2a0c:dd43:1:2000::1</span>
+<span class="na">DNS</span> <span class="o">=</span> <span class="s">10.254.254.254</span>
+<span class="na">MTU</span> <span class="o">=</span> <span class="s">1412</span>
 
 <span class="k">[Peer]</span>
 <span class="na">PublicKey</span> <span class="o">=</span> <span class="s">public_key_goes_here</span>
 <span class="na">AllowedIPs</span> <span class="o">=</span> <span class="s">0.0.0.0/0, ::/0</span>
-<span class="na">Endpoint</span> <span class="o">=</span> <span class="s">no1.wg.azirevpn.net:51820</span>
+<span class="na">Endpoint</span> <span class="o">=</span> <span class="s">fin.lopata.today:51820</span>
+<span class="na">PersistentKeepalive</span> <span class="o">=</span> <span class="s">10</span>
 </code></pre></div>
 
 </li>
@@ -384,7 +380,7 @@ Address: <span class="m">2620</span>:1ec:21::14
 для подготовки психики) и дописываем в конец две секции вот такого содержания:</p>
 <div class="highlight"><pre><span></span><code>config interface &#39;wg0&#39;
     option private_key &#39;private_key_goes_here&#39;
-    list addresses &#39;10.0.25.230/19&#39;
+    list addresses &#39;10.7.1.177/32&#39;
     option listen_port &#39;51820&#39;
     option proto &#39;wireguard&#39;
 
@@ -392,8 +388,8 @@ config wireguard_wg0
     option public_key &#39;public_key_goes_here&#39;
     option allowed_ips &#39;0.0.0.0/0&#39;
     option route_allowed_ips &#39;0&#39;
-    option persistent_keepalive &#39;25&#39;
-    option endpoint_host &#39;no1.wg.azirevpn.net&#39;
+    option persistent_keepalive &#39;10&#39;
+    option endpoint_host &#39;fin.lopata.today&#39;
     option endpoint_port &#39;51820&#39;
 </code></pre></div>
 
@@ -414,16 +410,16 @@ config wireguard_wg0
 <p>Проверим VPN:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># wg show</span>
 interface: wg0
-public key: Kxn5CpI6wu+U5+ChMCNY/5Xs9DfoZ691G6OSX2V4HSU<span class="o">=</span>
+public key: C4zR9CoziizrJcPFtcUg4yyyG1S6+a+/bAuGi2BpmlM<span class="o">=</span>
 private key: <span class="o">(</span>hidden<span class="o">)</span>
 listening port: <span class="m">51820</span>
 
-peer: OsswT7RVN/M8jpDoARlsPshjtIr0R/1g3NAyCTl/4BY<span class="o">=</span>
-endpoint: <span class="m">194</span>.32.146.82:51820
+peer: public_key_goes_here
+endpoint: <span class="m">185</span>.103.110.133:51820
 allowed ips: <span class="m">0</span>.0.0.0/0
-latest handshake: <span class="m">44</span> seconds ago
+latest handshake: <span class="m">33</span> seconds ago
 transfer: <span class="m">1012</span> B received, <span class="m">3</span>.53 KiB sent
-persistent keepalive: every <span class="m">25</span> seconds
+persistent keepalive: every <span class="m">10</span> seconds
 </code></pre></div>
 
 <p>Если команда <code>wg show</code> выводит что-то подобное, то всё идёт хорошо.</p>

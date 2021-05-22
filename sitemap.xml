@@ -5,35 +5,35 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://semakin.dev/</loc>
-<lastmod>2020-12-13T01:12:35-00:00</lastmod>
+<lastmod>2021-05-23T00:21:00-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://semakin.dev/tags.html</loc>
-<lastmod>2020-12-13T01:12:35-00:00</lastmod>
+<lastmod>2021-05-23T00:21:00-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://semakin.dev/categories.html</loc>
-<lastmod>2020-12-13T01:12:35-00:00</lastmod>
+<lastmod>2021-05-23T00:21:00-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://semakin.dev/authors.html</loc>
-<lastmod>2020-12-13T01:12:35-00:00</lastmod>
+<lastmod>2021-05-23T00:21:00-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://semakin.dev/archives.html</loc>
-<lastmod>2020-12-13T01:12:35-00:00</lastmod>
+<lastmod>2021-05-23T00:21:00-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -54,7 +54,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://semakin.dev/2020/12/openwrt_vpn_rkn/</loc>
-<lastmod>2020-12-13T01:12:22+05:00</lastmod>
+<lastmod>2021-05-23T00:19:20+05:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
@@ -152,35 +152,35 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://semakin.dev/category/blog.html</loc>
-<lastmod>2020-12-13T01:12:22+04:03</lastmod>
+<lastmod>2021-05-23T00:19:20+04:03</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://semakin.dev/tag/network.html</loc>
-<lastmod>2020-12-13T01:12:22+04:03</lastmod>
+<lastmod>2021-05-23T00:19:20+04:03</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://semakin.dev/tag/vpn.html</loc>
-<lastmod>2020-12-13T01:12:22+04:03</lastmod>
+<lastmod>2021-05-23T00:19:20+04:03</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://semakin.dev/tag/wiregurad.html</loc>
-<lastmod>2020-12-13T01:12:22+04:03</lastmod>
+<lastmod>2021-05-23T00:19:20+04:03</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://semakin.dev/tag/openwrt.html</loc>
-<lastmod>2020-12-13T01:12:22+04:03</lastmod>
+<lastmod>2021-05-23T00:19:20+04:03</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -369,7 +369,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://semakin.dev/author/andrei-semakin.html</loc>
-<lastmod>2020-12-13T01:12:22+04:03</lastmod>
+<lastmod>2021-05-23T00:19:20+04:03</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
